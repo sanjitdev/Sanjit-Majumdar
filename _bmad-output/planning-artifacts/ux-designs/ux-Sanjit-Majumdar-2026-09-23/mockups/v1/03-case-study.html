@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wellbook — Case Study · Sanjit Majumdar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAFAFA;
+    --fg: #0A0A0B;
+    --muted-fg: #475569;
+    --border: #E4E4E7;
+    --card: #FFFFFF;
+    --accent: #1D4ED8;
+    --accent-soft: #EFF6FF;
+    --live: #059669;
+    --warn: #B91C1C;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    font-weight: 500;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+  .read {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+  .prose {
+    max-width: 800px;
+  }
+  /* NAV */
+  .nav {
+    width: 100%;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .nav-mark {
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+  }
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    font-size: 14px;
+    color: var(--muted-fg);
+  }
+  .nav-links a:hover { color: var(--fg); }
+  /* BREADCRUMB — full width strip */
+  .crumb {
+    width: 100%;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .crumb a { color: var(--accent); }
+  .crumb a:hover { text-decoration: underline; }
+  .crumb a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .crumb-sep { margin: 0 0.5rem; color: var(--border); }
+  /* HERO */
+  .hero {
+    padding: 3rem 0 2.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-inner {
+    max-width: 1080px;
+  }
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.4rem;
+  }
+  .hero-title {
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 1.25rem;
+    padding-top: 0.25rem;
+  }
+  .hero-lede {
+    font-family: 'Archivo', system-ui, sans-serif;
+    font-size: 1.0625rem;
+    color: var(--muted-fg);
+    line-height: 1.6;
+    max-width: 720px;
+    padding-bottom: 0.25rem;
+  }
+  /* META BAR — full-width strip */
+  .meta-bar {
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+  }
+  .meta-inner {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 1.25rem 0;
+  }
+  .meta-cell {
+    padding: 0.25rem 1.25rem;
+    border-left: 1px solid var(--border);
+  }
+  .meta-cell:first-child { border-left: none; padding-left: 0; }
+  .meta-key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+    padding-top: 0.15rem;
+  }
+  .meta-val {
+    font-family: 'Archivo', system-ui, sans-serif;
+    font-size: 15px;
+    color: var(--fg);
+    line-height: 1.4;
+  }
+  /* PATTERN RAIL */
+  .pattern-rail {
+    background: var(--accent-soft);
+    border-bottom: 1px solid var(--border);
+    padding: 1.1rem 0;
+  }
+  .pattern-inner {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .pattern-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.25rem 0;
+  }
+  .pattern-link {
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 0.35rem 0.85rem;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    background: var(--card);
+    line-height: 1.2;
+  }
+  /* BODY */
+  .body {
+    padding: 3.5rem 0;
+  }
+  section {
+    margin-bottom: 3rem;
+    padding-top: 0.5rem;
+  }
+  section:last-child { margin-bottom: 0; }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+    padding-top: 0.25rem;
+  }
+  section h2 {
+    font-size: clamp(1.375rem, 2.25vw, 1.75rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    margin-bottom: 1.15rem;
+    line-height: 1.2;
+    padding-top: 0.15rem;
+  }
+  section p {
+    font-family: 'Archivo', system-ui, sans-serif;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    margin-bottom: 1rem;
+    color: var(--fg);
+  }
+  section p:last-child { margin-bottom: 0; }
+  section p.muted { color: var(--muted-fg); }
+  section p strong { color: var(--fg); font-weight: 500; }
+  /* RESULT GRID */
+  .result-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 2px solid var(--fg);
+  }
+  .result {
+    padding: 0.25rem 0;
+  }
+  .result-num {
+    font-size: 2.5rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.5rem;
+    padding-top: 0.15rem;
+  }
+  .result-label {
+    font-family: 'Archivo', system-ui, sans-serif;
+    font-size: 14px;
+    color: var(--muted-fg);
+    line-height: 1.4;
+  }
+  /* DECISION CALLOUT */
+  .callout {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 1.15rem 1.35rem;
+    margin: 1.25rem 0;
+  }
+  .callout:first-child { margin-top: 0; }
+  .callout-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+    padding-top: 0.15rem;
+  }
+  .callout p { color: var(--fg); margin-bottom: 0; line-height: 1.55; }
+  /* NEXT/NAV — full-width strip with internal wrap */
+  .next-nav {
+    width: 100%;
+    padding: 2.5rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .next-nav-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+  .next-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: 0.25rem 0;
+  }
+  .next-cell.right { text-align: right; align-items: flex-end; }
+  .next-key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding-top: 0.15rem;
+  }
+  .next-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: 1.3;
+    padding-top: 0.15rem;
+  }
+  .next-link {
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 500;
+    padding-top: 0.15rem;
+  }
+  /* FOOTER */
+  .footer {
+    padding: 2rem 0;
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .footer-name {
+    font-weight: 500;
+    font-size: 0.9375rem;
+    padding: 0.25rem 0;
+  }
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 13px;
+    color: #A1A1AA;
+    align-items: center;
+  }
+  .footer-links a { padding: 0.25rem 0; }
+  .footer-recruiter {
+    font-size: 12px;
+    color: var(--bg);
+    border: 1px solid #3F3F46;
+    padding: 0.4rem 0.85rem;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    margin-left: 0.5rem;
+  }
+  .footer-recruiter:hover { border-color: var(--bg); }
+  @media (max-width: 900px) {
+    .hero { padding: 2.5rem 0 2rem; }
+    .meta-inner { grid-template-columns: repeat(2, 1fr); row-gap: 1.25rem; }
+    .meta-cell { padding: 0; border-left: none; padding-right: 1rem; padding-bottom: 0.5rem; }
+    .body { padding: 2.5rem 0; }
+    section { margin-bottom: 2.25rem; }
+    .result-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .next-nav { padding: 2rem 0; }
+    .next-nav-inner { grid-template-columns: 1fr; gap: 1.5rem; padding: 0 1.25rem; }
+    .next-cell.right { text-align: left; align-items: flex-start; }
+    .nav-links { display: none; }
+    .wrap, .read { padding: 0 1.25rem; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="nav-mark">Sanjit Majumdar</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#patterns">Patterns</a>
+      <a href="#lab">Lab</a>
+      <a href="#now">Now</a>
+      <a href="#about">About</a>
+    </nav>
+  </div>
+</header>
+
+<!-- BREADCRUMB -->
+<nav class="crumb" aria-label="Breadcrumb">
+  <div class="wrap">
+    <a href="#">Case studies</a>
+    <span class="crumb-sep" aria-hidden="true">/</span>
+    <span aria-current="page">Wellbook</span>
+    <span class="crumb-sep" aria-hidden="true">/</span>
+    <span>2019 — 2021</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-label">Case study · 01 · Enterprise governance</div>
+      <h1 class="hero-title">Wellbook — Enterprise governance for an oil &amp; gas organization.</h1>
+      <p class="hero-lede">Three ERPs, one truth that didn't exist. A canonical schema, a 14-hour migration window, and 10K+ daily users who never saw a regression.</p>
+    </div>
+  </div>
+</section>
+
+<!-- META BAR -->
+<div class="meta-bar">
+  <div class="wrap">
+    <div class="meta-inner">
+      <div class="meta-cell">
+        <div class="meta-key">Stack</div>
+        <div class="meta-val">.NET · Angular · SQL Server</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-key">Users</div>
+        <div class="meta-val">10K+ daily active</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-key">Role</div>
+        <div class="meta-val">Tech Lead</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-key">Duration</div>
+        <div class="meta-val">18 months</div>
+      </div>
+      <div class="meta-cell">
+        <div class="meta-key">Team</div>
+        <div class="meta-val">7 engineers</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PATTERN RAIL -->
+<div class="pattern-rail">
+  <div class="wrap pattern-inner">
+    <span class="pattern-label">Patterns cited</span>
+    <a href="#" class="pattern-link">Canonical Model</a>
+    <a href="#" class="pattern-link">Syncfusion Data-Grid</a>
+    <a href="#" class="pattern-link">Ship-Faster Pushback</a>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="body">
+  <div class="read">
+
+    <section id="problem">
+      <div class="prose">
+        <div class="section-num">01 · Problem</div>
+        <h2>Three ERPs, one truth that doesn't exist.</h2>
+        <p>Procurement, finance, and a vendor portal — each owned its own copy of "vendor." No two agreed on schema. Every integration was a translation table. Every translation table drifted.</p>
+        <p class="muted">Worse: business-critical workflows stalled on reconciliation. A vendor update in procurement took three days to surface in finance. The Wellbook team had decided to stop losing those days.</p>
+      </div>
+    </section>
+
+    <section id="constraints">
+      <div class="prose">
+        <div class="section-num">02 · Constraints</div>
+        <h2>No replace. Migration window of 14 hours.</h2>
+        <p>Production cutover happened during the 03:50–08:30 EDT low-traffic window. The platform had to remain queryable the entire time. No rollback plan was acceptable — only forward progress with checkpoints.</p>
+        <p class="muted">The two ERPs we couldn't touch kept their schemas intact. The translation had to happen at our layer, not theirs.</p>
+      </div>
+    </section>
+
+    <section id="architecture">
+      <div class="prose">
+        <div class="section-num">03 · Architecture</div>
+        <h2>One canonical schema. Map at the boundary.</h2>
+        <p>We defined a single normalized representation that all three ERPs agreed on. We translated at integration boundaries, never inside the domain. We validated before write — failed closed, with the reason surfaced.</p>
+        <p class="muted">The schema was versioned. Changes shipped with a migration, never silently. Every rejected write became an alert we could route to a human, not a poison-pill queue nobody sees.</p>
+      </div>
+    </section>
+
+    <section id="decisions">
+      <div class="section-num">04 · Decisions</div>
+      <h2>The decisions that mattered.</h2>
+
+      <div class="callout">
+        <div class="callout-label">Decision · Audit replay</div>
+        <p>Every event sourced into the canonical model is reproducible from the immutable log. We can replay any 90-day window deterministically. This is what made the migration safe.</p>
+      </div>
+
+      <div class="callout">
+        <div class="callout-label">Decision · Syncfusion Data-Grid instead of a third-party dashboard</div>
+        <p>Removed a $74k/year licensing dependency. Cut bundle size 35%. Got the exact rendering the operations team needed.</p>
+      </div>
+
+      <div class="callout">
+        <div class="callout-label">Decision · Ship-faster pushback on the December deadline</div>
+        <p>QA wanted a December ship date. The system wasn't ready. We documented the call, deferred with receipts, and shipped in February with zero P1 incidents. See: Ship-Faster Pushback.</p>
+      </div>
+    </section>
+
+    <section id="challenges">
+      <div class="prose">
+        <div class="section-num">05 · Challenges</div>
+        <h2>What nearly killed it.</h2>
+        <p>Two weeks before cutover, finance flagged a timezone-handling bug in the canonical adapter. We had assumed UTC; one ERP was sending local time without offsets. The fix took three days and a comprehensive integration test pass.</p>
+        <p class="muted">The post-mortem became a checklist we now apply to every boundary: timezones, currency precision, character encoding, idempotency keys. It sits next to the deployment runbook.</p>
+      </div>
+    </section>
+
+    <section id="results">
+      <div class="section-num">06 · Results</div>
+      <h2>What landed.</h2>
+      <div class="result-grid">
+        <div>
+          <div class="result-num">−35%</div>
+          <div class="result-label">Faster workflows end-to-end</div>
+        </div>
+        <div>
+          <div class="result-num">10K+</div>
+          <div class="result-label">Daily active users, zero P1 incidents</div>
+        </div>
+        <div>
+          <div class="result-num">$74k</div>
+          <div class="result-label">Annual license cost removed</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- NEXT/NAV -->
+<div class="next-nav">
+  <div class="next-nav-inner">
+    <div class="next-cell">
+      <span class="next-key">Previous case study</span>
+      <span class="next-title">Surakkha</span>
+      <a href="#" class="next-link">← Water safety monitoring</a>
+    </div>
+    <div class="next-cell right">
+      <span class="next-key">Next case study</span>
+      <span class="next-title">Syncfusion Data-Grid replacement</span>
+      <a href="#" class="next-link">Cutting the license →</a>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh</div>
+    <div class="footer-links">
+      <a href="#">GitHub</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">Email</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

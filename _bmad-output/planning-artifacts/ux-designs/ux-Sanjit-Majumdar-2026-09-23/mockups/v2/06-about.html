@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Sanjit Majumdar · Senior Software Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08090C; --bg-2: #0E1014; --bg-3: #15181F;
+    --fg: #F5F5F7; --fg-2: #C7C9D1; --fg-3: #7A7E89;
+    --border: rgba(255,255,255,0.08); --border-strong: rgba(255,255,255,0.16);
+    --accent: #A78BFA; --accent-2: #60A5FA; --accent-glow: rgba(167,139,250,0.18);
+    --live: #34D399;
+    --gradient-accent: linear-gradient(135deg, #A78BFA 0%, #60A5FA 100%);
+    --gradient-hero: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(167,139,250,0.10) 0%, transparent 55%);
+    --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--fg); font-family: 'Inter', system-ui, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.025em; line-height: 1.1; font-weight: 500; }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  .skip { position: absolute; top: -100px; left: 1rem; background: var(--bg-3); color: var(--fg); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); z-index: 100; transition: top 200ms ease; }
+  .skip:focus { top: 1rem; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 4rem; }
+  .prose { max-width: 720px; }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(8,9,12,0.7); border-bottom: 1px solid var(--border); }
+  .nav-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-mark { display: flex; align-items: center; gap: 0.6rem; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 500; font-size: 15px; letter-spacing: -0.01em; }
+  .nav-mark-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gradient-accent); box-shadow: 0 0 12px var(--accent-glow); }
+  .nav-links { display: flex; gap: 2.25rem; font-size: 14px; color: var(--fg-3); }
+  .nav-links a { transition: color 150ms ease; }
+  .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--fg); }
+
+  /* HERO */
+  .hero { position: relative; padding: 6rem 0 5rem; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100%; background: var(--gradient-hero); pointer-events: none; z-index: 0; }
+  .hero-inner { position: relative; z-index: 1; }
+  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.6rem; }
+  .hero-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .hero h1 { font-size: clamp(2.5rem, 5.5vw, 4.5rem); font-weight: 500; letter-spacing: -0.035em; line-height: 1.05; margin-bottom: 1.75rem; max-width: 1000px; }
+  .hero h1 .grad { background: var(--gradient-accent); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero-lede { font-size: clamp(1.0625rem, 1.4vw, 1.25rem); color: var(--fg-2); line-height: 1.55; max-width: 720px; }
+  .hero-facts { display: flex; gap: 3rem; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); flex-wrap: wrap; }
+  .hero-fact-num { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 1.5rem; font-weight: 500; margin-bottom: 0.3rem; }
+  .hero-fact-lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fg-3); }
+
+  /* BIO */
+  .bio-section { padding: 5rem 0 3rem; }
+  .bio-section h2 { font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 500; letter-spacing: -0.025em; margin-bottom: 2rem; }
+  .bio-section p { font-size: 1.0625rem; color: var(--fg-2); line-height: 1.7; margin-bottom: 1.5rem; }
+  .bio-section p strong { color: var(--fg); font-weight: 500; }
+
+  /* EXPERIENCE */
+  .exp-section { padding: 3rem 0 7rem; }
+  .exp-head { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+  .exp-head-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
+  .exp-head-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .exp-head h2 { font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 500; letter-spacing: -0.025em; }
+  .exp-list { display: flex; flex-direction: column; gap: 0; }
+  .exp-row { display: grid; grid-template-columns: 200px 1fr; gap: 4rem; padding: 2.5rem 0; border-top: 1px solid var(--border); align-items: start; }
+  .exp-row:last-child { border-bottom: 1px solid var(--border); }
+  .exp-when { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; padding-top: 0.4rem; }
+  .exp-body h3 { font-size: 1.375rem; font-weight: 500; margin-bottom: 0.4rem; letter-spacing: -0.02em; }
+  .exp-role { font-size: 0.875rem; color: var(--accent); margin-bottom: 1rem; }
+  .exp-body p { font-size: 0.9375rem; color: var(--fg-2); line-height: 1.65; margin-bottom: 1.25rem; max-width: 640px; }
+  .exp-body ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .exp-body li { font-size: 0.875rem; color: var(--fg-2); padding-left: 1.25rem; position: relative; }
+  .exp-body li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
+
+  /* PERSONALITY GRID */
+  .personality-section { padding: 7rem 0; background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .personality-head { margin-bottom: 4rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+  .personality-head-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
+  .personality-head-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .personality-head h2 { font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 500; letter-spacing: -0.025em; }
+  .personality-head p { color: var(--fg-2); font-size: 1.0625rem; margin-top: 1rem; max-width: 720px; }
+  .personality-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .personality-card {
+    position: relative;
+    padding: 2rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: transform 200ms ease, border-color 200ms ease, background 200ms ease;
+  }
+  .personality-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent); }
+  .personality-card:hover { transform: translateY(-2px); border-color: var(--border-strong); background: var(--bg-3); }
+  .personality-card-icon { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1rem; }
+  .personality-card h3 { font-size: 1.25rem; font-weight: 500; margin-bottom: 0.85rem; letter-spacing: -0.015em; }
+  .personality-card p { font-size: 0.9375rem; color: var(--fg-2); line-height: 1.65; }
+
+  /* CONTACT BLOCK */
+  .contact-section { padding: 7rem 0; }
+  .contact-inner { max-width: 720px; }
+  .contact-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.6rem; }
+  .contact-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .contact-section h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 500; letter-spacing: -0.03em; margin-bottom: 1.5rem; }
+  .contact-section > .contact-inner > p { font-size: 1rem; color: var(--fg-2); line-height: 1.65; margin-bottom: 2.5rem; }
+  .contact-channels { display: flex; flex-direction: column; gap: 0.5rem; }
+  .contact-channel { display: grid; grid-template-columns: 100px 1fr auto; gap: 2rem; padding: 1.5rem 0; border-top: 1px solid var(--border); align-items: center; }
+  .contact-channel:last-child { border-bottom: 1px solid var(--border); }
+  .contact-channel-key { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fg-3); }
+  .contact-channel-val { font-size: 1rem; color: var(--fg); }
+  .contact-channel-val a { color: var(--accent); transition: opacity 150ms ease; }
+  .contact-channel-val a:hover { opacity: 0.75; }
+  .contact-channel-arrow { color: var(--fg-3); font-size: 16px; }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--border); padding: 3rem 0; background: var(--bg); }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .footer-name { font-size: 0.875rem; color: var(--fg-2); }
+  .footer-links { display: flex; gap: 1.75rem; font-size: 0.875rem; color: var(--fg-3); align-items: center; }
+  .footer-links a { transition: color 150ms ease; }
+  .footer-links a:hover { color: var(--fg); }
+  .footer-recruiter { font-size: 12px; color: var(--fg-2); border: 1px solid var(--border-strong); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); background: transparent; transition: color 150ms ease, border-color 150ms ease; }
+  .footer-recruiter:hover { color: var(--fg); border-color: var(--fg-3); }
+
+  @media (max-width: 900px) {
+    .wrap { padding: 0 1.5rem; }
+    .hero { padding: 4rem 0 3rem; }
+    .hero-facts { gap: 1.5rem; }
+    .exp-row { grid-template-columns: 1fr; gap: 0.85rem; padding: 1.75rem 0; }
+    .exp-when { padding-top: 0; }
+    .personality-grid { grid-template-columns: 1fr; }
+    .contact-channel { grid-template-columns: 80px 1fr; }
+    .contact-channel-arrow { display: none; }
+    .bio-section, .exp-section, .personality-section, .contact-section { padding: 4rem 0; }
+    .personality-section { padding: 4rem 0; }
+    .nav-links { display: none; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="nav-mark"><span class="nav-mark-dot"></span>Sanjit Majumdar</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#">Home</a>
+      <a href="#">Work</a>
+      <a href="#">Patterns</a>
+      <a href="#">Now</a>
+      <a href="#">Side projects</a>
+      <a href="#" aria-current="page">About</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-label">About · Senior Software Engineer · Dhaka, Bangladesh · UTC+6</div>
+      <h1>I build enterprise software that <span class="grad">doesn't get in the way.</span></h1>
+      <p class="hero-lede">7+ years at Brain Station 23 PLC. Tech lead on a 7-person team. I write code because I like seeing systems work — and because the alternatives (deploys that fail at 3 AM, vendor lock-in that doubles the licensing bill) aren't acceptable to me.</p>
+      <div class="hero-facts">
+        <div><div class="hero-fact-num">7+ yrs</div><div class="hero-fact-lbl">At Brain Station 23</div></div>
+        <div><div class="hero-fact-num">10K+</div><div class="hero-fact-lbl">Daily users served</div></div>
+        <div><div class="hero-fact-num">.NET · Angular</div><div class="hero-fact-lbl">Primary stack</div></div>
+        <div><div class="hero-fact-num">UTC+6</div><div class="hero-fact-lbl">Remote-first</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bio-section">
+  <div class="wrap">
+    <div class="prose">
+      <h2>The short version.</h2>
+      <p>I'm Sanjit. I work in Dhaka, Bangladesh — and I've been writing software professionally since November 2018. All of it at Brain Station 23 PLC, an enterprise software house. The work is mostly <strong>.NET, Angular, TypeScript, and SQL Server,</strong> plus whatever the integration story requires.</p>
+      <p>I care about three things in roughly this order: <strong>does it work, can someone else understand it, and does it stay working.</strong> The first one is the bar for shipping. The second is the bar for being on a team. The third is what separates code from software.</p>
+      <p>I don't write marketing copy about myself well, but I do write code that other engineers can read six months later. If that's the version of me you need, the case studies on the Work page are the receipt.</p>
+    </div>
+  </div>
+</section>
+
+<section class="exp-section">
+  <div class="wrap">
+    <div class="exp-head">
+      <div class="exp-head-label">Experience · Where I've been</div>
+      <h2>Eight years, three roles, one stack.</h2>
+    </div>
+    <div class="exp-list">
+      <article class="exp-row">
+        <div class="exp-when">2018 — Now</div>
+        <div class="exp-body">
+          <h3>Brain Station 23 PLC</h3>
+          <div class="exp-role">Senior Software Engineer · Tech Lead</div>
+          <p>Tech lead on enterprise platforms — Wellbook (oil &amp; gas governance, 10K+ DAU), Surakkha (civic safety), CityFix prototype. Multi-tenant SQL Server, Angular + .NET. Led teams of 5–7 across three engagements.</p>
+          <ul>
+            <li>Owned cutover for 14-hour migration; zero P1 post-launch</li>
+            <li>Designed canonical schema unifying three ERP source-of-truths</li>
+            <li>Built the team's house-style plugin SDK for nopCommerce</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="exp-row">
+        <div class="exp-when">2017 — 2018</div>
+        <div class="exp-body">
+          <h3>Brain Station 23 PLC</h3>
+          <div class="exp-role">Software Engineer</div>
+          <p>Full-stack on enterprise Angular + .NET projects. First nopCommerce plugin architecture; first multi-tenant deployment. Promoted to senior within twelve months.</p>
+          <ul>
+            <li>Shipped first house-style plugin SDK across the team</li>
+            <li>Cut over first multi-tenant customer to the new architecture</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="exp-row">
+        <div class="exp-when">2016</div>
+        <div class="exp-body">
+          <h3>Ahsanullah University of Science &amp; Technology</h3>
+          <div class="exp-role">B.Sc. in Computer Science</div>
+          <p>Thesis on schema migration patterns for multi-system integrations — the seed for what became the Canonical Model pattern on this site.</p>
+          <ul>
+            <li>Graduated with thesis on Canonical Data Model for ERP integration</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="personality-section">
+  <div class="wrap">
+    <div class="personality-head">
+      <div class="personality-head-label">Outside of production code</div>
+      <h2>Things that aren't on my CV<br>but are part of me.</h2>
+      <p>Software is what I do for a living. It's also one of several things I care about. These are the others, because context matters when you're hiring someone.</p>
+    </div>
+
+    <div class="personality-grid">
+      <div class="personality-card">
+        <div class="personality-card-icon">Civic · Side project</div>
+        <h3>CityFix</h3>
+        <p>A small side project for routing complaints to Dhaka municipal services. React + AI prototype, currently in private beta with two pilot neighborhoods. The whole thing started because I got tired of potholes not getting fixed.</p>
+      </div>
+
+      <div class="personality-card">
+        <div class="personality-card-icon">Civic · Research</div>
+        <h3>Surakkha</h3>
+        <p>Water safety monitoring concept for Bangladesh — arsenic test data, NGO coordination. Frontend engineer wanted if you're interested. Research phase. Slow on purpose.</p>
+      </div>
+
+      <div class="personality-card">
+        <div class="personality-card-icon">Tool · Personal</div>
+        <h3>Random Useful Tools</h3>
+        <p>I build small things because I want to see if they'll work. Number 17 was a calculator. Apparently I needed another one. Shipped, 200 users, took longer than it should have.</p>
+      </div>
+
+      <div class="personality-card">
+        <div class="personality-card-icon">Writing · Monthly</div>
+        <h3>AI Engineering Lab</h3>
+        <p>Monthly essays on what's worth using, what's theater, what gets me in trouble. Last write-up: "When AI gets the schema wrong." Read it before you let any AI touch your migrations.</p>
+      </div>
+
+      <div class="personality-card">
+        <div class="personality-card-icon">Games · Personal</div>
+        <h3>Games</h3>
+        <p>I make small browser games. They live in the Lab. They're not serious. They're a way to remember that software can also be fun.</p>
+      </div>
+
+      <div class="personality-card">
+        <div class="personality-card-icon">Location · Remote-first</div>
+        <h3>Bangladesh, mostly</h3>
+        <p>I work remote-first from Dhaka. UTC+6 means I'm most responsive in European afternoons and US evenings. I take meetings when they're worth taking; I don't when they aren't.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact-section">
+  <div class="wrap">
+    <div class="contact-inner">
+      <div class="contact-label">Get in touch</div>
+      <h2>The fastest paths.</h2>
+      <p>For senior engineering or technical leadership conversations, the email below reaches me directly. For everything else, the links do what they say.</p>
+    </div>
+    <div class="contact-channels">
+      <a href="mailto:sanjit@example.dev" class="contact-channel">
+        <span class="contact-channel-key">Email</span>
+        <span class="contact-channel-val">sanjit@example.dev</span>
+        <span class="contact-channel-arrow" aria-hidden="true">→</span>
+      </a>
+      <a href="#" class="contact-channel">
+        <span class="contact-channel-key">GitHub</span>
+        <span class="contact-channel-val">@sanjit-majumdar</span>
+        <span class="contact-channel-arrow" aria-hidden="true">→</span>
+      </a>
+      <a href="#" class="contact-channel">
+        <span class="contact-channel-key">LinkedIn</span>
+        <span class="contact-channel-val">/in/sanjit-majumdar</span>
+        <span class="contact-channel-arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh · UTC+6</div>
+    <div class="footer-links">
+      <a href="#">GitHub</a><a href="#">LinkedIn</a><a href="#">Email</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

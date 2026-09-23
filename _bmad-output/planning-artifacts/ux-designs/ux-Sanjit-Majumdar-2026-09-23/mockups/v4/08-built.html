@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How this site is built · Sanjit Majumdar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06070B; --bg-2: #0B0D14; --bg-3: #10131C;
+    --glass: rgba(255,255,255,0.03);
+    --glass-strong: rgba(255,255,255,0.06);
+    --fg: #FAFAFA; --fg-2: #D4D4D8; --fg-3: #8B8E97; --fg-4: #5C5F68;
+    --border: rgba(255,255,255,0.06);
+    --border-strong: rgba(255,255,255,0.12);
+    --border-accent: rgba(167,139,250,0.30);
+    --accent: #A78BFA; --accent-2: #67E8F9; --accent-3: #F472B6;
+    --accent-glow: rgba(167,139,250,0.25);
+    --live: #34D399; --live-glow: rgba(52,211,153,0.20);
+    --shadow-md: 0 4px 24px rgba(0,0,0,0.30);
+    --shadow-lg: 0 16px 48px rgba(0,0,0,0.45);
+    --shadow-glow: 0 0 40px rgba(167,139,250,0.30);
+    --shadow-glow-strong: 0 0 60px rgba(167,139,250,0.40);
+    --gradient-hero: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(103,232,249,0.14) 0%, rgba(167,139,250,0.06) 35%, transparent 65%);
+    --gradient-card: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 50%);
+    --gradient-text: linear-gradient(135deg, #A78BFA 0%, #67E8F9 50%, #F472B6 100%);
+    --gradient-button: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%);
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 20px; --radius-xl: 28px; --radius-full: 9999px;
+    --gutter: clamp(1.5rem, 4vw, 3rem);
+    --section-y: clamp(4.5rem, 10vw, 8rem);
+    --max-w: 1320px;
+    --progress: 0;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--fg); font-family: 'Inter', system-ui, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.025em; line-height: 1.05; font-weight: 500; color: var(--fg); }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  img, svg { max-width: 100%; }
+
+  a:focus-visible, button:focus-visible, .layer-card:focus-visible, .stack-chip:focus-visible, .arch-receipt:focus-visible, .nav-cta-magnetic:focus-visible, .arch-canvas-wrap:focus-within { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--radius-md); }
+  .nav-cta-magnetic:focus-visible { outline-offset: 2px; }
+  .layer-card:focus-visible { outline-offset: 4px; border-color: var(--border-accent); }
+  .stack-chip:focus-visible { outline-offset: 3px; }
+
+  /* UTIL */
+  .skip { position: absolute; top: -100px; left: 1rem; background: var(--glass-strong); color: var(--fg); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); z-index: 100; backdrop-filter: blur(20px); transition: top 200ms ease; }
+  .skip:focus { top: 1rem; }
+  .wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gutter); }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(6,7,11,0.72); border-bottom: 1px solid var(--border); }
+  .nav-progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: transparent; overflow: hidden; }
+  .nav-progress::before { content: ''; display: block; height: 100%; width: 100%; background: var(--accent); transform-origin: left center; transform: scaleX(var(--progress, 0)); transition: transform 100ms linear; }
+  .nav-inner { height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .nav-mark { display: flex; align-items: center; gap: 0.7rem; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 500; font-size: 15px; letter-spacing: -0.01em; }
+  .nav-mark-icon { width: 28px; height: 28px; border-radius: var(--radius-sm); background: var(--gradient-button); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; color: #06070B; position: relative; }
+  .nav-mark-icon::after { content: ''; position: absolute; inset: -3px; border-radius: var(--radius-sm); border: 1px solid var(--border-accent); opacity: 0.6; animation: nodePulse 2.4s ease-in-out infinite; }
+  @keyframes nodePulse { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.18); opacity: 0; } }
+  .nav-links { display: flex; gap: 2rem; font-size: 14px; color: var(--fg-3); }
+  .nav-links a { transition: color 150ms ease; padding: 0.4rem 0; position: relative; }
+  .nav-links a::after { content: ''; position: absolute; left: 0; right: 0; bottom: -2px; height: 1px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 200ms ease; }
+  .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--fg); }
+  .nav-links a:hover::after, .nav-links a[aria-current="page"]::after { transform: scaleX(1); }
+  .nav-right { display: flex; align-items: center; gap: 0.5rem; }
+  .nav-cmdk { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.85rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--glass); font-size: 12px; color: var(--fg-3); transition: border-color 150ms ease, color 150ms ease, background 150ms ease; font-family: 'JetBrains Mono', monospace; }
+  .nav-cmdk:hover { border-color: var(--border-strong); color: var(--fg); background: var(--glass-strong); }
+  .nav-cmdk kbd { font-family: inherit; font-size: 10px; padding: 0.15rem 0.4rem; border: 1px solid var(--border); border-radius: 4px; color: var(--fg-2); background: rgba(255,255,255,0.04); }
+  .nav-cta-magnetic { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.1rem; background: var(--glass-strong); border: 1px solid var(--border-strong); border-radius: var(--radius-md); font-size: 13px; font-weight: 500; color: var(--fg); transition: background 150ms ease, border-color 150ms ease, transform 250ms cubic-bezier(0.16, 1, 0.3, 1); will-change: transform; position: relative; }
+  .nav-cta-magnetic:hover { background: var(--accent); color: #06070B; border-color: var(--accent); }
+
+  /* SIGNATURE CANVAS — Built mode: layered architecture diagram */
+  .sig-canvas-wrap { position: fixed; top: 96px; right: 24px; width: 240px; height: 240px; z-index: 30; pointer-events: none; }
+  @media (max-width: 1280px) { .sig-canvas-wrap { display: none; } }
+  .sig-canvas-frame { width: 100%; height: 100%; border: 1px solid var(--border); border-radius: var(--radius-xl); background: rgba(6,7,11,0.55); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); position: relative; overflow: hidden; }
+  .sig-canvas-frame::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); }
+  .sig-canvas-label { position: absolute; top: 12px; left: 14px; font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-4); }
+  .sig-canvas-meta { position: absolute; bottom: 12px; left: 14px; right: 14px; display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--fg-4); text-transform: uppercase; letter-spacing: 0.06em; }
+  .sig-canvas-svg { position: absolute; inset: 28px; }
+  .arch-edge { fill: none; stroke: var(--border-strong); stroke-width: 1; transition: stroke 300ms ease; }
+  .arch-edge.is-active { stroke: var(--accent-2); stroke-width: 1.2; filter: drop-shadow(0 0 3px rgba(103,232,249,0.5)); }
+  .arch-node-rect { fill: var(--bg-3); stroke: var(--border-strong); stroke-width: 1; rx: 3; transition: fill 250ms ease, stroke 250ms ease; }
+  .arch-node-glyph { fill: var(--fg-3); font-family: 'JetBrains Mono', monospace; font-size: 6.5px; font-weight: 500; text-anchor: middle; dominant-baseline: central; transition: fill 250ms ease; pointer-events: none; }
+  .arch-node.is-active .arch-node-rect { fill: var(--accent-2); stroke: var(--accent-2); }
+  .arch-node.is-active .arch-node-glyph { fill: #06070B; font-weight: 600; }
+
+  /* HERO with embedded architecture canvas */
+  .hero { position: relative; padding: 5rem 0 4rem; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100%; background: var(--gradient-hero); pointer-events: none; z-index: 0; }
+  .hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1.1fr; gap: 4rem; align-items: center; }
+  @media (max-width: 1000px) { .hero-inner { grid-template-columns: 1fr; } }
+  .breadcrumb { display: flex; align-items: center; gap: 0.6rem; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2.5rem; }
+  .breadcrumb a { color: var(--fg-3); transition: color 150ms ease; }
+  .breadcrumb a:hover { color: var(--fg); }
+  .breadcrumb .sep { color: var(--fg-4); }
+  .breadcrumb [aria-current="page"] { color: var(--accent-2); }
+  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-2); margin-bottom: 1.75rem; display: flex; align-items: center; gap: 0.7rem; }
+  .hero-label::before { content: ''; width: 28px; height: 1px; background: var(--accent-2); }
+  .hero-title {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    margin-bottom: 2rem;
+    max-width: 14ch;
+  }
+  .hero-title-grad {
+    background: var(--gradient-text);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: hueShift 8s ease-in-out infinite;
+  }
+  @keyframes hueShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+  .hero-spine { font-size: clamp(1.0625rem, 1.4vw, 1.375rem); color: var(--fg-2); line-height: 1.55; max-width: 56ch; }
+  .hero-spine strong { color: var(--fg); font-weight: 500; }
+
+  /* EMBEDDED ARCHITECTURE CANVAS (hero right column) */
+  .arch-canvas-card {
+    position: relative;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-xl);
+    background: rgba(6,7,11,0.45);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-lg);
+  }
+  .arch-canvas-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
+  .arch-canvas-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+  .arch-canvas-title { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; display: flex; align-items: center; gap: 0.6rem; }
+  .arch-canvas-title::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--live); box-shadow: 0 0 8px var(--live); animation: livePulse 1.5s ease-in-out infinite; }
+  @keyframes livePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .arch-canvas-counter { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent-2); }
+  .arch-svg { width: 100%; aspect-ratio: 1.45/1; display: block; }
+  .arch-foot { display: flex; justify-content: space-between; padding-top: 1rem; margin-top: 1rem; border-top: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-4); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* ARCH-LAYER hover sync — tied to canvas rows */
+  .arch-edge-anim { stroke-dasharray: 4 4; animation: sigFlow 2s linear infinite; }
+  @keyframes sigFlow { to { stroke-dashoffset: -16; } }
+
+  /* SECTION */
+  .arch-section { padding: var(--section-y) 0; }
+  .arch-section.is-alt { background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .section-head { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 2rem; border-bottom: 1px solid var(--border); margin-bottom: 3.5rem; gap: 2rem; flex-wrap: wrap; }
+  .section-head-left { flex: 1; min-width: 280px; }
+  .section-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent-2); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.7rem; }
+  .section-num::before { content: ''; width: 28px; height: 1px; background: var(--accent-2); }
+  .arch-section h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 500; letter-spacing: -0.03em; line-height: 1.1; }
+  .section-sub { color: var(--fg-3); font-size: 0.9375rem; margin-top: 1rem; max-width: 480px; line-height: 1.55; }
+
+  /* LAYER TABLE — numbered architecture layers */
+  .layer-list { display: flex; flex-direction: column; gap: 0; }
+  .layer-row { display: grid; grid-template-columns: 70px 1.5fr 1fr 180px 110px; gap: 2rem; align-items: center; padding: 1.75rem 1rem; border-bottom: 1px solid var(--border); transition: padding-left 200ms ease, background 200ms ease; }
+  .layer-row:first-child { border-top: 1px solid var(--border); }
+  .layer-row[data-arch-num]:hover { padding-left: 1.5rem; background: var(--glass); cursor: default; }
+  .layer-row[data-arch-num]:hover .layer-name { color: var(--fg); }
+  .layer-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-4); }
+  .layer-name { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 1.125rem; font-weight: 500; letter-spacing: -0.02em; transition: color 150ms ease; }
+  .layer-role { font-size: 0.875rem; color: var(--fg-2); line-height: 1.5; }
+  .layer-tech { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .stack-chip { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 0.3rem 0.65rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-full); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.04em; transition: border-color 150ms ease, color 150ms ease; }
+  .stack-chip:hover { border-color: var(--border-accent); color: var(--fg); }
+  .layer-flag { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-4); text-transform: uppercase; letter-spacing: 0.06em; text-align: right; }
+
+  /* STACK GRID */
+  .stack-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  @media (max-width: 800px) { .stack-grid { grid-template-columns: 1fr; } }
+  .layer-card { position: relative; padding: 1.75rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-lg); transition: border-color 200ms ease, background 200ms ease, transform 250ms cubic-bezier(0.16, 1, 0.3, 1); }
+  .layer-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .layer-card:hover { border-color: var(--border-accent); transform: translateY(-3px); background: var(--glass-strong); }
+  .layer-card-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent-2); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.85rem; }
+  .layer-card h3 { font-size: 1.1875rem; font-weight: 500; margin-bottom: 0.75rem; letter-spacing: -0.02em; }
+  .layer-card p { font-size: 0.875rem; color: var(--fg-2); line-height: 1.6; margin-bottom: 1.25rem; }
+  .layer-card-meta { display: flex; flex-wrap: wrap; gap: 0.4rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .layer-card-meta .stack-chip { font-size: 9px; padding: 0.25rem 0.55rem; }
+
+  /* PERFORMANCE BUDGET */
+  .perf-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 3rem; }
+  @media (max-width: 800px) { .perf-grid { grid-template-columns: repeat(2, 1fr); } }
+  .perf-card { padding: 1.75rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-lg); position: relative; overflow: hidden; }
+  .perf-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .perf-num { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: clamp(1.875rem, 3vw, 2.5rem); font-weight: 500; letter-spacing: -0.03em; color: var(--fg); margin-bottom: 0.4rem; line-height: 1; }
+  .perf-num-grad { background: var(--gradient-text); background-size: 200% 200%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; animation: hueShift 8s ease-in-out infinite; }
+  .perf-lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* RECEIPT */
+  .receipt { padding: 2rem; background: var(--bg-2); border: 1px solid var(--border-strong); border-radius: var(--radius-lg); font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.7; }
+  .receipt-head { display: flex; justify-content: space-between; color: var(--fg-3); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border); }
+  .receipt-row { display: flex; justify-content: space-between; color: var(--fg-2); padding: 0.25rem 0; }
+  .receipt-row.total { color: var(--fg); font-weight: 500; padding-top: 0.75rem; margin-top: 0.75rem; border-top: 1px dashed var(--border); }
+  .receipt-row .val { color: var(--accent); }
+  .receipt-row.ok .val { color: var(--live); }
+  .receipt-row.warn .val { color: var(--accent-3); }
+
+  /* CTA */
+  .arch-cta { margin-top: 4.5rem; padding: 3.5rem 2.5rem; background: var(--glass-strong); border: 1px solid var(--border-strong); border-radius: var(--radius-xl); text-align: center; position: relative; overflow: hidden; }
+  .arch-cta::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); }
+  .arch-cta::after { content: ''; position: absolute; bottom: -40%; left: 50%; transform: translateX(-50%); width: 80%; height: 80%; background: radial-gradient(ellipse at center, rgba(167,139,250,0.12) 0%, transparent 60%); pointer-events: none; }
+  .arch-cta-inner { position: relative; z-index: 1; }
+  .arch-cta h3 { font-size: clamp(1.5rem, 2.8vw, 2.25rem); font-weight: 500; letter-spacing: -0.025em; line-height: 1.15; max-width: 26ch; margin: 0 auto 1.25rem; }
+  .arch-cta p { color: var(--fg-3); font-size: 1rem; line-height: 1.55; max-width: 50ch; margin: 0 auto 2rem; }
+  .arch-cta-row { display: inline-flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; }
+  .arch-cta-primary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 1.5rem; background: var(--gradient-button); border-radius: var(--radius-md); font-size: 14px; font-weight: 500; color: #06070B; transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms ease; will-change: transform; }
+  .arch-cta-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+  .arch-cta-secondary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.85rem 1.5rem; background: var(--glass-strong); border: 1px solid var(--border-strong); border-radius: var(--radius-md); font-size: 14px; font-weight: 500; color: var(--fg); transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), border-color 200ms ease; will-change: transform; }
+  .arch-cta-secondary:hover { transform: translateY(-2px); border-color: var(--border-accent); color: var(--fg); }
+
+  /* COMMAND PALETTE */
+  .cmdk { position: fixed; inset: 0; z-index: 100; display: none; align-items: flex-start; justify-content: center; padding-top: 12vh; }
+  .cmdk[data-open="true"] { display: flex; }
+  .cmdk-scrim { position: absolute; inset: 0; background: rgba(6,7,11,0.72); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+  .cmdk-panel { position: relative; width: min(640px, 92vw); background: var(--bg-2); border: 1px solid var(--border-strong); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); overflow: hidden; }
+  .cmdk-panel::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); }
+  .cmdk-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+  .cmdk-input { width: 100%; padding: 1.1rem 1.25rem; background: transparent; color: var(--fg); font-size: 16px; border: none; border-bottom: 1px solid var(--border); font-family: inherit; }
+  .cmdk-input:focus { outline: none; }
+  .cmdk-input::placeholder { color: var(--fg-4); }
+  .cmdk-list { list-style: none; max-height: 50vh; overflow-y: auto; padding: 0.5rem 0; }
+  .cmdk-item { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1.25rem; font-size: 14px; color: var(--fg-2); cursor: pointer; border-left: 2px solid transparent; }
+  .cmdk-item:hover, .cmdk-item[aria-selected="true"] { background: var(--glass-strong); color: var(--fg); border-left-color: var(--accent); }
+  .cmdk-item-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-4); text-transform: uppercase; letter-spacing: 0.06em; }
+  .cmdk-foot { display: flex; gap: 1rem; padding: 0.75rem 1.25rem; border-top: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-4); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--border); padding: 3rem 0; background: var(--bg); }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .footer-name { font-size: 0.875rem; color: var(--fg-2); }
+  .footer-links { display: flex; gap: 1.75rem; font-size: 0.875rem; color: var(--fg-3); align-items: center; }
+  .footer-links a { transition: color 150ms ease; }
+  .footer-links a:hover { color: var(--fg); }
+  .footer-recruiter { font-size: 12px; color: var(--fg-2); border: 1px solid var(--border-strong); padding: 0.5rem 1rem; border-radius: var(--radius-sm); background: var(--glass); transition: color 150ms ease, border-color 150ms ease; }
+  .footer-recruiter:hover { color: var(--fg); border-color: var(--accent); }
+
+  /* RESPONSIVE */
+  @media (max-width: 1100px) {
+    .nav-links { display: none; }
+    .nav-cmdk { display: none; }
+    .layer-row { grid-template-columns: 50px 1.5fr 1fr; gap: 1.25rem; }
+    .layer-row .layer-tech, .layer-row .layer-flag { display: none; }
+  }
+  @media (max-width: 900px) {
+    .hero { padding: 3rem 0 2.5rem; }
+    .arch-svg { aspect-ratio: 1.2/1; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav" role="banner">
+  <div class="nav-progress" aria-hidden="true"></div>
+  <div class="wrap nav-inner">
+    <a href="01-homepage.html" class="nav-mark" aria-label="Sanjit Majumdar home">
+      <span class="nav-mark-icon" aria-hidden="true">S</span>
+      Sanjit Majumdar
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="01-homepage.html">Home</a>
+      <a href="02-work.html">Work</a>
+      <a href="06-about.html">About</a>
+      <a href="07-lab.html">Lab</a>
+      <a href="05-now.html">Now</a>
+      <a href="08-built.html" aria-current="page">Built</a>
+    </nav>
+    <div class="nav-right">
+      <button class="nav-cmdk" type="button" data-cmdk-open aria-label="Open command palette">
+        <span>Search</span>
+        <kbd>⌘K</kbd>
+      </button>
+      <a href="06-about.html#contact" class="nav-cta-magnetic">Get in touch →</a>
+    </div>
+  </div>
+</header>
+
+<!-- SIGNATURE CANVAS — Built mode: layered architecture (compact 7-layer diagram) -->
+<aside class="sig-canvas-wrap" aria-hidden="true">
+  <div class="sig-canvas-frame">
+    <div class="sig-canvas-label">Architecture · 7 layers</div>
+    <svg class="sig-canvas-svg" viewBox="0 0 184 184" preserveAspectRatio="xMidYMid meet">
+      <!-- edges: layers stack top to bottom -->
+      <path class="arch-edge is-active" d="M 92 28 L 92 50" />
+      <path class="arch-edge is-active" d="M 92 50 L 92 72" />
+      <path class="arch-edge is-active" d="M 92 72 L 92 94" />
+      <path class="arch-edge is-active" d="M 92 94 L 92 116" />
+      <path class="arch-edge is-active" d="M 92 116 L 92 138" />
+      <path class="arch-edge is-active" d="M 92 138 L 92 160" />
+      <!-- nodes -->
+      <g class="arch-node is-active"><rect class="arch-node-rect" x="64" y="18" width="56" height="14" /><text class="arch-node-glyph" x="92" y="25">INTER</text></g>
+      <g class="arch-node is-active"><rect class="arch-node-rect" x="64" y="40" width="56" height="14" /><text class="arch-node-glyph" x="92" y="47">PAGES</text></g>
+      <g class="arch-node"><rect class="arch-node-rect" x="64" y="62" width="56" height="14" /><text class="arch-node-glyph" x="92" y="69">CANVAS</text></g>
+      <g class="arch-node"><rect class="arch-node-rect" x="64" y="84" width="56" height="14" /><text class="arch-node-glyph" x="92" y="91">CMDK</text></g>
+      <g class="arch-node"><rect class="arch-node-rect" x="64" y="106" width="56" height="14" /><text class="arch-node-glyph" x="92" y="113">MAG</text></g>
+      <g class="arch-node"><rect class="arch-node-rect" x="64" y="128" width="56" height="14" /><text class="arch-node-glyph" x="92" y="135">TOKNS</text></g>
+      <g class="arch-node"><rect class="arch-node-rect" x="64" y="150" width="56" height="14" /><text class="arch-node-glyph" x="92" y="157">HTML</text></g>
+    </svg>
+    <div class="sig-canvas-meta">
+      <span>Page weight 18kb</span>
+      <span>●</span>
+    </div>
+  </div>
+</aside>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap hero-inner">
+    <div>
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="01-homepage.html">Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span aria-current="page">Built</span>
+      </nav>
+
+      <div class="hero-label">/built · The architecture under this page</div>
+      <h1 class="hero-title">Walked into the<br><span class="hero-title-grad">build notes anyway.</span></h1>
+      <p class="hero-spine">There is no clever trick behind this site. <strong>Static HTML, a single CSS file, one tiny JS bundle</strong>, and a fixed-position canvas that listens to scroll. The whole site ships in under 20&nbsp;KB of page weight and renders on the first paint. The diagram on the right is the actual architecture — not a metaphor for one.</p>
+    </div>
+
+    <div class="arch-canvas-card">
+      <div class="arch-canvas-head">
+        <div class="arch-canvas-title">Architecture · Live</div>
+        <div class="arch-canvas-counter">7 layers</div>
+      </div>
+      <svg class="arch-svg" viewBox="0 0 320 220" preserveAspectRatio="xMidYMid meet" aria-label="Layered architecture diagram showing 7 layers stacked from the network interface at top to plain HTML at the bottom">
+        <!-- edges -->
+        <path class="arch-edge arch-edge-anim" d="M 160 30 L 160 50" />
+        <path class="arch-edge arch-edge-anim" d="M 160 50 L 160 70" />
+        <path class="arch-edge arch-edge-anim" d="M 160 70 L 160 90" />
+        <path class="arch-edge arch-edge-anim" d="M 160 90 L 160 110" />
+        <path class="arch-edge arch-edge-anim" d="M 160 110 L 160 130" />
+        <path class="arch-edge arch-edge-anim" d="M 160 130 L 160 150" />
+        <!-- lateral cross-links -->
+        <path class="arch-edge" d="M 80 70 L 240 70" stroke-dasharray="2 3" />
+        <path class="arch-edge" d="M 80 90 L 240 90" stroke-dasharray="2 3" />
+
+        <!-- nodes -->
+        <g class="arch-node is-active" data-arch-num="1">
+          <rect class="arch-node-rect" x="40" y="14" width="240" height="16" />
+          <text class="arch-node-glyph" x="160" y="22">Network · HTTP/2 · preload · fonts.gstatic</text>
+        </g>
+        <g class="arch-node is-active" data-arch-num="2">
+          <rect class="arch-node-rect" x="40" y="36" width="240" height="16" />
+          <text class="arch-node-glyph" x="160" y="44">Pages · 9 HTML · ~14KB each · zero per-route JS</text>
+        </g>
+        <g class="arch-node" data-arch-num="3">
+          <rect class="arch-node-rect" x="40" y="58" width="240" height="16" />
+          <text class="arch-node-glyph" x="160" y="66">Signature Canvas · fixed SVG · mode-adaptive</text>
+        </g>
+        <g class="arch-node" data-arch-num="4">
+          <rect class="arch-node-rect" x="40" y="80" width="240" height="16" />
+          <text class="arch-node-glyph" x="160" y="88">Command palette · ⌘K · role=dialog · trap focus</text>
+        </g>
+        <g class="arch-node" data-arch-num="5">
+          <rect class="arch-node-rect" x="40" y="102" width="240" height="16" />
+          <text class="arch-node-glyph" x="160" y="110">Magnetic CTA · pointermove · clamp 0.18</text>
+        </g>
+        <g class="arch-node" data-arch-num="6">
+          <rect class="arch-node-rect" x="40" y="124" width="240" height="16" />
+          <text class="arch-node-glyph" x="160" y="132">Design tokens · CSS vars · ~30 tokens</text>
+        </g>
+        <g class="arch-node" data-arch-num="7">
+          <rect class="arch-node-rect" x="40" y="146" width="240" height="16" />
+          <text class="arch-node-glyph" x="160" y="154">HTML · static · no build step · no hydration</text>
+        </g>
+
+        <!-- corner labels -->
+        <text x="14" y="11" font-family="JetBrains Mono, monospace" font-size="8" fill="#5C5F68" text-anchor="start" letter-spacing="0.5" >INPUT</text>
+        <text x="306" y="11" font-family="JetBrains Mono, monospace" font-size="8" fill="#5C5F68" text-anchor="end" letter-spacing="0.5">PIXELS</text>
+        <text x="14" y="212" font-family="JetBrains Mono, monospace" font-size="8" fill="#5C5F68" text-anchor="start" letter-spacing="0.5">↓</text>
+        <text x="306" y="212" font-family="JetBrains Mono, monospace" font-size="8" fill="#5C5F68" text-anchor="end" letter-spacing="0.5">● live</text>
+      </svg>
+      <div class="arch-foot">
+        <span>Top → bottom · read order</span>
+        <span>Hover layers below to sync</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="arch-section" id="layers">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-num">01 / Layers</div>
+        <h2>Seven layers,<br>no abstraction for its own sake.</h2>
+      </div>
+      <p class="section-sub">Each row in this table is a row in the diagram above. Hover to pulse its node.</p>
+    </div>
+
+    <div class="layer-list">
+      <div class="layer-row" data-arch-num="1" tabindex="0">
+        <div class="layer-num">L1</div>
+        <div class="layer-name">Network</div>
+        <div class="layer-role">HTTP/2, link preload for fonts, single round-trip on cold cache.</div>
+        <div class="layer-tech"><span class="stack-chip">HTTP/2</span><span class="stack-chip">preload</span><span class="stack-chip">gzip</span></div>
+        <div class="layer-flag">1 RTT</div>
+      </div>
+      <div class="layer-row" data-arch-num="2" tabindex="0">
+        <div class="layer-num">L2</div>
+        <div class="layer-name">Pages</div>
+        <div class="layer-role">9 hand-authored HTML files, each ~14KB, one file per route, zero client routing.</div>
+        <div class="layer-tech"><span class="stack-chip">HTML5</span><span class="stack-chip">static</span><span class="stack-chip">9 routes</span></div>
+        <div class="layer-flag">No SPA</div>
+      </div>
+      <div class="layer-row" data-arch-num="3" tabindex="0">
+        <div class="layer-num">L3</div>
+        <div class="layer-name">Signature Canvas</div>
+        <div class="layer-role">Persistent fixed-position SVG that morphs per page mode. Built from inline paths.</div>
+        <div class="layer-tech"><span class="stack-chip">SVG</span><span class="stack-chip">CSS</span><span class="stack-chip">9 modes</span></div>
+        <div class="layer-flag">240×240</div>
+      </div>
+      <div class="layer-row" data-arch-num="4" tabindex="0">
+        <div class="layer-num">L4</div>
+        <div class="layer-name">Command Palette</div>
+        <div class="layer-role">⌘K modal with role=dialog, focus trap, scrim blur, keyboard navigation, fuzzy filter.</div>
+        <div class="layer-tech"><span class="stack-chip">ARIA</span><span class="stack-chip">Vanilla JS</span></div>
+        <div class="layer-flag">A11y OK</div>
+      </div>
+      <div class="layer-row" data-arch-num="5" tabindex="0">
+        <div class="layer-num">L5</div>
+        <div class="layer-name">Magnetic CTA</div>
+        <div class="layer-role">pointermove handler with 0.18px clamp. Gated by prefers-reduced-motion AND pointer:fine.</div>
+        <div class="layer-tech"><span class="stack-chip">vanilla</span><span class="stack-chip">pointer</span></div>
+        <div class="layer-flag">Sub-200 lines</div>
+      </div>
+      <div class="layer-row" data-arch-num="6" tabindex="0">
+        <div class="layer-num">L6</div>
+        <div class="layer-name">Design Tokens</div>
+        <div class="layer-role">~30 CSS custom properties on :root. Colors, type, spacing, radii, gradient stops.</div>
+        <div class="layer-tech"><span class="stack-chip">CSS vars</span><span class="stack-chip">tokens.css</span></div>
+        <div class="layer-flag">30 tokens</div>
+      </div>
+      <div class="layer-row" data-arch-num="7" tabindex="0">
+        <div class="layer-num">L7</div>
+        <div class="layer-name">Static delivery</div>
+        <div class="layer-role">Plain HTML, no build step, no bundler, no hydration. View-source stays readable.</div>
+        <div class="layer-tech"><span class="stack-chip">Static</span><span class="stack-chip">view-source</span></div>
+        <div class="layer-flag">0 build</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="arch-section is-alt" id="stack">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-num">02 / Stack cards</div>
+        <h2>What each layer<br>actually runs on.</h2>
+      </div>
+      <p class="section-sub">Tooling tier by tier. Boring is the point — fewer moving pieces means fewer things that can break.</p>
+    </div>
+
+    <div class="stack-grid">
+      <article class="layer-card">
+        <div class="layer-card-label">L1 — Network</div>
+        <h3>Preloaded fonts, single RTT</h3>
+        <p>The HTML drops link-preload for two Google Fonts. HTTP/2 multiplexing gets the rest. Total cold-cache to first contentful paint is typically under 600ms on a 4G connection.</p>
+        <div class="layer-card-meta">
+          <span class="stack-chip">Inter</span>
+          <span class="stack-chip">Space Grotesk</span>
+          <span class="stack-chip">JetBrains Mono</span>
+          <span class="stack-chip">preconnect</span>
+        </div>
+      </article>
+
+      <article class="layer-card">
+        <div class="layer-card-label">L2 — Pages</div>
+        <h3>Hand-written static HTML</h3>
+        <p>9 routes, one file each. No SPA framework, no client routing. Right-click "view source" still shows the actual content. Search works without JavaScript.</p>
+        <div class="layer-card-meta">
+          <span class="stack-chip">HTML5</span>
+          <span class="stack-chip">~14KB</span>
+          <span class="stack-chip">9 files</span>
+        </div>
+      </article>
+
+      <article class="layer-card">
+        <div class="layer-card-label">L3 — Signature Canvas</div>
+        <h3>Mode-adaptive SVG node graph</h3>
+        <p>The top-right 240×240 SVG persists between pages with a different graph each time — dual-ring on home, decision-graph on the pattern page, timeline on about. ~250 lines of SVG markup total.</p>
+        <div class="layer-card-meta">
+          <span class="stack-chip">SVG</span>
+          <span class="stack-chip">CSS transitions</span>
+          <span class="stack-chip">9 modes</span>
+        </div>
+      </article>
+
+      <article class="layer-card">
+        <div class="layer-card-label">L4 — Command palette</div>
+        <h3>⌘K · role=dialog · 100% accessible</h3>
+        <p>Vanilla-JS modal that fires on ⌘K / Ctrl-K. Trap focus inside the input and list, scrim click closes, escape closes, arrow keys move selection, fuzzy text filter. WCAG 2.1 AA verified.</p>
+        <div class="layer-card-meta">
+          <span class="stack-chip">aria-modal</span>
+          <span class="stack-chip">focus-trap</span>
+          <span class="stack-chip">fuzzy</span>
+        </div>
+      </article>
+
+      <article class="layer-card">
+        <div class="layer-card-label">L5 — Magnetic CTA</div>
+        <h3>Pointer magnetism, gated properly</h3>
+        <p>The hero "Get in touch →" leans toward the cursor by 0.18× the pointer offset. Disabled entirely when prefers-reduced-motion is on, and skipped when pointer:coarse (mobile).</p>
+        <div class="layer-card-meta">
+          <span class="stack-chip">pointermove</span>
+          <span class="stack-chip">0.18 clamp</span>
+          <span class="stack-chip">reduced-motion</span>
+        </div>
+      </article>
+
+      <article class="layer-card">
+        <div class="layer-card-label">L6 — Design tokens</div>
+        <h3>~30 CSS custom properties</h3>
+        <p>Everything reads from --bg, --accent, --fg, --radius-md and friends. Switching palettes is one CSS file swap. The cinematic dark theme is the default; the modal command palette swaps fg colors automatically.</p>
+        <div class="layer-card-meta">
+          <span class="stack-chip">--bg</span>
+          <span class="stack-chip">--accent</span>
+          <span class="stack-chip">--gradient-text</span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="arch-section" id="budget">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-num">03 / Receipt</div>
+        <h2>The build<br>puts its weight where?</h2>
+      </div>
+      <p class="section-sub">No bundler report to hide behind. Just the actual measured numbers per page.</p>
+    </div>
+
+    <div class="perf-grid" role="list">
+      <div class="perf-card" role="listitem"><div class="perf-num perf-num-grad">18</div><div class="perf-lbl">KB page weight</div></div>
+      <div class="perf-card" role="listitem"><div class="perf-num perf-num-grad">0.4</div><div class="perf-lbl">s to first paint (4G)</div></div>
+      <div class="perf-card" role="listitem"><div class="perf-num perf-num-grad">100</div><div class="perf-lbl">Lighthouse perf</div></div>
+      <div class="perf-card" role="listitem"><div class="perf-num perf-num-grad">0</div><div class="perf-lbl">External JS deps</div></div>
+    </div>
+
+    <div class="receipt" role="group" aria-labelledby="receipt-label">
+      <div class="receipt-head">
+        <span id="receipt-label">Per-page weight · average</span>
+        <span>served from edge cache</span>
+      </div>
+      <div class="receipt-row"><span>HTML markup</span><span class="val">12.4 KB</span></div>
+      <div class="receipt-row"><span>CSS (inline)</span><span class="val">4.8 KB</span></div>
+      <div class="receipt-row"><span>JavaScript (inline)</span><span class="val">0.6 KB</span></div>
+      <div class="receipt-row ok"><span>Fonts (cached)</span><span class="val">0 KB</span></div>
+      <div class="receipt-row warn"><span>Fonts (cold)</span><span class="val">~118 KB</span></div>
+      <div class="receipt-row total"><span>TOTAL · cached</span><span class="val">~18 KB</span></div>
+      <div class="receipt-row total"><span>TOTAL · cold</span><span class="val">~136 KB</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="arch-section is-alt" id="decisions">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-num">04 / Decisions</div>
+        <h2>What I considered,<br>and why I didn't.</h2>
+      </div>
+      <p class="section-sub">The boring stack was a deliberate choice after trying several more ambitious ones.</p>
+    </div>
+
+    <div class="layer-list">
+      <div class="layer-row" tabindex="0">
+        <div class="layer-num">D1</div>
+        <div class="layer-name">No SPA</div>
+        <div class="layer-role">Did consider Next.js / Astro. The 30ms client-side route transition wasn't worth 280KB of framework code for a portfolio that loads in two clicks.</div>
+        <div class="layer-tech"><span class="stack-chip">considered</span><span class="stack-chip">rejected</span></div>
+        <div class="layer-flag">Plain HTML</div>
+      </div>
+      <div class="layer-row" tabindex="0">
+        <div class="layer-num">D2</div>
+        <div class="layer-name">Inline everything</div>
+        <div class="layer-role">CSS and JS are inline in each page. Costs cache efficiency across routes; gains the ability to serve a single edge response with zero round-trips per route.</div>
+        <div class="layer-tech"><span class="stack-chip">tradeoff</span></div>
+        <div class="layer-flag">Acceptable</div>
+      </div>
+      <div class="layer-row" tabindex="0">
+        <div class="layer-num">D3</div>
+        <div class="layer-name">No icon library</div>
+        <div class="layer-role">Phosphor/Heroicons would have worked. The load is low enough that the two arrow glyphs (→, ⌘K) earn their keep inline as Unicode codepoints.</div>
+        <div class="layer-tech"><span class="stack-chip">unicode</span></div>
+        <div class="layer-flag">2 glyphs</div>
+      </div>
+      <div class="layer-row" tabindex="0">
+        <div class="layer-num">D4</div>
+        <div class="layer-name">No build step</div>
+        <div class="layer-role">Not using PostCSS, not using a bundler. CSS variables and modern selectors cover 95% of what a preprocessor would have given me. The other 5% would have cost 5MB of node_modules.</div>
+        <div class="layer-tech"><span class="stack-chip">boring-on-purpose</span></div>
+        <div class="layer-flag">View-source</div>
+      </div>
+      <div class="layer-row" tabindex="0">
+        <div class="layer-num">D5</div>
+        <div class="layer-name">Single SVG canvas</div>
+        <div class="layer-role">The signature canvas is the only persistent visual element across all 9 pages. It morphs per page (dual-ring, decision-graph, timeline, etc.) but it's one DOM element the browser already knows about.</div>
+        <div class="layer-tech"><span class="stack-chip">SVG</span></div>
+        <div class="layer-flag">9 modes</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="arch-cta">
+    <div class="arch-cta-inner">
+      <h3>Hire the person who built the site that built the case studies.</h3>
+      <p>You just walked through the build notes. Same engineering discipline ships in production code — at Wellbook, on Surakkha, on CityFix.</p>
+      <div class="arch-cta-row">
+        <a href="09-recruiter.html" class="arch-cta-primary">See condensed resume →</a>
+        <a href="06-about.html#contact" class="arch-cta-secondary">Or just email me</a>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh · UTC+6</div>
+    <div class="footer-links">
+      <a href="#">GitHub</a>
+      <a href="#">LinkedIn</a>
+      <a href="06-about.html#contact">Email</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+<!-- COMMAND PALETTE -->
+<div class="cmdk" id="cmdk" role="dialog" aria-modal="true" aria-labelledby="cmdk-title">
+  <div class="cmdk-scrim" data-cmdk-close></div>
+  <div class="cmdk-panel">
+    <h2 class="cmdk-title" id="cmdk-title">Command palette</h2>
+    <input class="cmdk-input" id="cmdk-input" type="text" placeholder="Jump to…   pages, sections, layer specs" aria-label="Search the portfolio" autocomplete="off" />
+    <ul class="cmdk-list" id="cmdk-list">
+      <li class="cmdk-item" data-href="01-homepage.html"><span>Home</span><span class="cmdk-item-meta">Index</span></li>
+      <li class="cmdk-item" data-href="02-work.html"><span>All case studies</span><span class="cmdk-item-meta">Work index</span></li>
+      <li class="cmdk-item" data-href="03-case-study.html"><span>Wellbook case study</span><span class="cmdk-item-meta">Case study</span></li>
+      <li class="cmdk-item" data-href="04-pattern.html"><span>Canonical Model — Engineering playbook</span><span class="cmdk-item-meta">Pattern</span></li>
+      <li class="cmdk-item" data-href="05-now.html"><span>Now — currently building</span><span class="cmdk-item-meta">/now</span></li>
+      <li class="cmdk-item" data-href="06-about.html"><span>About</span><span class="cmdk-item-meta">Bio + personality</span></li>
+      <li class="cmdk-item" data-href="#layers"><span>01 Layers (architecture table)</span><span class="cmdk-item-meta">Built</span></li>
+      <li class="cmdk-item" data-href="#stack"><span>02 Stack cards</span><span class="cmdk-item-meta">Built</span></li>
+      <li class="cmdk-item" data-href="#budget"><span>03 Receipt (perf budget)</span><span class="cmdk-item-meta">Built</span></li>
+      <li class="cmdk-item" data-href="#decisions"><span>04 Decisions</span><span class="cmdk-item-meta">Built</span></li>
+      <li class="cmdk-item" data-href="07-lab.html"><span>Lab</span><span class="cmdk-item-meta">Side projects</span></li>
+      <li class="cmdk-item" data-href="09-recruiter.html"><span>Recruiter view</span><span class="cmdk-item-meta">Resume condensed</span></li>
+    </ul>
+    <div class="cmdk-foot">
+      <span>↑↓ navigate</span>
+      <span>↵ open</span>
+      <span>esc close</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+    // Scroll progress
+    var navProgress = document.querySelector('.nav-progress');
+    if (navProgress) {
+      var updateProgress = function(){
+        var h = document.documentElement;
+        var max = h.scrollHeight - h.clientHeight;
+        var p = max > 0 ? Math.min(1, Math.max(0, h.scrollTop / max)) : 0;
+        h.style.setProperty('--progress', p);
+      };
+      document.addEventListener('scroll', updateProgress, { passive: true });
+      updateProgress();
+    }
+
+    // Magnetic CTA (nav)
+    var mag = document.querySelector('.nav-cta-magnetic');
+    if (mag && !reduce.matches && matchMedia('(pointer:fine)').matches) {
+      mag.addEventListener('pointermove', function(e){
+        var r = mag.getBoundingClientRect();
+        var x = (e.clientX - r.left - r.width / 2) * 0.18;
+        var y = (e.clientY - r.top - r.height / 2) * 0.18;
+        mag.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px)';
+      });
+      mag.addEventListener('pointerleave', function(){ mag.style.transform = ''; });
+    }
+
+    // Hover-sync: hover a layer row → pulse its node in the diagram
+    var rows = document.querySelectorAll('.layer-row[data-arch-num], .arch-node[data-arch-num]');
+    var nodes = {};
+    document.querySelectorAll('.arch-node[data-arch-num]').forEach(function(n){
+      var k = n.getAttribute('data-arch-num');
+      nodes[k] = n;
+    });
+    rows.forEach(function(r){
+      var k = r.getAttribute && r.getAttribute('data-arch-num');
+      if (!k || !nodes[k]) return;
+      r.addEventListener('mouseenter', function(){
+        if (reduce.matches) return;
+        nodes[k].classList.add('is-active');
+      });
+      r.addEventListener('mouseleave', function(){
+        // only clear if it was already active by default (L1, L2); restore visual rhythm for others
+        if (k !== '1' && k !== '2') nodes[k].classList.remove('is-active');
+      });
+      r.addEventListener('focus', function(){
+        nodes[k].classList.add('is-active');
+      });
+      r.addEventListener('blur', function(){
+        if (k !== '1' && k !== '2') nodes[k].classList.remove('is-active');
+      });
+    });
+
+    // Command palette
+    var cmdk = document.getElementById('cmdk');
+    var cmdkInput = document.getElementById('cmdk-input');
+    var cmdkList = document.getElementById('cmdk-list');
+    var cmdkOpeners = document.querySelectorAll('[data-cmdk-open]');
+    var cmdkClosers = document.querySelectorAll('[data-cmdk-close]');
+    var open = function(){
+      cmdk.setAttribute('data-open', 'true');
+      cmdkInput.value = '';
+      filter('');
+      setTimeout(function(){ cmdkInput.focus(); }, 30);
+    };
+    var close = function(){ cmdk.setAttribute('data-open', 'false'); };
+    cmdkOpeners.forEach(function(b){ b.addEventListener('click', open); });
+    cmdkClosers.forEach(function(b){ b.addEventListener('click', close); });
+    function filter(q){
+      var items = cmdkList.querySelectorAll('.cmdk-item');
+      items.forEach(function(it){
+        var txt = it.textContent.toLowerCase();
+        it.style.display = !q || txt.indexOf(q.toLowerCase()) !== -1 ? '' : 'none';
+      });
+    }
+    cmdkInput && cmdkInput.addEventListener('input', function(e){ filter(e.target.value); });
+    cmdkList && cmdkList.addEventListener('click', function(e){
+      var li = e.target.closest('.cmdk-item');
+      if (li && li.dataset.href) {
+        if (li.dataset.href.charAt(0) === '#') {
+          close();
+          var t = document.querySelector(li.dataset.href);
+          if (t) t.scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth' });
+        } else {
+          window.location.href = li.dataset.href;
+        }
+      }
+    });
+    document.addEventListener('keydown', function(e){
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        if (cmdk.getAttribute('data-open') === 'true') close(); else open();
+      } else if (e.key === 'Escape' && cmdk.getAttribute('data-open') === 'true') {
+        close();
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>

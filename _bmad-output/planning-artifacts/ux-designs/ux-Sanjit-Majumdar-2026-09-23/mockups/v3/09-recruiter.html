@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sanjit Majumdar — Recruiter view · Senior Software Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06070B; --bg-2: #0B0D14; --bg-3: #10131C;
+    --glass: rgba(255,255,255,0.03); --glass-strong: rgba(255,255,255,0.05);
+    --fg: #FAFAFA; --fg-2: #D4D4D8; --fg-3: #8B8E97; --fg-4: #5C5F68;
+    --border: rgba(255,255,255,0.06); --border-strong: rgba(255,255,255,0.12);
+    --accent: #A78BFA;
+    --accent-glow: rgba(167,139,250,0.25);
+    --live: #34D399; --live-glow: rgba(52,211,153,0.30);
+    --gradient-text: linear-gradient(135deg, #A78BFA 0%, #67E8F9 50%, #F472B6 100%);
+    --gradient-button: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%);
+    --gradient-card: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 50%);
+    --shadow-glow: 0 0 60px rgba(167,139,250,0.40);
+    --radius-sm: 8px; --radius-md: 12px;
+    --radius-xl: 28px; --radius-2xl: 36px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--fg); font-family: 'Inter', system-ui, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.03em; line-height: 1.1; font-weight: 500; }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--radius-sm); }
+  /* Resume cards are non-interactive <article> elements; hover state for cursor users only */
+  .strip-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--radius-sm); }
+  .footer-recruiter:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--radius-sm); }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  .skip { position: absolute; top: -100px; left: 1.5rem; background: var(--bg-3); color: var(--fg); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); z-index: 100; transition: top 200ms ease; }
+  .skip:focus { top: 1rem; }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 0 3rem; }
+
+  /* RECRUITER STRIP */
+  .strip { background: var(--bg-2); border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+  .strip::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at top left, var(--accent-glow), transparent 60%); pointer-events: none; }
+  .strip-inner { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; gap: 1rem; flex-wrap: wrap; }
+  .strip-label-row { display: flex; align-items: center; gap: 1rem; }
+  .strip-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+  .strip-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; }
+  .strip-meta { color: var(--fg-3); font-size: 13px; margin-left: 0.5rem; }
+  .strip-meta code { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+  .strip-toggle { padding: 0.45rem 0.95rem; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); font-size: 12px; color: var(--fg); background: transparent; transition: background 150ms ease, border-color 150ms ease, color 150ms ease; cursor: pointer; }
+  .strip-toggle:hover { background: var(--glass-strong); border-color: var(--accent); color: var(--fg); }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(6,7,11,0.7); border-bottom: 1px solid var(--border); }
+  .nav-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-mark { display: flex; align-items: center; gap: 0.6rem; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 500; font-size: 15px; letter-spacing: -0.01em; }
+  .nav-mark-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gradient-button); box-shadow: 0 0 12px var(--accent-glow); }
+  .nav-links { display: flex; gap: 2.25rem; font-size: 14px; color: var(--fg-3); }
+  .nav-links a { transition: color 150ms ease; position: relative; }
+  .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--fg); }
+  .nav-links a[aria-current="page"]::after { content: ''; position: absolute; left: 0; right: 0; bottom: -24px; height: 1px; background: var(--gradient-button); }
+
+  /* HERO */
+  .hero { position: relative; padding: 5rem 0 3rem; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100%; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(167,139,250,0.18) 0%, rgba(103,232,249,0.06) 35%, transparent 65%); pointer-events: none; z-index: 0; }
+  .hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1.4fr 1fr; gap: 4rem; align-items: start; }
+  .hero-left { padding-right: 1rem; }
+  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.6rem; }
+  .hero-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .hero-name { font-size: clamp(2.75rem, 6vw, 5rem); font-weight: 500; letter-spacing: -0.04em; line-height: 1; margin-bottom: 1.5rem; background: var(--gradient-text); background-size: 200% 200%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero-role { font-size: 1.125rem; color: var(--fg); margin-bottom: 1.5rem; font-weight: 500; }
+  .hero-spine { font-size: 1.0625rem; color: var(--fg-2); line-height: 1.65; max-width: 560px; border-left: 2px solid var(--accent); padding-left: 1.25rem; margin-bottom: 2rem; font-style: italic; }
+  .hero-cta-row { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 0.6rem; padding: 1rem 1.75rem; background: var(--gradient-button); color: #06070B; border-radius: var(--radius-md); font-weight: 600; font-size: 0.9375rem; transition: transform 200ms ease, filter 200ms ease, box-shadow 200ms ease; cursor: pointer; border: none; }
+  .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: var(--shadow-glow); }
+  .btn-secondary { display: inline-flex; align-items: center; gap: 0.6rem; padding: 1rem 1.75rem; background: var(--glass); color: var(--fg); border: 1px solid var(--border-strong); border-radius: var(--radius-md); font-weight: 500; font-size: 0.9375rem; transition: background 150ms ease, border-color 150ms ease; cursor: pointer; }
+  .btn-secondary:hover { background: var(--glass-strong); border-color: var(--accent); }
+
+  /* SIDEBAR */
+  .sidebar { padding: 2rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-xl); position: relative; overflow: hidden; }
+  .sidebar::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(167,139,250,0.3), transparent); }
+  .sidebar-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .sidebar-status { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--live); font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .sidebar-status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--live); box-shadow: 0 0 8px var(--live-glow); }
+  .sidebar-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
+  .sidebar-list li { display: grid; grid-template-columns: 90px 1fr; gap: 1rem; padding: 0.85rem 0; border-bottom: 1px solid var(--border); }
+  .sidebar-list li:last-child { border-bottom: none; }
+  .sidebar-key { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; padding-top: 0.2rem; }
+  .sidebar-val { font-size: 0.9375rem; color: var(--fg); line-height: 1.45; }
+  .sidebar-val a { color: var(--accent); transition: opacity 150ms ease; }
+  .sidebar-val a:hover { opacity: 0.75; }
+
+  /* PROOF */
+  .proof { padding: 2rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .proof-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .proof-cell { padding: 0 2rem; border-left: 1px solid var(--border); }
+  .proof-cell:first-child { border-left: none; padding-left: 0; }
+  .proof-num { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: clamp(2rem, 3vw, 2.5rem); font-weight: 500; letter-spacing: -0.04em; background: var(--gradient-text); background-size: 200% 200%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.4rem; line-height: 1; }
+  .proof-label { font-size: 13px; color: var(--fg-3); line-height: 1.4; }
+
+  /* FORWARD — the climax */
+  .forward { padding: 5rem 0; position: relative; overflow: hidden; }
+  .forward::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 900px; height: 500px; background: radial-gradient(ellipse, rgba(167,139,250,0.30) 0%, transparent 70%); pointer-events: none; z-index: 0; }
+  .forward-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1.4fr 1fr; gap: 4rem; align-items: center; padding: 3rem; background: var(--glass-strong); border: 1px solid var(--border-strong); border-radius: var(--radius-2xl); position: relative; overflow: hidden; }
+  .forward-inner::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .forward-text h2 { font-size: clamp(1.5rem, 2.5vw, 2.25rem); font-weight: 500; letter-spacing: -0.03em; margin-bottom: 1rem; line-height: 1.15; }
+  .forward-text p { color: var(--fg-2); font-size: 0.9375rem; line-height: 1.65; max-width: 540px; }
+  .forward-cta { display: flex; flex-direction: column; gap: 1rem; }
+  .forward-btn { display: flex; align-items: center; justify-content: center; gap: 0.6rem; padding: 1.25rem 1.75rem; background: var(--gradient-button); color: #06070B; border-radius: var(--radius-md); font-size: 16px; font-weight: 600; transition: transform 200ms ease, filter 200ms ease, box-shadow 200ms ease; width: 100%; cursor: pointer; border: none; }
+  .forward-btn:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 12px 60px rgba(167,139,250,0.5); }
+  .forward-link-row { display: flex; justify-content: center; align-items: center; gap: 0.5rem; font-size: 12px; color: var(--fg-3); font-family: 'JetBrains Mono', monospace; }
+
+  /* RESUME */
+  .resume-section { padding: 5rem 0 7rem; border-top: 1px solid var(--border); }
+  .resume-head { margin-bottom: 3rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .resume-head-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
+  .resume-head-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .resume-head h2 { font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 500; letter-spacing: -0.03em; }
+  .resume-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .resume-card { padding: 2rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-xl); position: relative; overflow: hidden; transition: border-color 200ms ease, transform 200ms ease; }
+  .resume-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .resume-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+  .resume-meta { display: flex; gap: 0.6rem; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 1rem; align-items: center; }
+  .resume-meta .meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--fg-4); display: inline-block; }
+  .resume-card h3 { font-size: 1.375rem; font-weight: 500; margin-bottom: 1rem; letter-spacing: -0.025em; }
+  .resume-card p { font-size: 0.9375rem; color: var(--fg-2); line-height: 1.65; margin-bottom: 1.5rem; }
+  .resume-card p a { color: var(--accent); transition: opacity 150ms ease; }
+  .resume-card p a:hover { opacity: 0.8; }
+  .resume-metric { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+  .resume-metric-cell .num { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 1.375rem; font-weight: 500; letter-spacing: -0.025em; background: var(--gradient-text); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.3rem; line-height: 1; }
+  .resume-metric-cell .lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--border); padding: 3rem 0; background: var(--bg); }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .footer-name { font-size: 0.875rem; color: var(--fg-2); }
+  .footer-links { display: flex; gap: 1.75rem; font-size: 0.875rem; color: var(--fg-3); align-items: center; }
+  .footer-links a { transition: color 150ms ease; }
+  .footer-links a:hover { color: var(--fg); }
+  .footer-recruiter { font-size: 12px; color: var(--fg-2); border: 1px solid var(--border-strong); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); background: transparent; transition: color 150ms ease, border-color 150ms ease; cursor: pointer; }
+  .footer-recruiter:hover { color: var(--fg); border-color: var(--fg-3); }
+
+  @media (max-width: 900px) {
+    .wrap { padding: 0 1.5rem; }
+    .hero { padding: 3rem 0 2rem; }
+    .hero-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .hero-left { padding-right: 0; }
+    .proof-grid { grid-template-columns: repeat(2, 1fr); row-gap: 1.5rem; }
+    .proof-cell { padding: 0; border-left: none; padding-right: 1rem; }
+    .resume-grid { grid-template-columns: 1fr; }
+    .forward-inner { grid-template-columns: 1fr; gap: 2rem; padding: 2rem; }
+    .resume-section { padding: 3rem 0 4rem; }
+    .nav-links { display: none; }
+    .strip-inner { flex-direction: column; align-items: flex-start; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="strip">
+  <div class="wrap strip-inner">
+    <div class="strip-label-row">
+      <span class="strip-dot" aria-hidden="true"></span>
+      <span class="strip-label">Recruiter view · active</span>
+      <span class="strip-meta">The <code>?for=recruiter</code> URL is shareable — this state isn't stored.</span>
+    </div>
+    <button class="strip-toggle" type="button">Switch to visitor view</button>
+  </div>
+</div>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="01-homepage.html" class="nav-mark"><span class="nav-mark-dot"></span>Sanjit Majumdar</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#resume" aria-current="page">Resume</a>
+      <a href="#contact">Contact</a>
+      <a href="02-work.html">Work</a>
+      <a href="06-about.html">About</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-left">
+        <div class="hero-label">Recruiter view · Tech Lead · 7+ years</div>
+        <h1 class="hero-name">Sanjit Majumdar.</h1>
+        <div class="hero-role">Senior Software Engineer / Tech Lead — .NET · Angular · SQL Server</div>
+        <p class="hero-spine">"He can do it — whatever you give him to build, he can build it for you, and better than others."</p>
+        <div class="hero-cta-row">
+          <a href="mailto:sanjit@example.dev" class="btn-primary">Email me →</a>
+          <a href="#forward" class="btn-secondary">Forward to hiring manager</a>
+        </div>
+      </div>
+      <aside class="sidebar" aria-label="Quick facts">
+        <div class="sidebar-label">
+          <span>Contact · Right now</span>
+          <span class="sidebar-status"><span class="sidebar-status-dot" aria-hidden="true"></span>Available</span>
+        </div>
+        <ul class="sidebar-list">
+          <li><span class="sidebar-key">Role</span><span class="sidebar-val">Senior Software Engineer / Tech Lead</span></li>
+          <li><span class="sidebar-key">Stack</span><span class="sidebar-val">.NET · Angular · TypeScript · SQL Server</span></li>
+          <li><span class="sidebar-key">Tenure</span><span class="sidebar-val">7+ years at Brain Station 23 (since Nov 2018)</span></li>
+          <li><span class="sidebar-key">Location</span><span class="sidebar-val">Dhaka, Bangladesh · UTC+6 · Remote-friendly</span></li>
+          <li><span class="sidebar-key">Email</span><span class="sidebar-val"><a href="mailto:sanjit@example.dev">sanjit@example.dev</a></span></li>
+          <li><span class="sidebar-key">Availability</span><span class="sidebar-val">Open to senior + lead conversations</span></li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="proof" aria-label="Track record">
+  <div class="wrap">
+    <div class="proof-grid">
+      <div class="proof-cell"><div class="proof-num">7+</div><div class="proof-label">Years building enterprise systems</div></div>
+      <div class="proof-cell"><div class="proof-num">10K+</div><div class="proof-label">Daily active users served</div></div>
+      <div class="proof-cell"><div class="proof-num">35%</div><div class="proof-label">Faster workflows delivered</div></div>
+      <div class="proof-cell"><div class="proof-num">7</div><div class="proof-label">Engineers led across the team</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="forward" id="forward">
+  <div class="wrap">
+    <div class="forward-inner">
+      <div class="forward-text">
+        <div class="resume-head-label">Forward · skip the recruiter screen</div>
+        <h2>Forward this page to your<br>hiring manager.</h2>
+        <p>One link. The case studies, the proof cluster, and a one-click email template — no cover-letter rewriting, no "tell me about yourself." Skip past the recruiter screen with receipts attached.</p>
+      </div>
+      <div class="forward-cta">
+        <button class="forward-btn" type="button">Forward to hiring manager →</button>
+        <div class="forward-link-row">or share sanjit.dev/?for=recruiter</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="resume-section" id="resume">
+  <div class="wrap">
+    <div class="resume-head">
+      <div class="resume-head-label">Resume · Selected impact</div>
+      <h2>Two case studies that say it better<br>than a CV.</h2>
+    </div>
+    <div class="resume-grid">
+      <article class="resume-card">
+        <div class="resume-meta">
+          <span>2020 — 2021</span>
+          <span class="meta-dot" aria-hidden="true"></span>
+          <span>Enterprise governance</span>
+          <span class="meta-dot" aria-hidden="true"></span>
+          <span>Lead engineer</span>
+        </div>
+        <h3>Wellbook</h3>
+        <p>Enterprise project &amp; governance platform for an international oil &amp; gas organization. 10K+ daily users across three ERPs. Tech lead on a 7-person engineering team through cutover and migration. <a href="03-case-study.html">Read the full case study →</a></p>
+        <div class="resume-metric">
+          <div class="resume-metric-cell"><div class="num">10K+</div><div class="lbl">DAU served</div></div>
+          <div class="resume-metric-cell"><div class="num">14h</div><div class="lbl">Migration window</div></div>
+          <div class="resume-metric-cell"><div class="num">$74k</div><div class="lbl">License cost removed</div></div>
+        </div>
+      </article>
+      <article class="resume-card">
+        <div class="resume-meta">
+          <span>2019 — 2020</span>
+          <span class="meta-dot" aria-hidden="true"></span>
+          <span>Engineering operations</span>
+          <span class="meta-dot" aria-hidden="true"></span>
+          <span>Tech lead</span>
+        </div>
+        <h3>Syncfusion Data-Grid replacement</h3>
+        <p>Removed a third-party dependency across multiple Angular apps. Cut bundle size 35% and reclaimed $74k/year. Led the 7-person rollout; zero regressions in production.</p>
+        <div class="resume-metric">
+          <div class="resume-metric-cell"><div class="num">−35%</div><div class="lbl">Bundle size</div></div>
+          <div class="resume-metric-cell"><div class="num">$74K</div><div class="lbl">Reclaimed / yr</div></div>
+          <div class="resume-metric-cell"><div class="num">0</div><div class="lbl">Prod regressions</div></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer" id="contact">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh · UTC+6</div>
+    <div class="footer-links">
+      <a href="mailto:sanjit@example.dev">Email</a><a href="#">GitHub</a><a href="#">LinkedIn</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

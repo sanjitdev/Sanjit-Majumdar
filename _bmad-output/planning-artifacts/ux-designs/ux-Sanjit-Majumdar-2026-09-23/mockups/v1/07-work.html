@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work — Sanjit Majumdar · Engineering Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAFAFA;
+    --fg: #0A0A0B;
+    --muted-fg: #475569;
+    --border: #E4E4E7;
+    --card: #FFFFFF;
+    --accent: #1D4ED8;
+    --accent-soft: #EFF6FF;
+    --live: #059669;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    font-weight: 500;
+  }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+  .wrap {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+  /* NAV */
+  .nav {
+    width: 100%;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .nav-mark {
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+  }
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    font-size: 14px;
+    color: var(--muted-fg);
+  }
+  .nav-links a:hover { color: var(--fg); }
+  .nav-links a[aria-current="page"] { color: var(--fg); }
+  /* HERO */
+  .hero {
+    padding: 3rem 0 2.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.4rem;
+  }
+  .hero-title {
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 1.25rem;
+    padding-top: 0.25rem;
+    max-width: 880px;
+  }
+  .hero-lede {
+    font-family: 'Archivo', system-ui, sans-serif;
+    font-size: 1.0625rem;
+    color: var(--muted-fg);
+    line-height: 1.6;
+    max-width: 720px;
+  }
+  /* PROOF STRIP */
+  .proof {
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 0;
+  }
+  .proof-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .proof-cell {
+    padding: 0.25rem 1.25rem;
+    border-left: 1px solid var(--border);
+  }
+  .proof-cell:first-child { border-left: none; padding-left: 0; }
+  .proof-num {
+    font-size: 1.75rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.3rem;
+  }
+  .proof-label {
+    font-family: 'Archivo', system-ui, sans-serif;
+    font-size: 12px;
+    color: var(--muted-fg);
+    line-height: 1.35;
+  }
+  /* SECTION */
+  .section {
+    padding: 3.5rem 0;
+  }
+  .section-head {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 2.5rem;
+    margin-bottom: 2rem;
+    align-items: start;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding-top: 0.5rem;
+  }
+  .section h2 {
+    font-size: clamp(1.375rem, 2.25vw, 1.75rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    max-width: 720px;
+    line-height: 1.2;
+  }
+  /* WORK ROWS — single-column, full-width */
+  .work-list { list-style: none; }
+  .work-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 200px;
+    gap: 2rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+    transition: background 150ms ease;
+  }
+  .work-row:hover { background: var(--card); }
+  .work-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
+  .work-row:focus-visible .stack-tag { border-color: var(--fg); color: var(--fg); }
+  .work-row:last-child { border-bottom: none; }
+  .work-row-main h3 {
+    font-size: 1.375rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    line-height: 1.25;
+  }
+  .work-row-meta {
+    display: flex;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.85rem;
+  }
+  .work-row-desc {
+    font-family: 'Archivo', system-ui, sans-serif;
+    color: var(--muted-fg);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    max-width: 640px;
+  }
+  .work-row-stack {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    padding-top: 0.4rem;
+  }
+  .stack-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted-fg);
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: var(--bg);
+    transition: border-color 150ms ease, color 150ms ease;
+  }
+  .work-row:hover .stack-tag { border-color: var(--fg); color: var(--fg); }
+  .work-row-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-align: right;
+    padding-top: 0.35rem;
+  }
+  /* FOOTER */
+  .footer {
+    padding: 2rem 0;
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .footer-name {
+    font-weight: 500;
+    font-size: 0.9375rem;
+  }
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 13px;
+    color: #A1A1AA;
+    align-items: center;
+  }
+  .footer-links a { padding: 0.25rem 0; }
+  .footer-recruiter {
+    font-size: 12px;
+    color: var(--bg);
+    border: 1px solid #3F3F46;
+    padding: 0.4rem 0.85rem;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    margin-left: 0.5rem;
+  }
+  .footer-recruiter:hover { border-color: var(--bg); }
+  .footer-recruiter:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  @media (max-width: 900px) {
+    .hero { padding: 2.5rem 0 2rem; }
+    .proof-grid { grid-template-columns: repeat(2, 1fr); row-gap: 1rem; }
+    .proof-cell { padding: 0; border-left: none; padding-right: 1rem; }
+    .section { padding: 2.5rem 0; }
+    .section-head { grid-template-columns: 1fr; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .section-label { padding-top: 0; }
+    .work-row { grid-template-columns: 1fr; gap: 0.85rem; padding: 1.25rem 0; }
+    .work-row-num { text-align: left; padding-top: 0; }
+    .nav-links { display: none; }
+    .wrap { padding: 0 1.25rem; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="nav-mark">Sanjit Majumdar</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#work" aria-current="page">Work</a>
+      <a href="#patterns">Patterns</a>
+      <a href="#lab">Lab</a>
+      <a href="#now">Now</a>
+      <a href="#about">About</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-label">Work · Case studies · Engineering judgment in production</div>
+    <h1 class="hero-title">Selected case studies. Receipts, not summaries.</h1>
+    <p class="hero-lede">Each entry below names the problem, the decision, the result. Skim the row, follow the link for the full architecture and the trade-offs. No fluff, no "passionate about clean code."</p>
+  </div>
+</section>
+
+<section class="proof" aria-label="Cumulative track record">
+  <div class="wrap">
+    <div class="proof-grid">
+      <div class="proof-cell">
+        <div class="proof-num">7+</div>
+        <div class="proof-label">Years</div>
+      </div>
+      <div class="proof-cell">
+        <div class="proof-num">10K+</div>
+        <div class="proof-label">Daily users served</div>
+      </div>
+      <div class="proof-cell">
+        <div class="proof-num">$74k</div>
+        <div class="proof-label">Annual license costs removed</div>
+      </div>
+      <div class="proof-cell">
+        <div class="proof-num">35%</div>
+        <div class="proof-label">Workflow speed gains shipped</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-label">Case studies · 5 entries</div>
+      <h2>One link per project. Read the case study for the full architecture.</h2>
+    </div>
+
+    <ul class="work-list">
+      <li>
+        <a href="#" class="work-row">
+          <div class="work-row-main">
+            <div class="work-row-meta"><span>2020 — 2021</span><span>·</span><span>Lead case study</span></div>
+            <h3>Wellbook — Enterprise governance for an oil &amp; gas organization</h3>
+            <p class="work-row-desc">Three ERPs, one canonical schema, a 14-hour migration window. Tech Lead on a 7-person team. 10K+ daily users, zero P1 incidents post-cutover.</p>
+            <div class="work-row-stack">
+              <span class="stack-tag">.NET</span>
+              <span class="stack-tag">Angular</span>
+              <span class="stack-tag">SQL Server</span>
+              <span class="stack-tag">Multi-tenant</span>
+            </div>
+          </div>
+          <div class="work-row-side">
+            <div class="work-row-meta"><span>Result</span></div>
+            <p class="work-row-desc">35% faster workflows, $74k licenses reclaimed, single source of truth across three ERPs.</p>
+          </div>
+          <div class="work-row-num">CS · 01 →</div>
+        </a>
+      </li>
+
+      <li>
+        <a href="#" class="work-row">
+          <div class="work-row-main">
+            <div class="work-row-meta"><span>2019 — 2020</span><span>·</span><span>Engineering operations</span></div>
+            <h3>Syncfusion Data-Grid replacement</h3>
+            <p class="work-row-desc">Removed a third-party dependency across multiple Angular apps. Cut bundle size 35%, reclaimed $74k/year. Led the 7-person rollout.</p>
+            <div class="work-row-stack">
+              <span class="stack-tag">Angular</span>
+              <span class="stack-tag">TypeScript</span>
+              <span class="stack-tag">Component architecture</span>
+            </div>
+          </div>
+          <div class="work-row-side">
+            <div class="work-row-meta"><span>Result</span></div>
+            <p class="work-row-desc">Zero regressions in production. Operations team got the exact rendering they needed.</p>
+          </div>
+          <div class="work-row-num">CS · 02 →</div>
+        </a>
+      </li>
+
+      <li>
+        <a href="#" class="work-row">
+          <div class="work-row-main">
+            <div class="work-row-meta"><span>2021 — 2022</span><span>·</span><span>Civic safety</span></div>
+            <h3>Surakkha — Water safety monitoring</h3>
+            <p class="work-row-desc">Multi-tenant platform for water quality data ingestion across districts. Field-officer workflows, audit trails, regulator reporting.</p>
+            <div class="work-row-stack">
+              <span class="stack-tag">.NET</span>
+              <span class="stack-tag">Angular</span>
+              <span class="stack-tag">SQL Server</span>
+              <span class="stack-tag">Multi-tenant</span>
+            </div>
+          </div>
+          <div class="work-row-side">
+            <div class="work-row-meta"><span>Result</span></div>
+            <p class="work-row-desc">Audit trail survives regulator review. Field-officer data round-trip in under 24 hours.</p>
+          </div>
+          <div class="work-row-num">CS · 03 →</div>
+        </a>
+      </li>
+
+      <li>
+        <a href="#" class="work-row">
+          <div class="work-row-main">
+            <div class="work-row-meta"><span>2018 — 2019</span><span>·</span><span>Commerce platform</span></div>
+            <h3>nopCommerce plugin architecture</h3>
+            <p class="work-row-desc">Designed the plugin model that became the team's house style. Composable, fork-free, upgrade-survivable.</p>
+            <div class="work-row-stack">
+              <span class="stack-tag">.NET</span>
+              <span class="stack-tag">C#</span>
+              <span class="stack-tag">Plugin SDK</span>
+            </div>
+          </div>
+          <div class="work-row-side">
+            <div class="work-row-meta"><span>Result</span></div>
+            <p class="work-row-desc">Survived three platform upgrades without rewrites. Read the pattern page for the lesson.</p>
+          </div>
+          <div class="work-row-num">CS · 04 →</div>
+        </a>
+      </li>
+
+      <li>
+        <a href="#" class="work-row">
+          <div class="work-row-main">
+            <div class="work-row-meta"><span>2022</span><span>·</span><span>Side project</span></div>
+            <h3>CityFix prototype — civic complaint routing for Dhaka</h3>
+            <p class="work-row-desc">React + AI prototype matching complaints to municipal departments. Currently in private beta with two neighborhoods.</p>
+            <div class="work-row-stack">
+              <span class="stack-tag">React</span>
+              <span class="stack-tag">TypeScript</span>
+              <span class="stack-tag">AI/LLM</span>
+            </div>
+          </div>
+          <div class="work-row-side">
+            <div class="work-row-meta"><span>Status</span></div>
+            <p class="work-row-desc">Private beta. Pilot data is honest — for every closed ticket, two weren't.</p>
+          </div>
+          <div class="work-row-num">CS · 05 →</div>
+        </a>
+      </li>
+
+    </ul>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh</div>
+    <div class="footer-links">
+      <a href="#">GitHub</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">Email</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

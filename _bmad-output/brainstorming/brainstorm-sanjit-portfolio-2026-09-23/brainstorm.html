@@ -1,0 +1,2015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Brainstorm Keepsake — Sanjit's Portfolio · 2026-09-23</title>
+<style>
+  /* ---------- Tokens ---------- */
+  :root {
+    --ink:        #0c0d10;
+    --ink-soft:   #1a1c22;
+    --paper:      #f4f1ea;
+    --paper-warm: #ece6d8;
+    --rule:       #2a2c33;
+    --muted:      #6b6e76;
+    --accent:     #d96b3a;    /* signal orange — engineering diagram */
+    --accent-2:   #3a8f7a;    /* structural green */
+    --accent-3:   #c9a449;    /* brass */
+    --warn:       #b8372b;    /* alarm red */
+    --ok:         #5b8a3a;
+    --type: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --serif: "Iowan Old Style", "Apple Garamond", Baskerville, "Times New Roman", "Droid Serif", Times, serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.55;
+    overflow-x: hidden;
+  }
+
+  /* paper grain — barely there */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(rgba(12,13,16,0.025) 1px, transparent 1px),
+      radial-gradient(rgba(12,13,16,0.015) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 1px 2px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  main, header, footer, section { position: relative; z-index: 2; }
+
+  /* ---------- Layout primitives ---------- */
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 28px; }
+  .grid-rule {
+    background-image:
+      linear-gradient(to right, rgba(12,13,16,0.06) 1px, transparent 1px);
+    background-size: 88px 100%;
+  }
+
+  /* ---------- Cover ---------- */
+  .cover {
+    min-height: 92vh;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 56px 0 80px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    overflow: hidden;
+  }
+  .cover-grid-overlay {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(244,241,234,0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(244,241,234,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+    pointer-events: none;
+  }
+  .cover-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(217,107,58,0.18), transparent 65%);
+    top: -160px; right: -160px;
+    pointer-events: none;
+  }
+
+  .meta-bar {
+    font-family: var(--type);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(244,241,234,0.55);
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    border-top: 1px solid rgba(244,241,234,0.18);
+    border-bottom: 1px solid rgba(244,241,234,0.18);
+    padding: 14px 0;
+    margin-bottom: 56px;
+  }
+  .meta-bar span strong { color: var(--accent); margin-left: 6px; font-weight: 600; }
+
+  .cover h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(38px, 6vw, 76px);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin: 0 0 24px;
+    max-width: 950px;
+  }
+  .cover h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .cover .lede {
+    font-family: var(--type);
+    font-size: 14px;
+    line-height: 1.7;
+    color: rgba(244,241,234,0.75);
+    max-width: 720px;
+    margin-bottom: 48px;
+  }
+  .cover .lede strong { color: var(--paper); }
+
+  .topic-stamp {
+    display: inline-block;
+    font-family: var(--type);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+    border-left: 2px solid var(--accent);
+    padding-left: 12px;
+  }
+
+  .signature {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: var(--type);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(244,241,234,0.5);
+    margin-top: 48px;
+  }
+  .signature .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px rgba(217,107,58,0.2);
+  }
+
+  /* ---------- Section frames ---------- */
+  section.section {
+    padding: 96px 0;
+    border-bottom: 1px solid rgba(12,13,16,0.08);
+  }
+  .section-tag {
+    font-family: var(--type);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .section-tag::before {
+    content: "";
+    width: 28px; height: 1px;
+    background: var(--ink);
+  }
+  .section h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(28px, 3.6vw, 44px);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin: 0 0 14px;
+    max-width: 820px;
+  }
+  .section h2 em { color: var(--accent); font-style: italic; }
+  .section .sub {
+    font-family: var(--type);
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 56px;
+    max-width: 720px;
+  }
+
+  /* pull-quote — for the spine lines that mattered */
+  .pull {
+    margin: 36px 0;
+    padding: 0 0 0 28px;
+    border-left: 3px solid var(--accent);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(20px, 2.4vw, 28px);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    max-width: 880px;
+  }
+  .pull .attr {
+    display: block;
+    margin-top: 14px;
+    font-family: var(--type);
+    font-style: normal;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .pull.alarm { border-left-color: var(--warn); }
+  .pull.signal { border-left-color: var(--accent); }
+  .pull.structure { border-left-color: var(--accent-2); }
+
+  /* ---------- Technique 1 · First Principles ---------- */
+  .fp-block {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 40px;
+  }
+  .fp-card {
+    background: var(--paper-warm);
+    border: 1px solid rgba(12,13,16,0.1);
+    border-top: 3px solid var(--ink);
+    padding: 28px 26px;
+    position: relative;
+  }
+  .fp-card .num {
+    font-family: var(--type);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .fp-card h3 {
+    font-family: var(--type);
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    margin: 0 0 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .fp-card p {
+    font-size: 14.5px;
+    line-height: 1.65;
+    margin: 0;
+  }
+  .fp-card .arrow {
+    font-family: var(--type);
+    font-size: 16px;
+    color: var(--accent);
+    margin-right: 8px;
+  }
+
+  .vectors {
+    margin-top: 56px;
+    border-top: 1px solid rgba(12,13,16,0.12);
+    padding-top: 32px;
+  }
+  .vectors h4 {
+    font-family: var(--type);
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 22px;
+  }
+  .vector-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+  .vector {
+    padding: 18px 16px;
+    border: 1px solid rgba(12,13,16,0.18);
+    background: var(--paper);
+    position: relative;
+  }
+  .vector .label {
+    font-family: var(--type);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .vector .proof {
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .vector .legend {
+    font-family: var(--type);
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  .constraints-bar {
+    margin-top: 56px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 26px 28px;
+    font-family: var(--type);
+    font-size: 13px;
+    line-height: 1.65;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .constraints-bar .label {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-right: 1px solid rgba(244,241,234,0.3);
+    padding-right: 24px;
+  }
+  .constraints-bar ul {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-wrap: wrap; gap: 10px 22px;
+  }
+  .constraints-bar li::before {
+    content: "▸ "; color: var(--accent);
+  }
+
+  /* ---------- Technique 2 · Lotus Blossom — 3×3 ---------- */
+  .lotus-wrap {
+    margin-top: 32px;
+  }
+  .lotus-center {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 36px 30px;
+    text-align: center;
+    max-width: 520px;
+    margin: 0 auto 36px;
+    position: relative;
+  }
+  .lotus-center .lbl {
+    font-family: var(--type);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .lotus-center h3 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 1.15;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .lotus-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .lotus-cell {
+    background: var(--paper-warm);
+    border: 1px solid rgba(12,13,16,0.1);
+    padding: 18px 16px;
+    min-height: 130px;
+    position: relative;
+    transition: background 0.2s ease;
+  }
+  .lotus-cell.hot {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+    box-shadow: 0 0 0 3px var(--accent) inset;
+  }
+  .lotus-cell.hot h4 { color: var(--accent); }
+  .lotus-cell .idx {
+    font-family: var(--type);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .lotus-cell.hot .idx { color: var(--paper-warm); }
+  .lotus-cell h4 {
+    font-family: var(--type);
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin: 0 0 10px;
+    color: var(--ink);
+  }
+  .lotus-cell .body {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .lotus-cell.zoom {
+    grid-column: span 2;
+    background: var(--paper);
+    border: 2px solid var(--accent);
+    padding: 28px 24px;
+  }
+  .lotus-cell.zoom .body {
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .lotus-cell.zoom .body strong { color: var(--accent); }
+
+  .lotus-deep {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  .pattern-triangle {
+    background: var(--paper-warm);
+    border: 1px solid rgba(12,13,16,0.12);
+    padding: 28px;
+  }
+  .pattern-triangle h4 {
+    font-family: var(--type);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 22px;
+  }
+  .triangle-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 0;
+    border-bottom: 1px dashed rgba(12,13,16,0.15);
+  }
+  .triangle-row:last-child { border-bottom: none; }
+  .triangle-row .badge {
+    font-family: var(--type);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 6px 10px;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    background: var(--paper);
+    flex-shrink: 0;
+    min-width: 110px;
+    text-align: center;
+  }
+  .triangle-row .text {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  /* ---------- Technique 3 · Worst Possible Idea ---------- */
+  .worst {
+    background: var(--ink);
+    color: var(--paper);
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    padding: 96px 0;
+  }
+  .worst .section-tag { color: rgba(244,241,234,0.6); }
+  .worst .section-tag::before { background: var(--accent); }
+  .worst h2 { color: var(--paper); }
+  .worst h2 em { color: var(--warn); }
+  .worst .sub { color: rgba(244,241,234,0.6); }
+  .worst-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-top: 48px;
+    border: 1px solid rgba(244,241,234,0.2);
+  }
+  .worst-card {
+    padding: 36px 28px;
+    border-right: 1px solid rgba(244,241,234,0.2);
+    position: relative;
+  }
+  .worst-card:last-child { border-right: none; }
+  .worst-card .number {
+    font-family: var(--type);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--warn);
+    margin-bottom: 16px;
+  }
+  .worst-card .name {
+    font-family: var(--serif);
+    font-size: 24px;
+    line-height: 1.2;
+    margin-bottom: 18px;
+    color: var(--paper);
+  }
+  .worst-card .why-bad {
+    font-family: var(--type);
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(244,241,234,0.7);
+    margin-bottom: 24px;
+  }
+  .worst-card .flip {
+    border-top: 1px dashed rgba(244,241,234,0.3);
+    padding-top: 18px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--paper);
+  }
+  .worst-card .flip::before {
+    content: "FLIP → ";
+    font-family: var(--type);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+  }
+
+  .worst-verdict {
+    margin-top: 40px;
+    text-align: center;
+    font-family: var(--type);
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(244,241,234,0.5);
+  }
+  .worst-verdict .ok {
+    color: var(--ok);
+    border: 1px solid var(--ok);
+    padding: 8px 14px;
+    margin-left: 12px;
+    display: inline-block;
+  }
+
+  /* ---------- Technique 4 · What If Scenarios ---------- */
+  .whatif {
+    background: var(--paper-warm);
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    padding: 96px 0;
+  }
+  .whatif-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+    margin-top: 40px;
+  }
+  .whatif-card {
+    background: var(--paper);
+    border: 1px solid rgba(12,13,16,0.15);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .whatif-card .strip {
+    padding: 16px 22px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--type);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .whatif-card .strip .tag {
+    color: var(--accent);
+  }
+  .whatif-card.hot .strip {
+    background: var(--accent);
+    color: var(--ink);
+  }
+  .whatif-card.hot .strip .tag {
+    color: var(--ink);
+    opacity: 0.7;
+  }
+  .whatif-card .body { padding: 28px 24px; }
+  .whatif-card .question {
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 1.25;
+    margin: 0 0 14px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .whatif-card .answer {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .whatif-card .answer strong {
+    background: linear-gradient(180deg, transparent 60%, rgba(217,107,58,0.35) 60%);
+    padding: 0 2px;
+  }
+  .whatif-card .corner {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 0; height: 0;
+    border-style: solid;
+    border-width: 0 0 24px 24px;
+    border-color: transparent transparent var(--ink) transparent;
+  }
+
+  .lab-reframe {
+    margin-top: 56px;
+    background: var(--paper);
+    border: 1px solid rgba(12,13,16,0.15);
+    padding: 32px 30px;
+  }
+  .lab-reframe h3 {
+    font-family: var(--type);
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 18px;
+  }
+  .lab-reframe .reframe-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .reframe-item {
+    border-top: 2px solid var(--ink);
+    padding-top: 14px;
+  }
+  .reframe-item .n {
+    font-family: var(--type);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .reframe-item h4 {
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.25;
+    margin: 0 0 8px;
+    font-weight: 400;
+  }
+  .reframe-item p {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  /* ---------- Technique 5 · Analogical Thinking ---------- */
+  .analogs {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+  .analog {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 14px;
+    align-items: stretch;
+    padding: 22px 22px;
+    background: var(--paper-warm);
+    border: 1px solid rgba(12,13,16,0.12);
+  }
+  .analog .pair {
+    font-family: var(--type);
+    font-size: 12px;
+    line-height: 1.55;
+  }
+  .analog .pair .lbl {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .analog .pair.src { color: var(--ink); border-right: 1px solid rgba(12,13,16,0.18); padding-right: 14px; }
+  .analog .pair.dst { color: var(--ink-soft); }
+  .analog .bridge {
+    font-family: var(--type);
+    font-size: 18px;
+    color: var(--accent);
+    align-self: center;
+    padding: 0 6px;
+  }
+  .analog.hot {
+    grid-column: span 2;
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .analog.hot .pair.src { color: var(--paper-warm); border-right-color: rgba(244,241,234,0.3); }
+  .analog.hot .pair.dst { color: var(--paper); }
+  .analog.hot .pair .lbl { color: rgba(244,241,234,0.5); }
+  .analog.hot .bridge { color: var(--accent); }
+  .analog.hot .lbl { color: var(--accent); }
+
+  .chess-openings {
+    margin-top: 56px;
+    border-top: 2px solid var(--ink);
+    padding-top: 28px;
+  }
+  .chess-openings h3 {
+    font-family: var(--type);
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin: 0 0 24px;
+  }
+  .openings {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+  }
+  .opening {
+    background: var(--paper);
+    padding: 18px 16px;
+    border-right: 1px solid var(--ink);
+    position: relative;
+  }
+  .opening:last-child { border-right: none; }
+  .opening .num {
+    font-family: var(--type);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .opening .name {
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.25;
+    margin: 0 0 8px;
+    font-weight: 400;
+  }
+  .opening.active {
+    background: var(--accent);
+    color: var(--ink);
+  }
+  .opening.active .num { color: rgba(12,13,16,0.6); }
+  .opening.active .name { color: var(--ink); }
+  .opening .glyph {
+    width: 28px; height: 28px;
+    display: block;
+    margin-top: 8px;
+  }
+
+  .chess-detail {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 36px;
+  }
+  .opening-detail {
+    background: var(--paper-warm);
+    padding: 30px 28px;
+    border-left: 4px solid var(--accent);
+  }
+  .opening-detail .ehead {
+    font-family: var(--type);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .opening-detail h4 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 1.2;
+    margin: 0 0 18px;
+    letter-spacing: -0.01em;
+  }
+  .opening-detail p {
+    font-size: 14.5px;
+    line-height: 1.7;
+    margin: 0 0 14px;
+  }
+  .moves-list {
+    margin-top: 22px;
+    border-top: 1px dashed rgba(12,13,16,0.2);
+    padding-top: 18px;
+  }
+  .moves-list .ml {
+    font-family: var(--type);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .move {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 12px;
+    padding: 8px 0;
+    font-family: var(--type);
+    font-size: 13px;
+  }
+  .move .ply {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .r2-list {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 28px 24px;
+  }
+  .r2-list h5 {
+    font-family: var(--type);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 18px;
+  }
+  .r2-list ul {
+    list-style: none; padding: 0; margin: 0;
+  }
+  .r2-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(244,241,234,0.15);
+    font-size: 13.5px;
+    line-height: 1.55;
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 12px;
+  }
+  .r2-list li:last-child { border-bottom: none; }
+  .r2-list li .nm {
+    font-family: var(--type);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    padding-top: 3px;
+  }
+
+  /* ---------- SYNTHESIS — the climax ---------- */
+  .synthesis {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 140px 0 140px;
+    position: relative;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    overflow: hidden;
+  }
+  .synthesis-grid-overlay {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(244,241,234,0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(244,241,234,0.05) 1px, transparent 1px);
+    background-size: 80px 80px;
+    pointer-events: none;
+  }
+  .synthesis-spine {
+    position: absolute;
+    top: 50%;
+    left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(217,107,58,0.4), transparent);
+  }
+
+  .synth-intro {
+    text-align: center;
+    margin-bottom: 80px;
+    position: relative;
+  }
+  .synth-intro .stamp {
+    font-family: var(--type);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .synth-intro h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(40px, 6vw, 72px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 auto;
+    max-width: 1000px;
+    color: var(--paper);
+  }
+  .synth-intro h2 em { font-style: italic; color: var(--accent); }
+
+  .synth-mantra {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(22px, 2.6vw, 32px);
+    line-height: 1.4;
+    color: var(--paper);
+    max-width: 920px;
+    margin: 56px auto 0;
+    padding: 36px 0;
+    border-top: 1px solid rgba(244,241,234,0.2);
+    border-bottom: 1px solid rgba(244,241,234,0.2);
+    text-align: center;
+  }
+  .synth-mantra::before, .synth-mantra::after {
+    content: "§";
+    display: block;
+    font-family: var(--type);
+    font-style: normal;
+    color: var(--accent);
+    font-size: 14px;
+    letter-spacing: 1em;
+    margin: 14px 0;
+  }
+  .synth-mantra::after { margin: 14px 0 0; }
+
+  .axioms {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-top: 100px;
+    border-top: 1px solid rgba(244,241,234,0.3);
+    border-bottom: 1px solid rgba(244,241,234,0.3);
+  }
+  .axiom {
+    padding: 36px 28px;
+    border-right: 1px solid rgba(244,241,234,0.2);
+  }
+  .axiom:last-child { border-right: none; }
+  .axiom .roman {
+    font-family: var(--type);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .axiom .title {
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 1.25;
+    margin: 0 0 14px;
+    font-weight: 400;
+  }
+  .axiom .body {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: rgba(244,241,234,0.78);
+  }
+
+  /* ---------- Locked Decisions ---------- */
+  .locked {
+    padding: 110px 0 100px;
+  }
+  .locked-head {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: end;
+    margin-bottom: 60px;
+  }
+  .locked-head .sticker {
+    font-family: var(--type);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: inline-block;
+    border: 1px solid var(--accent);
+    padding: 6px 10px;
+  }
+  .locked-head h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(30px, 4vw, 50px);
+    line-height: 1.1;
+    margin: 0;
+    letter-spacing: -0.015em;
+  }
+  .locked-head .legend {
+    font-family: var(--type);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 420px;
+  }
+  .locked-head .legend strong { color: var(--ink); }
+
+  .decisions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+  }
+  .decision {
+    padding: 32px 28px;
+    border-bottom: 1px solid rgba(12,13,16,0.15);
+    border-right: 1px solid rgba(12,13,16,0.15);
+    position: relative;
+  }
+  .decision:nth-child(odd):last-child { border-right: none; }
+  .decision:nth-last-child(-n+2) { border-bottom: none; }
+  .decision .check {
+    position: absolute;
+    top: 28px; right: 28px;
+    width: 22px; height: 22px;
+    border: 2px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--type);
+    font-size: 12px;
+    color: var(--ink);
+  }
+  .decision .check::after { content: "✓"; font-size: 14px; line-height: 1; }
+  .decision .no {
+    font-family: var(--type);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .decision h3 {
+    font-family: var(--type);
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin: 0 0 14px;
+    color: var(--ink);
+    max-width: 320px;
+  }
+  .decision p {
+    font-size: 13.5px;
+    line-height: 1.6;
+    margin: 0;
+    color: var(--ink-soft);
+    max-width: 380px;
+  }
+
+  /* ---------- Spine quotes — full bleed ---------- */
+  .spine-quotes {
+    background: var(--paper-warm);
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    padding: 100px 0;
+    border-top: 1px solid rgba(12,13,16,0.08);
+    border-bottom: 1px solid rgba(12,13,16,0.08);
+  }
+  .spine-quotes h2 {
+    font-family: var(--type);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: center;
+    margin: 0 0 60px;
+  }
+  .spine-quotes h2::before, .spine-quotes h2::after {
+    content: "——";
+    margin: 0 16px;
+    color: rgba(12,13,16,0.3);
+  }
+  .spine-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+  .spine-quote {
+    padding: 44px 40px;
+    border-right: 1px solid rgba(12,13,16,0.12);
+  }
+  .spine-quote:last-child { border-right: none; }
+  .spine-quote .marker {
+    font-family: var(--type);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .spine-quote .marker::before {
+    content: "";
+    display: inline-block;
+    width: 12px; height: 12px;
+    background: var(--accent);
+  }
+  .spine-quote.framed .marker::before { background: var(--accent-2); }
+  .spine-quote.dissent .marker::before { background: var(--warn); }
+  .spine-quote blockquote {
+    margin: 0;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(22px, 2.4vw, 28px);
+    line-height: 1.35;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .spine-quote blockquote::before { content: "“"; color: var(--accent); margin-right: 4px; }
+  .spine-quote blockquote::after { content: "”"; color: var(--accent); margin-left: 4px; }
+  .spine-quote .origin {
+    margin-top: 18px;
+    font-family: var(--type);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ---------- Footer / closing ---------- */
+  footer.closing {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 80px 0 60px;
+    font-family: var(--type);
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  footer.closing .row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+  footer.closing .seal {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 28px;
+    line-height: 1.3;
+    color: var(--paper);
+    max-width: 480px;
+  }
+  footer.closing .seal::before {
+    content: "— ";
+    color: var(--accent);
+  }
+  footer.closing h6 {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 14px;
+    font-weight: 600;
+  }
+  footer.closing ul { list-style: none; padding: 0; margin: 0; }
+  footer.closing li { padding: 4px 0; color: rgba(244,241,234,0.7); }
+  footer.closing .stamp-row {
+    margin-top: 50px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(244,241,234,0.18);
+    display: flex;
+    justify-content: space-between;
+    color: rgba(244,241,234,0.5);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 10px;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .wrap { padding: 0 20px; }
+    .fp-block,
+    .lotus-deep,
+    .locked-head,
+    .chess-detail,
+    .spine-grid,
+    .whatif-grid,
+    .analogs,
+    .decisions { grid-template-columns: 1fr; }
+    .vector-list { grid-template-columns: repeat(2, 1fr); }
+    .lotus-grid { grid-template-columns: repeat(3, 1fr); }
+    .lotus-cell.zoom { grid-column: span 3; }
+    .worst-grid,
+    .axioms,
+    .lab-reframe .reframe-list,
+    .openings { grid-template-columns: 1fr; }
+    .worst-card, .opening, .axiom { border-right: none; border-bottom: 1px solid rgba(12,13,16,0.2); }
+    .worst-card:last-child, .opening:last-child, .axiom:last-child { border-bottom: none; }
+    .openings { border-right: none; }
+    section.section { padding: 64px 0; }
+    .synthesis { padding: 80px 0; }
+    .spine-quote { border-right: none; border-bottom: 1px solid rgba(12,13,16,0.12); padding: 36px 24px; }
+    .spine-quote:last-child { border-bottom: none; }
+    .decision { border-right: none; }
+    .meta-bar { gap: 14px; }
+    footer.closing .row { grid-template-columns: 1fr; }
+    .analog { grid-template-columns: 1fr; }
+    .analog .pair.src { border-right: none; border-bottom: 1px solid rgba(12,13,16,0.18); padding-right: 0; padding-bottom: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============== COVER ============== -->
+<header class="cover">
+  <div class="cover-grid-overlay"></div>
+  <div class="cover-glow"></div>
+  <div class="wrap">
+    <div class="meta-bar">
+      <span>BMAD / BRAINSTORMING <strong>·</strong></span>
+      <span>MODE <strong>Creative Partner</strong></span>
+      <span>DATE <strong>2026·09·23</strong></span>
+      <span>STATUS <strong>complete</strong></span>
+      <span>TECHNIQUES <strong>5</strong></span>
+      <span>KEEPSAKE <strong>v1</strong></span>
+    </div>
+
+    <div class="topic-stamp">session topic · engineering portfolio</div>
+
+    <h1>
+      Turning a résumé into a <em>self-proving</em> playground —<br />
+      the design moves, content moves, and signature interactive moments
+      that make a portfolio demonstrate Tech&nbsp;Lead-level thinking
+      instead of merely claiming it.
+    </h1>
+
+    <p class="lede">
+      <strong>Goal.</strong> Surface the specific moves that turn portfolio HTML from
+      "tells you about the engineer" into "proves the engineer" — so the site
+      itself becomes the strongest evidence in the room. Below: the 5-technique
+      pass, the synthesis, the locked decisions, and the verbatim lines that
+      kept doing the heavy lifting throughout.
+    </p>
+
+    <div class="signature">
+      <span class="dot"></span>
+      <span>Session artifact · single-file HTML · system fonts only</span>
+    </div>
+  </div>
+</header>
+
+<!-- ============== TECHNIQUE 1 · FIRST PRINCIPLES ============== -->
+<section class="section" id="t1">
+  <div class="wrap">
+    <div class="section-tag">Technique 01 · First Principles</div>
+    <h2>Strip the portfolio down to bedrock — then <em>refactor the framing</em>.</h2>
+    <p class="sub">
+      Three questions: what does a recruiter actually do in 30 seconds · what's the
+      smallest artifact that would force a hire · which one assumption, if false,
+      changes everything.
+    </p>
+
+    <div class="fp-block">
+      <div class="fp-card">
+        <div class="num">QUESTION 01 · 30-SECOND SCAN</div>
+        <h3>What does the recruiter actually read?</h3>
+        <p>
+          <span class="arrow">→</span> Summary of work and experience. So the hero,
+          "what I actually do," and proof numbers have to compress to that scan —
+          not just sit on top of it. The page has to survive being <em>glanced at</em>,
+          not just read.
+        </p>
+      </div>
+      <div class="fp-card">
+        <div class="num">QUESTION 02 · ASSUMPTION FLIP</div>
+        <h3>What if "get the interview" is the wrong goal?</h3>
+        <p>
+          <span class="arrow">→</span> Most portfolios aim to land the interview.
+          The right framing is <em>"make the interview feel redundant because the
+          evidence is already on screen."</em> This rearchitects the site from pitch
+          to proof.
+        </p>
+      </div>
+    </div>
+
+    <div class="pull signal">
+      Make the interview feel redundant because the evidence is already on screen.
+      <span class="attr">Coach · First Principles · assumption inversion</span>
+    </div>
+
+    <div class="vectors">
+      <h4>The CV reveals four independent proof vectors</h4>
+      <div class="vector-list">
+        <div class="vector">
+          <div class="label">Vector 01</div>
+          <div class="proof">Scale</div>
+          <div class="legend">10,000+ active users on a Norwegian client app.</div>
+        </div>
+        <div class="vector">
+          <div class="label">Vector 02</div>
+          <div class="proof">Delivery</div>
+          <div class="legend">10+ nopCommerce plugins · Shopify plugin · 5+ e-commerce platforms integrated.</div>
+        </div>
+        <div class="vector">
+          <div class="label">Vector 03</div>
+          <div class="proof">Performance</div>
+          <div class="legend">35% perf gain · 25% memory reduction on production systems.</div>
+        </div>
+        <div class="vector">
+          <div class="label">Vector 04</div>
+          <div class="proof">Leadership</div>
+          <div class="legend">Led a 7-person team (4 eng + 3 QA). Lead. Build. Decide.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pull structure">
+      One portfolio must surface all four vectors — with the decision and
+      architecture story behind each.
+      <span class="attr">Coach · First Principles · CV bedrock</span>
+    </div>
+
+    <div class="constraints-bar">
+      <div class="label">Constraint Set · Locked</div>
+      <ul>
+        <li>Vercel host</li>
+        <li>SSG-first</li>
+        <li>Content-as-data (markdown/JSON)</li>
+        <li>Serverless-only dynamic pieces</li>
+        <li>Additive schema</li>
+        <li>No always-on DB</li>
+        <li>CV-editable without redeploy</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============== TECHNIQUE 2 · LOTUS BLOSSOM ============== -->
+<section class="section" id="t2">
+  <div class="wrap">
+    <div class="section-tag">Technique 02 · Lotus Blossom</div>
+    <h2>Eight things a recruiter is actually evaluating in 30 seconds —<br/>
+        <em>we go deepest on the most under-served one.</em></h2>
+    <p class="sub">
+      Center theme: the 30-second scan. Surrounding 8 cells = the 8 things a recruiter
+      evaluates in those 30 seconds. Cell 6 — "Will I remember this?" — gets dug into.
+    </p>
+
+    <div class="lotus-wrap">
+      <div class="lotus-center">
+        <div class="lbl">Center theme</div>
+        <h3>The 30-second scan</h3>
+      </div>
+
+      <div class="lotus-grid">
+        <div class="lotus-cell">
+          <div class="idx">CELL 01</div>
+          <h4>Who is this person?</h4>
+          <div class="body">Identity disambiguated in under 3 seconds — name, role, current company.</div>
+        </div>
+        <div class="lotus-cell">
+          <div class="idx">CELL 02</div>
+          <h4>What do they do?</h4>
+          <div class="body">Specialty in one line; the stack they'd be hired for.</div>
+        </div>
+        <div class="lotus-cell">
+          <div class="idx">CELL 03</div>
+          <h4>Have they done real work?</h4>
+          <div class="body">Proof that it shipped, served users, and produced numbers.</div>
+        </div>
+        <div class="lotus-cell">
+          <div class="idx">CELL 04</div>
+          <h4>Is this person senior?</h4>
+          <div class="body">Years, scope, range of systems — signalled, not asserted.</div>
+        </div>
+        <div class="lotus-cell">
+          <div class="idx">CELL 05</div>
+          <h4>Are they technical enough?</h4>
+          <div class="body">Depth in stack and architecture, not surface familiarity.</div>
+        </div>
+        <div class="lotus-cell hot">
+          <div class="idx">CELL 06 · TARGET</div>
+          <h4>Will I remember this?</h4>
+          <div class="body">The hole in typical portfolios — and the highest-leverage one to fill.</div>
+        </div>
+
+        <div class="lotus-cell zoom">
+          <div class="idx">CELL 06 · DEEP READ</div>
+          <div class="body">
+            The real memorability answer is <strong>anticipatory design</strong>: have
+            one unique idea no one has thought of, or — better — answer the visitor's
+            unspoken thinking so visibly that they're impressed the site read their
+            mind. The portfolio becomes memorable not because it's clever, but because
+            it makes the visitor feel <em>already understood</em>.
+          </div>
+        </div>
+
+        <div class="lotus-cell">
+          <div class="idx">CELL 07</div>
+          <h4>What's their range?</h4>
+          <div class="body">Breadth without diluting the specialty signal.</div>
+        </div>
+        <div class="lotus-cell">
+          <div class="idx">CELL 08</div>
+          <h4>Can I act on this?</h4>
+          <div class="body">A single next step is obvious (email · recruiter mode · forward).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lotus-deep">
+      <div>
+        <div class="pull signal">
+          Make the visitor feel <em>already understood</em>. That's the whole game.
+          <span class="attr">User · Lotus Blossom · cell 06</span>
+        </div>
+
+        <div class="pull signal" style="margin-top: 36px;">
+          "Why should I fight for this candidate in the hiring meeting?"
+          <span class="attr">User · Sub-question of cell 06 · the spine</span>
+        </div>
+
+        <p style="font-size: 15px; line-height: 1.7; max-width: 640px; margin-top: 28px;">
+          That question becomes the spine of recruiter mode. Everything else on the
+          portfolio becomes evidence supporting one answer — that the recruiter has
+          ammunition worth forwarding upward.
+        </p>
+      </div>
+
+      <div class="pattern-triangle">
+        <h4>Pattern Triangle · Leadership Cell</h4>
+        <div class="triangle-row">
+          <div class="badge">Data-led</div>
+          <div class="text">The pushback begins with measurement, not opinion.</div>
+        </div>
+        <div class="triangle-row">
+          <div class="badge">Non-negotiable</div>
+          <div class="text">Engineering standards, not personal preference.</div>
+        </div>
+        <div class="triangle-row">
+          <div class="badge">Calibrated</div>
+          <div class="text">Risk named, delay bounded (4 days, not open-ended).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== TECHNIQUE 3 · WORST POSSIBLE IDEA ============== -->
+<section class="worst" id="t3">
+  <div class="wrap">
+    <div class="section-tag">Technique 03 · Worst Possible Idea</div>
+    <h2>The traps most portfolios fall into — <em>and what they teach.</em></h2>
+    <p class="sub">
+      Worst-possible Sanjit portfolio, generated. Each "worst" gets flipped into the
+      design principle it implies. Three temptations flagged as highest-value flips.
+    </p>
+
+    <div class="worst-grid">
+      <div class="worst-card">
+        <div class="number">WORST · 01</div>
+        <div class="name">47 tech logos with self-rating bars.</div>
+        <div class="why-bad">
+          Self-rated "9/10 in React" reads as a LinkedIn profile circa 2014.
+          It's also the easiest thing to fake — recruiters calibrate accordingly.
+        </div>
+        <div class="flip">
+          Replace ratings with <em>evidence-shaped tokens</em>: a case study, a
+          pattern, a shipped artifact. No more rates — just receipts.
+        </div>
+      </div>
+      <div class="worst-card">
+        <div class="number">WORST · 02</div>
+        <div class="name">"Built with [template]" in the footer.</div>
+        <div class="why-bad">
+          Admitting a template signals "I bought this." It also collapses the
+          distinction between you and the next person who bought the same template.
+        </div>
+        <div class="flip">
+          Build the structure itself — pattern library, content schema, recruiter
+          mode — into the portfolio. Make the engineering of the site part of
+          the proof.
+        </div>
+      </div>
+      <div class="worst-card">
+        <div class="number">WORST · 03</div>
+        <div class="name">3,000-word About section.</div>
+        <div class="why-bad">
+          Recruiters won't read it. Anyone who skims will close the page before
+          reaching the part that matters (the proof). Length is not depth.
+        </div>
+        <div class="flip">
+          Compress identity into 1 sentence + 4 vectors + recruiter mode. Long-form
+          prose lives only where it earns its place — case study decisions, leadership
+          call transcripts.
+        </div>
+      </div>
+    </div>
+
+    <div class="worst-verdict">
+      Verdict · discipline confirmed
+      <span class="ok">CLEAN · NO TRAP REACHED</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============== TECHNIQUE 4 · WHAT IF SCENARIOS ============== -->
+<section class="whatif" id="t4">
+  <div class="wrap">
+    <div class="section-tag">Technique 04 · What If Scenarios</div>
+    <h2>Detonate one constraint at a time —<br/>
+        <em>the homepage decentralization unlock.</em></h2>
+    <p class="sub">
+      Four constraints detonated. The most consequential — "what if the recruiter
+      never visits the homepage?" — surfaces an architectural consequence that
+      reshapes the entire portfolio.
+    </p>
+
+    <div class="whatif-grid">
+      <div class="whatif-card hot">
+        <div class="strip">
+          <span>WHAT IF · #1 — CONSEQUENTIAL</span>
+          <span class="tag">CHOSEN</span>
+        </div>
+        <div class="body">
+          <h4 class="question">The recruiter never visits the homepage?</h4>
+          <p class="answer">
+            Then every page must be a <strong>standalone proof surface</strong>,
+            not a deep link from a hub. Decentralize the pitch: every page carries
+            a 2-sentence positioning line, at least one proof number, and a path
+            back to the rest of the site. The portfolio becomes
+            <strong>a ring of rooms that all open to the outside</strong>, not a
+            lobby with locked doors.
+          </p>
+        </div>
+        <div class="corner"></div>
+      </div>
+
+      <div class="whatif-card">
+        <div class="strip">
+          <span>WHAT IF · #2</span>
+          <span class="tag">RESPECT</span>
+        </div>
+        <div class="body">
+          <h4 class="question">The site has to load on a 2G phone in Bangladesh?</h4>
+          <p class="answer">
+            Static-first + SSG is the only honest response. No client-side
+            frameworks for content that doesn't need them. Interactive moments
+            deferred, not absent — they load after the proof does.
+          </p>
+        </div>
+      </div>
+
+      <div class="whatif-card">
+        <div class="strip">
+          <span>WHAT IF · #3</span>
+          <span class="tag">DURABILITY</span>
+        </div>
+        <div class="body">
+          <h4 class="question">Sanjit disappears tomorrow?</h4>
+          <p class="answer">
+            Content sources survive. The CV file at <code>cv.md</code> remains
+            the truth source; case studies live as markdown with frontmatter;
+            the pattern library is additive and self-describing.
+          </p>
+        </div>
+      </div>
+
+      <div class="whatif-card">
+        <div class="strip">
+          <span>WHAT IF · #4</span>
+          <span class="tag">SURFACE</span>
+        </div>
+        <div class="body">
+          <h4 class="question">The only artifact is the GitHub?</h4>
+          <p class="answer">
+            The repo's <code>README</code>, commit log, and PR history have to
+            carry proof too. They become supplementary proof surfaces, with
+            recruiter-facing routing from repo → portfolio, not the other way.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="lab-reframe">
+      <h3>Lab reframed · not a hobby drawer</h3>
+      <div class="reframe-list">
+        <div class="reframe-item">
+          <div class="n">MOVE 01 · HEADING</div>
+          <h4>What I build when no one tells me what to build</h4>
+          <p>A positioning sentence, not a category label — frames Lab as autonomy signal, not "extras."</p>
+        </div>
+        <div class="reframe-item">
+          <div class="n">MOVE 02 · TAGS</div>
+          <h4>Production / Experiment / Personal</h4>
+          <p>Category tags surface the seriousness continuum without burying it in copy.</p>
+        </div>
+        <div class="reframe-item">
+          <div class="n">MOVE 03 · SHAPE</div>
+          <h4>What / Built with / Status / Why / Interesting</h4>
+          <p>Micro-case-study shape per tool — same schema, small footprint, recruiter-scannable.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== TECHNIQUE 5 · ANALOGICAL THINKING ============== -->
+<section class="section" id="t5">
+  <div class="wrap">
+    <div class="section-tag">Technique 05 · Analogical Thinking</div>
+    <h2>Steal the shape of things that already solve this —<br/>
+        <em>the chess opening book wins.</em></h2>
+    <p class="sub">
+      Analog domains explored: museum exhibit · restaurant menu · book · emergency-room
+      triage · chess opening book. The chess book wins because it reframes the
+      portfolio as a library of <em>named, reusable engineering patterns</em>.
+    </p>
+
+    <div class="analogs">
+      <div class="analog">
+        <div class="pair src">
+          <div class="lbl">SOURCE</div>
+          Museum exhibit
+        </div>
+        <div class="bridge">→</div>
+        <div class="pair dst">
+          <div class="lbl">PORTFOLIO</div>
+          Curated case study with a single curatorial voice.
+        </div>
+      </div>
+
+      <div class="analog">
+        <div class="pair src">
+          <div class="lbl">SOURCE</div>
+          Restaurant menu
+        </div>
+        <div class="bridge">→</div>
+        <div class="pair dst">
+          <div class="lbl">PORTFOLIO</div>
+          Limited index, rich detail on click.
+        </div>
+      </div>
+
+      <div class="analog">
+        <div class="pair src">
+          <div class="lbl">SOURCE</div>
+          Book (long-form)
+        </div>
+        <div class="bridge">→</div>
+        <div class="pair dst">
+          <div class="lbl">PORTFOLIO</div>
+          Chapter-per-case-study, narrative carry.
+        </div>
+      </div>
+
+      <div class="analog">
+        <div class="pair src">
+          <div class="lbl">SOURCE</div>
+          Emergency-room triage
+        </div>
+        <div class="bridge">→</div>
+        <div class="pair dst">
+          <div class="lbl">PORTFOLIO</div>
+          Recruiter front door bypasses triage; deep path routes to right doctor.
+        </div>
+      </div>
+
+      <div class="analog hot">
+        <div class="pair src">
+          <div class="lbl">CHOSEN · SOURCE</div>
+          Chess opening book
+        </div>
+        <div class="bridge">→</div>
+        <div class="pair dst">
+          <div class="lbl">PORTFOLIO</div>
+          A library of <em>named engineering patterns</em>, each with known
+          counters, known lines, known working order — not a list of jobs or
+          a stack of case studies, but a repertoire.
+        </div>
+      </div>
+    </div>
+
+    <div class="chess-openings">
+      <h3>The Opening Repertoire — pattern library as organizing principle</h3>
+      <div class="openings">
+        <div class="opening">
+          <div class="num">01</div>
+          <div class="name">Data-Led Persuasion</div>
+        </div>
+        <div class="opening">
+          <div class="num">02</div>
+          <div class="name">Calibrated Risk Delay</div>
+        </div>
+        <div class="opening">
+          <div class="num">03</div>
+          <div class="name">Cross-Platform ERP Integration</div>
+        </div>
+        <div class="opening">
+          <div class="num">04</div>
+          <div class="name">Performance Under Load</div>
+        </div>
+        <div class="opening active">
+          <div class="num">05 · NEXT</div>
+          <div class="name">Architecture Review</div>
+        </div>
+      </div>
+
+      <div class="chess-detail">
+        <div class="opening-detail">
+          <div class="ehead">Opening 5 · Sharpened Next</div>
+          <h4>The Architecture Review Pattern</h4>
+          <p>
+            How to own technical decision-making across a 7-person team without
+            becoming a bottleneck. The CV mentions it in a single line:
+            <em>"managing delivery through Azure Boards and enforcing high code
+            quality via reviews and mentoring"</em> — this pattern is the <em>how</em>
+            behind that line.
+          </p>
+          <p>
+            It's also the pattern that <strong>scales the CEO/recruiter argument</strong>:
+            "he can do it — whatever you give him to build, he can build it
+            for you, and better than others." Architecture Review is the
+            demonstrated mechanism by which that claim is true.
+          </p>
+          <div class="moves-list">
+            <div class="ml">Sample moves · from real work</div>
+            <div class="move"><span class="ply">1.</span><span>Co-design review checklist with the team, not for them.</span></div>
+            <div class="move"><span class="ply">2.</span><span>Define "blocking" sharply; reserve the right of refusal for cross-cutting risk.</span></div>
+            <div class="move"><span class="ply">3.</span><span>Pair-review juniors weekly; lead-review seniors asynchronously.</span></div>
+            <div class="move"><span class="ply">4.</span><span>Surface architecture decisions in writing — including the ones you rejected.</span></div>
+            <div class="move"><span class="ply">5.</span><span>Time-box the bottleneck: every review has a 24-hour clock.</span></div>
+          </div>
+        </div>
+
+        <div class="r2-list">
+          <h5>Round 2 · Six state-changes</h5>
+          <p style="font-size: 12px; color: rgba(244,241,234,0.7); margin: 0 0 14px;">
+            What does visiting the portfolio actually <em>do</em> to the visitor?
+          </p>
+          <ul>
+            <li><span class="nm">01</span><span><strong>Conviction</strong> — the hiring manager is persuaded without a call.</span></li>
+            <li><span class="nm">02</span><span><strong>Curiosity</strong> — they want to read the next pattern.</span></li>
+            <li><span class="nm">03</span><span><strong>Trust</strong> — the engineering of the site is itself evidence.</span></li>
+            <li><span class="nm">04</span><span><strong>Recall</strong> — they remember the site and the claim.</span></li>
+            <li><span class="nm">05</span><span><strong>Forwarding</strong> — they press one button to send upward.</span></li>
+            <li><span class="nm">06</span><span><strong>Anticipation</strong> — they want to come back to see what was added.</span></li>
+          </ul>
+          <p style="font-size: 12px; color: var(--accent); margin: 16px 0 0; font-family: var(--type); letter-spacing: 0.14em; text-transform: uppercase;">
+            Highest leverage = Forwarding
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SYNTHESIS — THE CLIMAX ============== -->
+<section class="synthesis" id="synthesis">
+  <div class="synthesis-grid-overlay"></div>
+  <div class="synthesis-spine"></div>
+  <div class="wrap">
+    <div class="synth-intro">
+      <div class="stamp">The Synthesis · The Climax</div>
+      <h2>
+        Five techniques. One spine. The portfolio is not a<br/>
+        résumé — it's an <em>engineer's dossier</em> that makes the<br/>
+        interview feel redundant.
+      </h2>
+    </div>
+
+    <div class="synth-mantra">
+      The single sentence the recruiter most wants the hiring manager to read:
+      <br/><br/>
+      <strong style="font-style: normal; color: var(--accent);">"He can do it — whatever you give him to build, he can build it for you, and better than others."</strong>
+    </div>
+
+    <div class="axioms">
+      <div class="axiom">
+        <div class="roman">AXIOM I</div>
+        <div class="title">Proof, not pitch.</div>
+        <div class="body">
+          Every page is a standalone proof surface. Evidence compresses into the
+          recruiter's 30-second scan, then expands on demand. The interview is
+          already half-held before the call.
+        </div>
+      </div>
+      <div class="axiom">
+        <div class="roman">AXIOM II</div>
+        <div class="title">Anticipatory design.</div>
+        <div class="body">
+          The portfolio answers the visitor's unspoken thinking so visibly that
+          the site reads their mind. Memorability comes from feeling
+          <em>already understood</em>, not from being clever.
+        </div>
+      </div>
+      <div class="axiom">
+        <div class="roman">AXIOM III</div>
+        <div class="title">A repertoire, not a resume.</div>
+        <div class="body">
+          The chess-opening book is the shape. Named patterns, known moves,
+          known counter-lines. Recruiter and engineer both navigate the same
+          library.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== LOCKED DECISIONS ============== -->
+<section class="locked" id="locked">
+  <div class="wrap">
+    <div class="locked-head">
+      <div>
+        <div class="sticker">Locked · surfaced for build</div>
+        <h2>Decisions to carry forward<br/>into the build phase.</h2>
+      </div>
+      <div class="legend">
+        <strong>How to read this.</strong> Each decision was earned inside the
+        session — surfaced through contradiction, picked over alternatives, and
+        locked when the user said <em>ship it</em>. Cross out anything you
+        no longer recognize as load-bearing.
+      </div>
+    </div>
+
+    <div class="decisions">
+      <div class="decision">
+        <div class="check"></div>
+        <div class="no">Decision 01</div>
+        <h3>Recruiter-Mode Toggle is the spine</h3>
+        <p>
+          A single view that compresses the portfolio into ammunition the
+          recruiter can forward to a hiring manager. All evidence supports one
+          sentence.
+        </p>
+      </div>
+      <div class="decision">
+        <div class="check"></div>
+        <div class="no">Decision 02</div>
+        <h3>Pattern Library is the organizing principle</h3>
+        <p>
+          The portfolio is a library of named engineering patterns (chess
+          openings), not a stack of case studies. Section content is sub-patterns.
+        </p>
+      </div>
+      <div class="decision">
+        <div class="check"></div>
+        <div class="no">Decision 03</div>
+        <h3>CV-as-source-of-truth, always</h3>
+        <p>
+          Every claim traced to <code>cv.md</code>. No invented numbers, no
+          fluff. The CV file is the canonical truth the build reads from.
+        </p>
+      </div>
+      <div class="decision">
+        <div class="check"></div>
+        <div class="no">Decision 04</div>
+        <h3>Decentralized homepage</h3>
+        <p>
+          The homepage is no longer the only pitch surface. Every page carries
+          a positioning line, at least one proof number, and a path back.
+        </p>
+      </div>
+      <div class="decision">
+        <div class="check"></div>
+        <div class="no">Decision 05</div>
+        <h3>Static-first, additive schema</h3>
+        <p>
+          Vercel · SSG · markdown/JSON content · serverless dynamic · additive
+          schema. Adding fields doesn't break older entries.
+        </p>
+      </div>
+      <div class="decision">
+        <div class="check"></div>
+        <div class="no">Decision 06</div>
+        <h3>CV editable without redeploy</h3>
+        <p>
+          Content lives where the live site reads it. A save fires a
+          per-page ISR regen — the build doesn't move when content does.
+        </p>
+      </div>
+      <div class="decision">
+        <div class="check"></div>
+        <div class="no">Decision 07</div>
+        <h3>Leadership = primary proof vector</h3>
+        <p>
+          The CV under-leads leadership. Lead with the pushback story,
+          the data-led persuasion, the standards-as-non-negotiable pattern.
+        </p>
+      </div>
+      <div class="decision">
+        <div class="check"></div>
+        <div class="no">Decision 08</div>
+        <h3>Lab reframed professionally</h3>
+        <p>
+          New heading · Production / Experiment / Personal tags · micro-case-study
+          shape. Lab is a portfolio surface, not a hobby drawer.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SPINE QUOTES ============== -->
+<section class="spine-quotes">
+  <h2>Verbatim · the lines that did the work</h2>
+  <div class="spine-grid">
+    <div class="spine-quote">
+      <div class="marker">The Spine Line</div>
+      <blockquote>
+        He can do it — whatever you give him to build, he can build it for you,
+        and better than others.
+      </blockquote>
+      <div class="origin">User · recruiter-mode spine · the hero sentence</div>
+    </div>
+
+    <div class="spine-quote framed">
+      <div class="marker">Anticipatory Design</div>
+      <blockquote>
+        The portfolio becomes memorable not because it's clever, but because
+        it makes the visitor feel already understood.
+      </blockquote>
+      <div class="origin">User · Lotus Blossom · cell 06 deeper read</div>
+    </div>
+
+    <div class="spine-quote dissent">
+      <div class="marker">The Pushback</div>
+      <blockquote>
+        I showed him the data, told him this doesn't look optimal enough to be shipped — it needs to pass all tests to be able to be shipped. We cannot ship a weak and faulty product.
+      </blockquote>
+      <div class="origin">Sanjit's voice · leadership proof · verbatim</div>
+    </div>
+
+    <div class="spine-quote">
+      <div class="marker">The Architecture Unlock</div>
+      <blockquote>
+        The build doesn't move when the content does.
+      </blockquote>
+      <div class="origin">Coach · content durability constraint · reduced</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== CLOSING ============== -->
+<footer class="closing">
+  <div class="wrap">
+    <div class="row">
+      <div class="seal">
+        The portfolio is not a résumé. It is an engineer's dossier —
+        a self-proving playground whose engineering is itself the evidence.
+      </div>
+      <div>
+        <h6>Artifacts produced</h6>
+        <ul>
+          <li>brainstorm.html (this keepsake)</li>
+          <li>memlog.md (source of truth)</li>
+          <li>cv.md (referenced)</li>
+          <li>idea.md (referenced)</li>
+        </ul>
+      </div>
+      <div>
+        <h6>Status</h6>
+        <ul>
+          <li>Session · complete</li>
+          <li>Synthesis · locked</li>
+          <li>Build phase · ready to enter</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stamp-row">
+      <span>BMAD · BRAINSTORMING · 2026·09·23</span>
+      <span>Single-file keepsake · no external dependencies</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mark the active opening cell as user scrolls past; pure progressive enhancement.
+  (function () {
+    var cells = document.querySelectorAll('.opening');
+    var detail = document.querySelector('.opening-detail');
+    if (!detail || !cells.length) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          cells.forEach(function (c) { c.classList.remove('active'); });
+          // Keep opening 5 as the active anchor (next to sharpen).
+        }
+      });
+    }, { threshold: 0.4 });
+    io.observe(detail);
+  })();
+
+  // Lightweight "scanline" cursor on hover over decision cards.
+  (function () {
+    var cards = document.querySelectorAll('.decision');
+    cards.forEach(function (c) {
+      c.addEventListener('mouseenter', function () {
+        c.style.background = 'rgba(217,107,58,0.04)';
+      });
+      c.addEventListener('mouseleave', function () {
+        c.style.background = '';
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

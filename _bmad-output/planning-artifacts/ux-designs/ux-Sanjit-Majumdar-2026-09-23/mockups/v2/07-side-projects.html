@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Side projects — Sanjit Majumdar · Tools, games, experiments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08090C; --bg-2: #0E1014; --bg-3: #15181F;
+    --fg: #F5F5F7; --fg-2: #C7C9D1; --fg-3: #7A7E89;
+    --border: rgba(255,255,255,0.08); --border-strong: rgba(255,255,255,0.16);
+    --accent: #A78BFA; --accent-2: #60A5FA; --accent-glow: rgba(167,139,250,0.18);
+    --live: #34D399; --live-glow: rgba(52,211,153,0.20);
+    --gradient-accent: linear-gradient(135deg, #A78BFA 0%, #60A5FA 100%);
+    --gradient-hero: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(167,139,250,0.10) 0%, transparent 55%);
+    --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--fg); font-family: 'Inter', system-ui, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.025em; line-height: 1.1; font-weight: 500; }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  .skip { position: absolute; top: -100px; left: 1rem; background: var(--bg-3); color: var(--fg); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); z-index: 100; transition: top 200ms ease; }
+  .skip:focus { top: 1rem; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 4rem; }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(8,9,12,0.7); border-bottom: 1px solid var(--border); }
+  .nav-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-mark { display: flex; align-items: center; gap: 0.6rem; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 500; font-size: 15px; letter-spacing: -0.01em; }
+  .nav-mark-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gradient-accent); box-shadow: 0 0 12px var(--accent-glow); }
+  .nav-links { display: flex; gap: 2.25rem; font-size: 14px; color: var(--fg-3); }
+  .nav-links a { transition: color 150ms ease; }
+  .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--fg); }
+
+  /* HERO */
+  .hero { position: relative; padding: 6rem 0 5rem; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100%; background: var(--gradient-hero); pointer-events: none; z-index: 0; }
+  .hero-inner { position: relative; z-index: 1; max-width: 880px; }
+  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.6rem; }
+  .hero-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .hero h1 { font-size: clamp(2.5rem, 5.5vw, 4.5rem); font-weight: 500; letter-spacing: -0.035em; line-height: 1.05; margin-bottom: 1.5rem; }
+  .hero-lede { font-size: clamp(1rem, 1.4vw, 1.25rem); color: var(--fg-2); line-height: 1.55; max-width: 640px; margin-bottom: 3rem; }
+  .hero-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .hero-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fg-2); padding: 0.4rem 0.85rem; background: var(--bg-2); border: 1px solid var(--border-strong); border-radius: var(--radius-full); }
+
+  /* SECTION */
+  .section { padding: 4rem 0; }
+  .section-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); gap: 2rem; flex-wrap: wrap; }
+  .section-head h2 { font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 500; letter-spacing: -0.025em; }
+  .section-head-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fg-3); }
+
+  /* PROJECT GRID */
+  .project-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .project-grid.two { grid-template-columns: repeat(2, 1fr); }
+  .project-card {
+    position: relative;
+    padding: 2rem;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: transform 200ms ease, border-color 200ms ease, background 200ms ease;
+    display: flex; flex-direction: column;
+  }
+  .project-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent); }
+  .project-card:hover { transform: translateY(-3px); border-color: var(--border-strong); background: var(--bg-3); }
+  .project-card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+  .project-card-icon {
+    width: 44px; height: 44px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px; font-weight: 500; color: var(--accent);
+  }
+  .project-card-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 0.3rem 0.7rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+  }
+  .project-card-status.live { color: var(--live); border-color: rgba(52,211,153,0.30); background: var(--live-glow); }
+  .project-card-status.beta { color: var(--accent); border-color: rgba(167,139,250,0.30); background: rgba(167,139,250,0.10); }
+  .project-card-status.shipped { color: var(--fg-3); }
+  .project-card-status.research { color: var(--fg-3); }
+  .project-card h3 { font-size: 1.25rem; font-weight: 500; margin-bottom: 0.85rem; letter-spacing: -0.015em; }
+  .project-card-desc { font-size: 0.9375rem; color: var(--fg-2); line-height: 1.6; margin-bottom: 1.5rem; flex-grow: 1; }
+  .project-card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; }
+  .project-card-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fg-3); padding: 0.25rem 0.6rem; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-full); }
+  .project-card-meta { display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .project-card-meta-l { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-3); }
+  .project-card-meta-arrow { color: var(--fg-3); transition: color 200ms ease, transform 200ms ease; }
+  .project-card:hover .project-card-meta-arrow { color: var(--accent); transform: translateX(3px); }
+
+  /* GAMES ROW — special: gameplay blurb + controls */
+  .games-section { padding: 4rem 0 7rem; }
+  .games-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .game-card {
+    padding: 2rem;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+    transition: transform 200ms ease, border-color 200ms ease;
+  }
+  .game-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent); }
+  .game-card:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+  .game-card-preview {
+    aspect-ratio: 16 / 9;
+    background: linear-gradient(135deg, var(--bg-3) 0%, var(--bg) 100%);
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--fg-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .game-card h3 { font-size: 1.25rem; font-weight: 500; margin-bottom: 0.85rem; letter-spacing: -0.015em; }
+  .game-card p { font-size: 0.9375rem; color: var(--fg-2); line-height: 1.6; margin-bottom: 1.25rem; }
+  .game-controls {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    padding: 0.5rem 0.85rem;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    display: inline-block;
+  }
+
+  /* OPEN SOURCE ROW */
+  .oss-section { padding: 4rem 0 7rem; background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .oss-list { display: flex; flex-direction: column; gap: 1rem; }
+  .oss-row {
+    display: grid; grid-template-columns: 100px 1fr auto; gap: 2rem;
+    padding: 1.75rem 2rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    align-items: center;
+    transition: border-color 200ms ease, background 200ms ease;
+  }
+  .oss-row:hover { border-color: var(--border-strong); background: var(--bg-3); }
+  .oss-row-stars {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--fg);
+    padding: 0.4rem 0.75rem;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    text-align: center;
+  }
+  .oss-row-stars-label { display: block; font-size: 9px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.2rem; }
+  .oss-row h4 { font-size: 1.0625rem; font-weight: 500; margin-bottom: 0.4rem; letter-spacing: -0.015em; }
+  .oss-row p { font-size: 0.875rem; color: var(--fg-2); line-height: 1.5; }
+  .oss-row-arrow { color: var(--fg-3); transition: color 200ms ease, transform 200ms ease; }
+  .oss-row:hover .oss-row-arrow { color: var(--accent); transform: translateX(3px); }
+
+  /* CTA */
+  .cta-strip { padding: 5rem 0; }
+  .cta-strip-inner { display: flex; justify-content: space-between; align-items: center; gap: 3rem; flex-wrap: wrap; padding: 3rem; background: var(--bg-2); border: 1px solid var(--border-strong); border-radius: var(--radius-xl); position: relative; overflow: hidden; }
+  .cta-strip-inner::before { content: ''; position: absolute; top: 0; right: 0; width: 400px; height: 200px; background: radial-gradient(ellipse at top right, var(--accent-glow), transparent 70%); pointer-events: none; }
+  .cta-strip-inner > div { position: relative; z-index: 1; }
+  .cta-strip h3 { font-size: clamp(1.25rem, 2vw, 1.75rem); font-weight: 500; letter-spacing: -0.025em; margin-bottom: 0.5rem; }
+  .cta-strip p { color: var(--fg-2); font-size: 0.9375rem; max-width: 540px; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.875rem 1.75rem; background: var(--gradient-accent); color: #08090C; border-radius: var(--radius-md); font-size: 15px; font-weight: 600; transition: transform 150ms ease, filter 150ms ease, box-shadow 150ms ease; }
+  .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 8px 32px var(--accent-glow); }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--border); padding: 3rem 0; background: var(--bg); }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .footer-name { font-size: 0.875rem; color: var(--fg-2); }
+  .footer-links { display: flex; gap: 1.75rem; font-size: 0.875rem; color: var(--fg-3); align-items: center; }
+  .footer-links a { transition: color 150ms ease; }
+  .footer-links a:hover { color: var(--fg); }
+  .footer-recruiter { font-size: 12px; color: var(--fg-2); border: 1px solid var(--border-strong); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); background: transparent; transition: color 150ms ease, border-color 150ms ease; }
+  .footer-recruiter:hover { color: var(--fg); border-color: var(--fg-3); }
+
+  @media (max-width: 900px) {
+    .wrap { padding: 0 1.5rem; }
+    .hero { padding: 4rem 0 3rem; }
+    .project-grid, .project-grid.two { grid-template-columns: 1fr; }
+    .games-row { grid-template-columns: 1fr; }
+    .oss-row { grid-template-columns: 80px 1fr; gap: 1rem; padding: 1.25rem 1.5rem; }
+    .oss-row-arrow { display: none; }
+    .cta-strip { padding: 3rem 0; }
+    .cta-strip-inner { padding: 2rem; flex-direction: column; align-items: flex-start; gap: 2rem; }
+    .section, .games-section, .oss-section { padding: 3rem 0; }
+    .nav-links { display: none; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="nav-mark"><span class="nav-mark-dot"></span>Sanjit Majumdar</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#">Home</a>
+      <a href="#">Work</a>
+      <a href="#">Patterns</a>
+      <a href="#">Now</a>
+      <a href="#" aria-current="page">Side projects</a>
+      <a href="#">About</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-label">Side projects · Tools, games, experiments, open source</div>
+      <h1>The things I build<br>because I want to.</h1>
+      <p class="hero-lede">Production software is what I do for a living. Side projects are how I keep my hands in different problems — civic tech, AI agents, browser games, the occasional useful tool. Most of these are real and shipping.</p>
+      <div class="hero-tags">
+        <span class="hero-tag">Civic</span>
+        <span class="hero-tag">AI</span>
+        <span class="hero-tag">Tools</span>
+        <span class="hero-tag">Games</span>
+        <span class="hero-tag">Open source</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Civic and AI · Real projects</h2>
+      <div class="section-head-meta">3 active</div>
+    </div>
+
+    <div class="project-grid two">
+      <a href="#" class="project-card">
+        <div class="project-card-head">
+          <div class="project-card-icon">CF</div>
+          <span class="project-card-status beta">β Private beta</span>
+        </div>
+        <h3>CityFix — Civic complaint routing</h3>
+        <p class="project-card-desc">A small platform for routing complaints to Dhaka municipal services. React + AI prototype matching complaints to the right department. Currently in private beta with two pilot neighborhoods.</p>
+        <div class="project-card-tags">
+          <span class="project-card-tag">React</span>
+          <span class="project-card-tag">TypeScript</span>
+          <span class="project-card-tag">AI/LLM</span>
+          <span class="project-card-tag">Civic</span>
+        </div>
+        <div class="project-card-meta">
+          <span class="project-card-meta-l">Started 2022 · 2 neighborhoods</span>
+          <span class="project-card-meta-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="#" class="project-card">
+        <div class="project-card-head">
+          <div class="project-card-icon">SK</div>
+          <span class="project-card-status research">Research</span>
+        </div>
+        <h3>Surakkha — Water safety monitoring</h3>
+        <p class="project-card-desc">Water safety monitoring concept for Bangladesh — arsenic test data, NGO coordination, district-level reporting. Frontend engineer wanted. Research phase. Slow on purpose.</p>
+        <div class="project-card-tags">
+          <span class="project-card-tag">Research</span>
+          <span class="project-card-tag">Civic</span>
+          <span class="project-card-tag">Bangladesh</span>
+        </div>
+        <div class="project-card-meta">
+          <span class="project-card-meta-l">2023 — present · 0 deployments</span>
+          <span class="project-card-meta-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="#" class="project-card">
+        <div class="project-card-head">
+          <div class="project-card-icon">AI</div>
+          <span class="project-card-status live">● Writing monthly</span>
+        </div>
+        <h3>AI Engineering Lab</h3>
+        <p class="project-card-desc">Monthly essays on what's worth using, what's theater, what gets me in trouble. Read before you let any AI touch your migrations.</p>
+        <div class="project-card-tags">
+          <span class="project-card-tag">Writing</span>
+          <span class="project-card-tag">AI/agents</span>
+          <span class="project-card-tag">Monthly</span>
+        </div>
+        <div class="project-card-meta">
+          <span class="project-card-meta-l">2024 — present · 12 essays</span>
+          <span class="project-card-meta-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="#" class="project-card">
+        <div class="project-card-head">
+          <div class="project-card-icon">RUT</div>
+          <span class="project-card-status shipped">Shipped · 200 users</span>
+        </div>
+        <h3>Random Useful Tool #17</h3>
+        <p class="project-card-desc">Calculator #17. Apparently I needed another one. Shipped to 200 users, took longer than it should have. The whole collection lives on the Lab.</p>
+        <div class="project-card-tags">
+          <span class="project-card-tag">Tool</span>
+          <span class="project-card-tag">Personal</span>
+        </div>
+        <div class="project-card-meta">
+          <span class="project-card-meta-l">August 2025 · v1.0</span>
+          <span class="project-card-meta-arrow">→</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="games-section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Games · Not serious</h2>
+      <div class="section-head-meta">2 small browser games</div>
+    </div>
+
+    <div class="games-row">
+      <a href="#" class="game-card">
+        <div class="game-card-preview">CLICK TO PLAY</div>
+        <h3>Pothole Patrol</h3>
+        <p>A small browser game about a Dhaka street and the potholes that don't get fixed. Click to fill; avoid the cars.</p>
+        <div class="game-controls">Mouse · Click to fill</div>
+      </a>
+      <a href="#" class="game-card">
+        <div class="game-card-preview">PRESS PLAY</div>
+        <h3>Migration Day</h3>
+        <p>A reflex game about cutting over 10K+ users to a new system in 14 hours. Made the week of the actual Wellbook cutover.</p>
+        <div class="game-controls">Arrow keys · Move · Space to act</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="oss-section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Open source · Contributions</h2>
+      <div class="section-head-meta">3 maintained</div>
+    </div>
+
+    <div class="oss-list">
+      <a href="#" class="oss-row">
+        <div class="oss-row-stars">128<div class="oss-row-stars-label">★ stars</div></div>
+        <div>
+          <h4>nopcommerce-bootstrap-starter</h4>
+          <p>Plugin template and shared scaffolding for nopCommerce plugin authors. Fork-free upgrade path; the pattern from CS · 04.</p>
+        </div>
+        <span class="oss-row-arrow">→</span>
+      </a>
+      <a href="#" class="oss-row">
+        <div class="oss-row-stars">42<div class="oss-row-stars-label">★ stars</div></div>
+        <div>
+          <h4>angular-data-grid-lite</h4>
+          <p>Standalone data grid for Angular — the house-style component that replaced Syncfusion in our 2019 work. No third-party deps.</p>
+        </div>
+        <span class="oss-row-arrow">→</span>
+      </a>
+      <a href="#" class="oss-row">
+        <div class="oss-row-stars">17<div class="oss-row-stars-label">★ stars</div></div>
+        <div>
+          <h4>mdx-content-utils</h4>
+          <p>Type-safe frontmatter + content collection helpers for MDX sites. Born out of building this portfolio.</p>
+        </div>
+        <span class="oss-row-arrow">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="cta-strip">
+  <div class="wrap">
+    <div class="cta-strip-inner">
+      <div>
+        <h3>Want to collaborate on a side project?</h3>
+        <p>CityFix and Surakkha are both open to collaborators — frontend engineers for Surakkha, anyone willing to test CityFix in their neighborhood.</p>
+      </div>
+      <a href="#" class="btn-primary">Get in touch →</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh · UTC+6</div>
+    <div class="footer-links">
+      <a href="#">GitHub</a><a href="#">LinkedIn</a><a href="#">Email</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

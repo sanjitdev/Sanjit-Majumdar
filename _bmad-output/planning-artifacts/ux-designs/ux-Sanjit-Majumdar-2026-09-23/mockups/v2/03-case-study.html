@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wellbook — Case Study · Sanjit Majumdar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08090C; --bg-2: #0E1014; --bg-3: #15181F;
+    --fg: #F5F5F7; --fg-2: #C7C9D1; --fg-3: #7A7E89;
+    --border: rgba(255,255,255,0.08); --border-strong: rgba(255,255,255,0.16);
+    --accent: #A78BFA; --accent-2: #60A5FA; --accent-glow: rgba(167,139,250,0.18);
+    --live: #34D399; --warn: #F87171;
+    --gradient-accent: linear-gradient(135deg, #A78BFA 0%, #60A5FA 100%);
+    --gradient-hero: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(167,139,250,0.10) 0%, transparent 55%);
+    --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--fg); font-family: 'Inter', system-ui, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.025em; line-height: 1.1; font-weight: 500; }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  .skip { position: absolute; top: -100px; left: 1rem; background: var(--bg-3); color: var(--fg); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); z-index: 100; transition: top 200ms ease; }
+  .skip:focus { top: 1rem; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 4rem; }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(8,9,12,0.7); border-bottom: 1px solid var(--border); }
+  .nav-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-mark { display: flex; align-items: center; gap: 0.6rem; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 500; font-size: 15px; letter-spacing: -0.01em; }
+  .nav-mark-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gradient-accent); box-shadow: 0 0 12px var(--accent-glow); }
+  .nav-links { display: flex; gap: 2.25rem; font-size: 14px; color: var(--fg-3); }
+  .nav-links a { transition: color 150ms ease; }
+  .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--fg); }
+
+  /* HERO */
+  .hero { position: relative; padding: 4rem 0 4rem; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100%; background: var(--gradient-hero); pointer-events: none; z-index: 0; }
+  .hero-inner { position: relative; z-index: 1; }
+  .breadcrumb { display: flex; gap: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--fg-3); margin-bottom: 2rem; align-items: center; }
+  .breadcrumb a { transition: color 150ms ease; }
+  .breadcrumb a:hover { color: var(--fg); }
+  .breadcrumb-sep { color: var(--fg-3); opacity: 0.5; }
+  .breadcrumb-current { color: var(--fg-2); }
+  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.6rem; }
+  .hero-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .hero h1 { font-size: clamp(2.5rem, 5.5vw, 4.5rem); font-weight: 500; letter-spacing: -0.035em; line-height: 1.05; margin-bottom: 1.5rem; max-width: 880px; }
+  .hero-lede { font-size: clamp(1rem, 1.4vw, 1.25rem); color: var(--fg-2); line-height: 1.55; max-width: 720px; margin-bottom: 3rem; }
+
+  /* META BAR */
+  .meta-bar { padding: 2rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 4rem; }
+  .meta-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2rem; }
+  .meta-cell-num { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 1.5rem; font-weight: 500; margin-bottom: 0.3rem; background: var(--gradient-accent); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .meta-cell-lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fg-3); }
+
+  /* LAYOUT: content + sidebar */
+  .layout { display: grid; grid-template-columns: 1fr 320px; gap: 5rem; padding-bottom: 7rem; align-items: start; }
+
+  /* SECTIONS */
+  .case-section { padding: 3rem 0; border-top: 1px solid var(--border); }
+  .case-section:first-child { border-top: none; padding-top: 0; }
+  .case-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
+  .case-num::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .case-section h2 { font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 500; letter-spacing: -0.025em; margin-bottom: 1.5rem; }
+  .case-section p { font-size: 1rem; color: var(--fg-2); line-height: 1.7; margin-bottom: 1.25rem; max-width: 720px; }
+  .case-section p:last-child { margin-bottom: 0; }
+  .case-section strong { color: var(--fg); font-weight: 500; }
+
+  /* ARCHITECTURE BOX */
+  .arch-box { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2.5rem; margin: 2rem 0; }
+  .arch-flow { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .arch-node { flex: 1; min-width: 120px; padding: 1.25rem; background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius-md); text-align: center; }
+  .arch-node-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 0.4rem; }
+  .arch-node-name { font-size: 0.9375rem; font-weight: 500; color: var(--fg); }
+  .arch-arrow { color: var(--fg-3); font-size: 18px; }
+
+  /* DECISIONS TABLE */
+  .decisions { display: flex; flex-direction: column; gap: 1rem; margin-top: 2rem; }
+  .decision { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; padding: 1.5rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-md); }
+  .decision-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 0.4rem; }
+  .decision h4 { font-size: 1rem; font-weight: 500; margin-bottom: 0.5rem; letter-spacing: -0.01em; }
+  .decision p { font-size: 0.875rem; color: var(--fg-2); line-height: 1.55; margin: 0; }
+  .decision-tradeoff { padding-left: 1.25rem; border-left: 1px solid var(--border); }
+  .decision-tradeoff-label { color: var(--warn); }
+
+  /* RESULTS LIST */
+  .results-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; margin-top: 2rem; }
+  .results-list li { display: grid; grid-template-columns: 60px 1fr; gap: 1.5rem; padding: 1.25rem 0; border-top: 1px solid var(--border); align-items: center; }
+  .results-num { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 1.5rem; font-weight: 500; background: var(--gradient-accent); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .results-desc { font-size: 0.9375rem; color: var(--fg-2); line-height: 1.55; }
+
+  /* SIDEBAR */
+  .sidebar { position: sticky; top: 96px; }
+  .sidebar-block { padding: 1.5rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-bottom: 1.5rem; }
+  .sidebar-block-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-3); margin-bottom: 1rem; }
+  .toc-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .toc-list a { font-size: 0.875rem; color: var(--fg-2); transition: color 150ms ease; padding: 0.4rem 0; display: block; border-left: 2px solid transparent; padding-left: 0.75rem; margin-left: -0.75rem; }
+  .toc-list a:hover { color: var(--fg); border-left-color: var(--accent); }
+  .pattern-rail { display: flex; flex-direction: column; gap: 1rem; }
+  .pattern-link { padding: 1rem; background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius-md); transition: border-color 150ms ease; }
+  .pattern-link:hover { border-color: var(--border-strong); }
+  .pattern-link-name { font-size: 0.9375rem; font-weight: 500; margin-bottom: 0.4rem; color: var(--accent); }
+  .pattern-link-desc { font-size: 0.8125rem; color: var(--fg-3); line-height: 1.4; }
+
+  /* NEXT NAV */
+  .next-nav { padding: 4rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg-2); }
+  .next-nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .next-nav-card { padding: 2rem; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); transition: border-color 150ms ease; }
+  .next-nav-card:hover { border-color: var(--border-strong); }
+  .next-nav-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-3); margin-bottom: 0.5rem; }
+  .next-nav-card h4 { font-size: 1.125rem; font-weight: 500; letter-spacing: -0.015em; }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--border); padding: 3rem 0; background: var(--bg); }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .footer-name { font-size: 0.875rem; color: var(--fg-2); }
+  .footer-links { display: flex; gap: 1.75rem; font-size: 0.875rem; color: var(--fg-3); align-items: center; }
+  .footer-links a { transition: color 150ms ease; }
+  .footer-links a:hover { color: var(--fg); }
+  .footer-recruiter { font-size: 12px; color: var(--fg-2); border: 1px solid var(--border-strong); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); background: transparent; transition: color 150ms ease, border-color 150ms ease; }
+  .footer-recruiter:hover { color: var(--fg); border-color: var(--fg-3); }
+
+  @media (max-width: 1100px) {
+    .layout { grid-template-columns: 1fr; gap: 3rem; }
+    .sidebar { position: static; }
+    .meta-grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  }
+  @media (max-width: 900px) {
+    .wrap { padding: 0 1.5rem; }
+    .hero { padding: 3rem 0; }
+    .meta-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .meta-bar { margin-bottom: 2rem; }
+    .layout { padding-bottom: 4rem; }
+    .decision { grid-template-columns: 1fr; }
+    .decision-tradeoff { padding-left: 0; border-left: none; padding-top: 1rem; border-top: 1px solid var(--border); }
+    .next-nav-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="nav-mark"><span class="nav-mark-dot"></span>Sanjit Majumdar</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#">Home</a>
+      <a href="#" aria-current="page">Work</a>
+      <a href="#">Patterns</a>
+      <a href="#">Side projects</a>
+      <a href="#">About</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap hero-inner">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="#">Work</a>
+      <span class="breadcrumb-sep" aria-hidden="true">/</span>
+      <span class="breadcrumb-current">Wellbook</span>
+    </nav>
+    <div class="hero-label">Case Study · 01 · Lead case study · 2020 — 2021</div>
+    <h1>Wellbook — Enterprise governance for an oil &amp; gas organisation.</h1>
+    <p class="hero-lede">Three ERPs, one canonical schema, a 14-hour migration window. Tech lead on a 7-person team. 10K+ daily users, zero P1 incidents post-cutover.</p>
+  </div>
+</section>
+
+<section class="meta-bar">
+  <div class="wrap">
+    <div class="meta-grid">
+      <div><div class="meta-cell-num">10K+</div><div class="meta-cell-lbl">Daily users</div></div>
+      <div><div class="meta-cell-num">14h</div><div class="meta-cell-lbl">Migration window</div></div>
+      <div><div class="meta-cell-num">3 → 1</div><div class="meta-cell-lbl">ERPs unified</div></div>
+      <div><div class="meta-cell-num">7</div><div class="meta-cell-lbl">Engineers led</div></div>
+      <div><div class="meta-cell-num">0</div><div class="meta-cell-lbl">P1 post-cutover</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="layout">
+    <article>
+      <section class="case-section" id="problem">
+        <div class="case-num">01 · Problem</div>
+        <h2>Three ERPs, three sources of truth, one organisation.</h2>
+        <p>The client — an international oil &amp; gas organisation — had grown through acquisition. Three different ERPs, three different project-management vocabularies, three finance teams that refused to reconcile at month-end. Reporting took <strong>three weeks</strong> of manual spreadsheet stitching.</p>
+        <p>Wellbook had to be a single source of truth for project governance — from field operations through finance — without forcing the legacy systems to be replaced. The legacy ERPs stayed; Wellbook sat on top.</p>
+      </section>
+
+      <section class="case-section" id="approach">
+        <div class="case-num">02 · Approach</div>
+        <h2>Canonical schema first. Then everything else.</h2>
+        <p>The first three months were schema work. We modelled procurement, projects, vendors, finance events, and document registers as canonical entities with stable IDs. The three ERPs became adapters — each one mapped into the canonical model with explicit translation rules.</p>
+        <p>Field operations used a single Angular SPA against the canonical API. Legacy systems kept their own UIs for deep workflows they did well; Wellbook became the place where governance happened — authorisations, audit trails, regulator reporting.</p>
+      </section>
+
+      <section class="case-section" id="architecture">
+        <div class="case-num">03 · Architecture</div>
+        <h2>Adapter layer between legacy and truth.</h2>
+        <div class="arch-box">
+          <div class="arch-flow">
+            <div class="arch-node"><div class="arch-node-label">Frontend</div><div class="arch-node-name">Angular SPA</div></div>
+            <span class="arch-arrow" aria-hidden="true">→</span>
+            <div class="arch-node"><div class="arch-node-label">Gateway</div><div class="arch-node-name">.NET API</div></div>
+            <span class="arch-arrow" aria-hidden="true">→</span>
+            <div class="arch-node"><div class="arch-node-label">Canonical</div><div class="arch-node-name">SQL Server</div></div>
+          </div>
+          <div class="arch-flow" style="margin-top: 1.5rem;">
+            <div class="arch-node" style="background: var(--bg-2);"><div class="arch-node-label">Adapter 1</div><div class="arch-node-name">ERP A</div></div>
+            <span class="arch-arrow" aria-hidden="true">↕</span>
+            <div class="arch-node" style="background: var(--bg-2);"><div class="arch-node-label">Adapter 2</div><div class="arch-node-name">ERP B</div></div>
+            <span class="arch-arrow" aria-hidden="true">↕</span>
+            <div class="arch-node" style="background: var(--bg-2);"><div class="arch-node-label">Adapter 3</div><div class="arch-node-name">ERP C</div></div>
+          </div>
+        </div>
+        <p>The adapters are the load-bearing piece. They run as scheduled jobs and as event listeners; each one owns its translation rules and reconciliation windows. When ERP A disagrees with canonical, ERP A wins on its own fields but canonical wins on the governed fields. That's the rule that kept everyone sane.</p>
+      </section>
+
+      <section class="case-section" id="decisions">
+        <div class="case-num">04 · Decisions and tradeoffs</div>
+        <h2>The calls I made — and the ones I'd reconsider.</h2>
+        <div class="decisions">
+          <div class="decision">
+            <div>
+              <div class="decision-label">Decision</div>
+              <h4>Canonical schema as the contract</h4>
+              <p>Three months of schema before any UI. Tedious, but every later decision got easier.</p>
+            </div>
+            <div>
+              <div class="decision-label">Why</div>
+              <p>Without a stable vocabulary, every adapter becomes a one-off. The schema paid for itself in the first integration.</p>
+            </div>
+            <div class="decision-tradeoff">
+              <div class="decision-label decision-tradeoff-label">Tradeoff</div>
+              <p>Three months of "no visible progress" to non-technical stakeholders. Required real political capital.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <div>
+              <div class="decision-label">Decision</div>
+              <h4>Adapters, not replacements</h4>
+              <p>ERPs stayed. Wellbook adapted into them, didn't replace them.</p>
+            </div>
+            <div>
+              <div class="decision-label">Why</div>
+              <p>Replacing any of the three ERPs would have been a 3-year program with no delivery in between.</p>
+            </div>
+            <div class="decision-tradeoff">
+              <div class="decision-label decision-tradeoff-label">Tradeoff</div>
+              <p>Three sets of credentials to manage, three audit logs to reconcile. Real operational overhead.</p>
+            </div>
+          </div>
+          <div class="decision">
+            <div>
+              <div class="decision-label">Decision</div>
+              <h4>SQL Server, not Postgres</h4>
+              <p>Stayed on the client's existing SQL Server expertise and licensing.</p>
+            </div>
+            <div>
+              <div class="decision-label">Why</div>
+              <p>DBAs were already on staff. Migration cost outweighed any technical advantage of switching.</p>
+            </div>
+            <div class="decision-tradeoff">
+              <div class="decision-label decision-tradeoff-label">Tradeoff</div>
+              <p>Multi-tenant patterns are more constrained than on Postgres. Acceptable; documented.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="case-section" id="results">
+        <div class="case-num">05 · Results</div>
+        <h2>What shipped.</h2>
+        <ul class="results-list">
+          <li><span class="results-num">35%</span><span class="results-desc">Faster workflow turnaround across governance processes (baseline: pre-Wellbook manual stitch).</span></li>
+          <li><span class="results-num">$74k</span><span class="results-desc">Annual license costs removed by retiring the manual reconciliation tool.</span></li>
+          <li><span class="results-num">14h</span><span class="results-desc">Migration window — every user cut over in a single weekend, zero P1 incidents post-launch.</span></li>
+          <li><span class="results-num">10K+</span><span class="results-desc">Daily active users within 6 months of cutover; adoption 22% above projection.</span></li>
+        </ul>
+      </section>
+    </article>
+
+    <aside class="sidebar">
+      <div class="sidebar-block">
+        <div class="sidebar-block-label">On this page</div>
+        <ul class="toc-list">
+          <li><a href="#problem">01 · Problem</a></li>
+          <li><a href="#approach">02 · Approach</a></li>
+          <li><a href="#architecture">03 · Architecture</a></li>
+          <li><a href="#decisions">04 · Decisions and tradeoffs</a></li>
+          <li><a href="#results">05 · Results</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-block">
+        <div class="sidebar-block-label">Patterns cited</div>
+        <div class="pattern-rail">
+          <a href="#" class="pattern-link">
+            <div class="pattern-link-name">Canonical Model →</div>
+            <div class="pattern-link-desc">When N systems need one vocabulary, model it explicitly. Adapters translate.</div>
+          </a>
+          <a href="#" class="pattern-link">
+            <div class="pattern-link-name">Syncfusion Data-Grid replacement →</div>
+            <div class="pattern-link-desc">A second cousin — same problem of "vendor we can replace." Same shape of solution.</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="sidebar-block">
+        <div class="sidebar-block-label">Stack</div>
+        <div class="pattern-rail">
+          <div class="pattern-link"><div class="pattern-link-name">.NET / ASP.NET Core</div><div class="pattern-link-desc">Backend + adapters</div></div>
+          <div class="pattern-link"><div class="pattern-link-name">Angular</div><div class="pattern-link-desc">Field + governance SPA</div></div>
+          <div class="pattern-link"><div class="pattern-link-name">SQL Server</div><div class="pattern-link-desc">Multi-tenant canonical DB</div></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<section class="next-nav">
+  <div class="wrap">
+    <div class="next-nav-grid">
+      <a href="#" class="next-nav-card">
+        <div class="next-nav-label">← Previous case study</div>
+        <h4>Syncfusion Data-Grid replacement</h4>
+      </a>
+      <a href="#" class="next-nav-card">
+        <div class="next-nav-label">Next case study →</div>
+        <h4>Surakkha — Water safety monitoring</h4>
+      </a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh · UTC+6</div>
+    <div class="footer-links">
+      <a href="#">GitHub</a><a href="#">LinkedIn</a><a href="#">Email</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

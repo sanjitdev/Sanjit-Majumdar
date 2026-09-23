@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sanjit Majumdar — Senior Software Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAFAFA;
+    --fg: #0A0A0B;
+    --muted-fg: #475569;
+    --border: #E4E4E7;
+    --card: #FFFFFF;
+    --accent: #1D4ED8;
+    --accent-soft: #EFF6FF;
+    --live: #059669;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    font-weight: 500;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+  /* NAV — full width, sticky */
+  .nav {
+    width: 100%;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .nav-mark {
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+  }
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    font-size: 14px;
+    color: var(--muted-fg);
+  }
+  .nav-links a:hover { color: var(--fg); }
+  /* HERO — full-bleed, big and editorial */
+  .hero {
+    padding: 4rem 0 3rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 3rem;
+    align-items: end;
+  }
+  .hero-left { padding-right: 0.5rem; }
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.25rem;
+  }
+  .hero-name {
+    font-size: clamp(2.75rem, 6.5vw, 5rem);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+    margin-bottom: 1.5rem;
+  }
+  .hero-role {
+    font-family: 'Archivo', system-ui, sans-serif;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    color: var(--muted-fg);
+    max-width: 540px;
+    margin-bottom: 1.75rem;
+  }
+  .hero-spine {
+    margin-top: 1.5rem;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--fg);
+    border-bottom: 1px solid var(--fg);
+    font-size: 1.0625rem;
+    line-height: 1.5;
+    max-width: 580px;
+    font-family: 'Archivo', system-ui, sans-serif;
+    color: var(--fg);
+  }
+  .hero-bio strong {
+    color: var(--fg);
+    font-weight: 500;
+  }
+  .hero-side {
+    align-self: end;
+    padding-left: 0.5rem;
+  }
+  .hero-bio {
+    font-family: 'Archivo', system-ui, sans-serif;
+    color: var(--muted-fg);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+  .cta-row {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.1rem;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--fg);
+    transition: all 200ms ease;
+    cursor: pointer;
+    line-height: 1.2;
+  }
+  .cta.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+  .cta:hover { transform: translateY(-1px); border-color: var(--fg); }
+  .cta.primary:hover { opacity: 0.9; }
+  .cta:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  /* PROOF CLUSTER — full-width strip below hero */
+  .proof {
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 0;
+  }
+  .proof-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  .proof-cell {
+    padding: 0 1.25rem;
+    border-left: 1px solid var(--border);
+  }
+  .proof-cell:first-child { border-left: none; padding-left: 0; }
+  .proof-num {
+    font-size: 2rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.35rem;
+  }
+  .proof-label {
+    font-family: 'Archivo', system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--muted-fg);
+    line-height: 1.35;
+  }
+  /* SECTIONS — full-bleed with internal grid */
+  .section {
+    padding: 3.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-head {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 2.5rem;
+    margin-bottom: 2rem;
+    align-items: start;
+  }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding-top: 0.5rem;
+  }
+  .section h2 {
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    max-width: 720px;
+    line-height: 1.15;
+  }
+  /* WORK — full-bleed grid */
+  .work-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+  .work-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: border-color 200ms ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .work-card:hover { border-color: var(--fg); }
+  .work-meta {
+    display: flex;
+    gap: 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .work-card h3 {
+    font-size: 1.375rem;
+    font-weight: 500;
+    line-height: 1.25;
+  }
+  .work-card p {
+    font-family: 'Archivo', system-ui, sans-serif;
+    color: var(--muted-fg);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+  .work-tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--border);
+  }
+  .work-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted-fg);
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: var(--bg);
+  }
+  /* NOW — full-bleed ticker */
+  .now-list {
+    list-style: none;
+  }
+  .now-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 140px;
+    gap: 2rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+  }
+  .now-row:last-child { border-bottom: none; }
+  .now-when {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .now-body { padding: 0 0.25rem; }
+  .now-title { font-size: 1.125rem; font-weight: 500; margin-bottom: 0.3rem; line-height: 1.3; }
+  .now-desc {
+    font-family: 'Archivo', system-ui, sans-serif;
+    color: var(--muted-fg);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  .now-aside {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .now-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.65rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+  }
+  .now-status.active { color: var(--live); }
+  .now-status.prior { color: var(--muted-fg); }
+  .now-status::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .now-foot {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .now-foot a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .now-foot a:hover { text-decoration: underline; }
+  /* LAB — full-bleed grid */
+  .lab-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+  .lab-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    background: var(--card);
+    transition: border-color 200ms ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .lab-card:hover { border-color: var(--fg); }
+  .lab-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .lab-card h3 { font-size: 1.0625rem; font-weight: 500; line-height: 1.3; }
+  .lab-card p {
+    font-family: 'Archivo', system-ui, sans-serif;
+    font-size: 0.875rem;
+    color: var(--muted-fg);
+    line-height: 1.5;
+    margin-top: auto;
+  }
+  /* PATTERNS — full-bleed preview */
+  .patterns-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+  .pattern-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: border-color 200ms ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .pattern-card:hover { border-color: var(--fg); }
+  .pattern-when {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .pattern-card h3 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 0.35rem;
+    line-height: 1.25;
+  }
+  .pattern-card p {
+    font-family: 'Archivo', system-ui, sans-serif;
+    color: var(--muted-fg);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  /* FOOTER */
+  .footer {
+    padding: 2rem 0;
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .footer-name {
+    font-weight: 500;
+    font-size: 0.9375rem;
+  }
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 13px;
+    color: #A1A1AA;
+    align-items: center;
+  }
+  .footer-recruiter {
+    font-size: 12px;
+    color: var(--bg);
+    border: 1px solid #3F3F46;
+    padding: 0.4rem 0.85rem;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    margin-left: 0.5rem;
+  }
+  .footer-recruiter:hover { border-color: var(--bg); }
+  @media (max-width: 900px) {
+    .hero { padding: 2.5rem 0 2rem; }
+    .hero-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .hero-left, .hero-side { padding: 0; }
+    .proof-grid { grid-template-columns: repeat(2, 1fr); row-gap: 1.25rem; }
+    .proof-cell { padding: 0; border-left: none; padding-right: 1rem; }
+    .work-grid { grid-template-columns: 1fr; }
+    .lab-grid { grid-template-columns: 1fr; }
+    .patterns-grid { grid-template-columns: 1fr; }
+    .section { padding: 2.5rem 0; }
+    .section-head { grid-template-columns: 1fr; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .section-label { padding-top: 0; }
+    .now-row { grid-template-columns: 1fr; gap: 0.5rem; padding: 1rem 0; }
+    .now-aside { justify-content: flex-start; }
+    .nav-links { display: none; }
+    .wrap { padding: 0 1.25rem; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="nav-mark">Sanjit Majumdar</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#patterns">Patterns</a>
+      <a href="#lab">Lab</a>
+      <a href="#now">Now</a>
+      <a href="#about">About</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-left">
+        <div class="hero-label">Senior Software Engineer · Dhaka · UTC+6</div>
+        <h1 class="hero-name">Sanjit<br>Majumdar.</h1>
+        <p class="hero-spine">"He can do it — whatever you give him to build, he can build it for you, and better than others."</p>
+      </div>
+      <div class="hero-side">
+        <p class="hero-bio">I build enterprise software with <strong>.NET, Angular, and APIs</strong> — and a few things because I wanted to see if they'd work. 7+ years at Brain Station 23. Tech Lead on a 7-person engineering team. Currently shipping CityFix and Surakkha for Bangladesh.</p>
+        <div class="cta-row">
+          <a href="#work" class="cta primary">View my work →</a>
+          <a href="#lab" class="cta">Explore the lab</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="proof" aria-label="Track record">
+  <div class="wrap">
+    <div class="proof-grid">
+      <div class="proof-cell">
+        <div class="proof-num">7+</div>
+        <div class="proof-label">Years building enterprise systems</div>
+      </div>
+      <div class="proof-cell">
+        <div class="proof-num">10K+</div>
+        <div class="proof-label">Daily active users served</div>
+      </div>
+      <div class="proof-cell">
+        <div class="proof-num">35%</div>
+        <div class="proof-label">Faster workflows delivered</div>
+      </div>
+      <div class="proof-cell">
+        <div class="proof-num">7</div>
+        <div class="proof-label">Engineers led across the team</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="work">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-label">Work · Selected case studies</div>
+      <h2>Engineering judgment in production, not on slides.</h2>
+    </div>
+    <div class="work-grid">
+      <a href="#" class="work-card">
+        <div class="work-meta"><span>2020 — 2021</span><span>·</span><span>Enterprise governance</span></div>
+        <h3>Wellbook</h3>
+        <p>Enterprise project &amp; governance platform for an international oil &amp; gas organization. 10K+ daily users. The canonical schema is what stopped the data drift across three ERPs.</p>
+        <div class="work-tags">
+          <span class="work-tag">.NET</span>
+          <span class="work-tag">Angular</span>
+          <span class="work-tag">SQL Server</span>
+          <span class="work-tag">Multi-tenant</span>
+        </div>
+      </a>
+      <a href="#" class="work-card">
+        <div class="work-meta"><span>2019 — 2020</span><span>·</span><span>Engineering operations</span></div>
+        <h3>Syncfusion Data-Grid replacement</h3>
+        <p>Removed a third-party dependency across multiple Angular apps. Cut bundle size 35% and reclaimed $74k/year in license costs. Tech Lead; led a 7-person team through the rollout.</p>
+        <div class="work-tags">
+          <span class="work-tag">Angular</span>
+          <span class="work-tag">TypeScript</span>
+          <span class="work-tag">Component architecture</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="patterns">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-label">Patterns · Engineering playbook</div>
+      <h2>Named, transferable approaches I reach for across projects.</h2>
+    </div>
+    <div class="patterns-grid">
+      <a href="#" class="pattern-card">
+        <div class="pattern-when">01 · For multi-platform ERP integration</div>
+        <h3>Canonical Model</h3>
+        <p>One normalized schema. Map at the boundary. Validate before write. Reject inputs that violate invariants; surface the why.</p>
+      </a>
+      <a href="#" class="pattern-card">
+        <div class="pattern-when">02 · For high-performance Angular data UIs</div>
+        <h3>Syncfusion Data-Grid</h3>
+        <p>Virtualized rendering, server-side paging, row-model abstraction. The pattern that made 10K-row tables usable in production.</p>
+      </a>
+      <a href="#" class="pattern-card">
+        <div class="pattern-when">03 · For extending third-party commerce platforms</div>
+        <h3>nopCommerce Plugin</h3>
+        <p>Compose features without forking. Hook points over rewrites. Surviving platform upgrades through disciplined extension surfaces.</p>
+      </a>
+      <a href="#" class="pattern-card">
+        <div class="pattern-when">04 · For delaying releases with receipts</div>
+        <h3>Ship-Faster Pushback</h3>
+        <p>When QA wants a date and the system isn't ready: name the risk, document the call, defer with receipts. "We cannot ship a weak and faulty product."</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="now">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-label">Now · Live ticker</div>
+      <h2>What I'm building right now.</h2>
+    </div>
+    <ul class="now-list">
+      <li class="now-row">
+        <div class="now-when">Sep 2026</div>
+        <div class="now-body">
+          <div class="now-title">CityFix</div>
+          <div class="now-desc">A better way to deal with annoying city problems. React + AI prototype live; validating with two pilot neighborhoods in Dhaka.</div>
+        </div>
+        <div class="now-aside">
+          <span class="now-status active">Active</span>
+        </div>
+      </li>
+      <li class="now-row">
+        <div class="now-when">Aug 2026</div>
+        <div class="now-body">
+          <div class="now-title">Surakkha</div>
+          <div class="now-desc">Water safety monitoring concept for Bangladesh. Talking to NGOs about arsenic-test data ingestion.</div>
+        </div>
+        <div class="now-aside">
+          <span class="now-status active">Active</span>
+        </div>
+      </li>
+      <li class="now-row">
+        <div class="now-when">Ongoing</div>
+        <div class="now-body">
+          <div class="now-title">AI Engineering Lab</div>
+          <div class="now-desc">Experiments with AI-assisted software development. What's worth using, what's theater, what gets me in trouble. Notes published monthly.</div>
+        </div>
+        <div class="now-aside">
+          <span class="now-status active">Active</span>
+        </div>
+      </li>
+      <li class="now-row">
+        <div class="now-when">Jul 2026</div>
+        <div class="now-body">
+          <div class="now-title">Personal finance experiment</div>
+          <div class="now-desc">Self-hosted finance tracker. Privacy-first, no SaaS hand-off. Decided against a PWA — too many assumptions for a tool I want to trust.</div>
+        </div>
+        <div class="now-aside">
+          <span class="now-status prior">Prior</span>
+        </div>
+      </li>
+    </ul>
+    <div class="now-foot">Last updated · September 23, 2026 · <a href="#">Subscribe by RSS</a></div>
+  </div>
+</section>
+
+<section class="section" id="lab">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-label">Lab · Experiments &amp; games</div>
+      <h2>Things I built because I wanted to see if they'd work.</h2>
+    </div>
+    <div class="lab-grid">
+      <a href="#" class="lab-card">
+        <div class="lab-tag">Games</div>
+        <h3>Random Useful Tool #17</h3>
+        <p>Because apparently I needed another calculator. Shipped. 200 users. Rewrote it twice.</p>
+      </a>
+      <a href="#" class="lab-card">
+        <div class="lab-tag">Tool</div>
+        <h3>CityFix prototype</h3>
+        <p>React + AI to surface civic-service friction across Dhaka municipal services.</p>
+      </a>
+      <a href="#" class="lab-card">
+        <div class="lab-tag">Experiment</div>
+        <h3>Visualization experiments</h3>
+        <p>Because sometimes a chart tells the story better. Three small tools exploring data viz.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh</div>
+    <div class="footer-links">
+      <a href="#">GitHub</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">Email</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

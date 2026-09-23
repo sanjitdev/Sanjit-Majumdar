@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Now — Live ticker · Sanjit Majumdar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06070B; --bg-2: #0B0D14; --bg-3: #10131C;
+    --glass: rgba(255,255,255,0.03);
+    --fg: #FAFAFA; --fg-2: #D4D4D8; --fg-3: #8B8E97; --fg-4: #5C5F68;
+    --border: rgba(255,255,255,0.06); --border-strong: rgba(255,255,255,0.12);
+    --accent: #A78BFA; --accent-glow: rgba(167,139,250,0.25);
+    --live: #34D399; --live-glow: rgba(52,211,153,0.30);
+    --gradient-button: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%);
+    --gradient-card: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 50%);
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 20px;
+    --radius-xl: 28px; --radius-full: 9999px;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 var(--live-glow); }
+    50% { transform: scale(1.1); box-shadow: 0 0 0 8px transparent; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--fg); font-family: 'Inter', system-ui, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.03em; line-height: 1.1; font-weight: 500; }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible, button:focus-visible, input:focus-visible, .next-cell:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--radius-md); }
+  .next-cell:focus-visible { outline-offset: 4px; border-color: var(--border-strong); transform: translateY(-2px); }
+  .footer-recruiter:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--radius-sm); }
+  /* Ticker rows are non-interactive status entries; visual hover/focus state preserved via :focus-within for inner interactive children when added later */
+  button, input { font-family: inherit; }
+
+  .skip { position: absolute; top: -100px; left: 1.5rem; background: var(--bg-3); color: var(--fg); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); z-index: 100; transition: top 200ms ease; }
+  .skip:focus { top: 1rem; }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 0 3rem; }
+  .prose { max-width: 800px; }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(6,7,11,0.7); border-bottom: 1px solid var(--border); }
+  .nav-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-mark { display: flex; align-items: center; gap: 0.6rem; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 500; font-size: 15px; letter-spacing: -0.01em; }
+  .nav-mark-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gradient-button); box-shadow: 0 0 12px var(--accent-glow); }
+  .nav-links { display: flex; gap: 2.25rem; font-size: 14px; color: var(--fg-3); }
+  .nav-links a { transition: color 150ms ease; position: relative; }
+  .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--fg); }
+  .nav-links a[aria-current="page"]::after { content: ''; position: absolute; left: 0; right: 0; bottom: -24px; height: 1px; background: var(--gradient-button); }
+
+  /* LIVE STRIP */
+  .live-strip { padding: 1rem 0; background: var(--bg-2); border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+  .live-strip::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at top left, var(--live-glow), transparent 60%); pointer-events: none; }
+  .live-strip-inner { position: relative; z-index: 1; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .live-pill { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.85rem; background: var(--glass); border: 1px solid var(--border-strong); border-radius: var(--radius-full); font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-2); }
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--live); box-shadow: 0 0 12px var(--live-glow); animation: pulse 2s ease-in-out infinite; }
+  .live-meta { font-size: 0.8125rem; color: var(--fg-3); }
+
+  /* HERO */
+  .hero { position: relative; padding: 5rem 0 3rem; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100%; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(167,139,250,0.16) 0%, rgba(103,232,249,0.06) 35%, transparent 65%); pointer-events: none; z-index: 0; }
+  .hero-inner { position: relative; z-index: 1; max-width: 1080px; }
+  .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2.5rem; }
+  .breadcrumb a { color: var(--fg-3); transition: color 150ms ease; }
+  .breadcrumb a:hover { color: var(--fg); }
+  .breadcrumb span.sep { color: var(--fg-4); }
+  .breadcrumb [aria-current="page"] { color: var(--accent); }
+
+  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.6rem; }
+  .hero-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .hero-title { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 500; letter-spacing: -0.04em; line-height: 1; margin-bottom: 1.5rem; }
+  .hero-spine { font-size: 1.0625rem; color: var(--fg-2); line-height: 1.65; max-width: 720px; }
+
+  /* TICKER */
+  .now-section { padding: 3rem 0 5rem; }
+  .ticker { display: flex; flex-direction: column; gap: 0; }
+  .ticker-row { display: grid; grid-template-columns: 24px 140px 1fr 220px; gap: 2rem; padding: 2rem 0; border-bottom: 1px solid var(--border); align-items: start; }
+  .ticker-row:first-child { border-top: 1px solid var(--border); padding-top: 2rem; }
+  .ticker-row:hover .ticker-title { color: var(--fg); }
+  .ticker-row:hover .ticker-dot { transform: scale(1.3); }
+
+  .ticker-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--live); box-shadow: 0 0 16px var(--live-glow); margin-top: 0.4rem; animation: pulse 2s ease-in-out infinite; transition: transform 200ms ease; }
+  .ticker-dot.prior { background: var(--fg-4); box-shadow: none; animation: none; width: 8px; height: 8px; }
+
+  .ticker-date { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; padding-top: 0.3rem; }
+
+  .ticker-body { min-width: 0; }
+  .ticker-title-row { display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.5rem; flex-wrap: wrap; }
+  .ticker-title { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 1.375rem; font-weight: 500; letter-spacing: -0.025em; transition: color 150ms ease; }
+  .ticker-status { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--live); padding: 0.2rem 0.6rem; background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.25); border-radius: var(--radius-full); text-transform: uppercase; letter-spacing: 0.06em; }
+  .ticker-status.prior { color: var(--fg-3); background: var(--glass); border-color: var(--border); }
+  .ticker-status.draft { color: var(--accent); background: rgba(167,139,250,0.08); border-color: rgba(167,139,250,0.25); }
+  .ticker-desc { color: var(--fg-2); font-size: 0.9375rem; line-height: 1.65; }
+  .ticker-tag { display: inline-block; margin-right: 0.4rem; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .ticker-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-3); text-align: right; padding-top: 0.3rem; }
+
+  /* SUBSCRIBE */
+  .subscribe { margin-top: 4rem; padding: 3rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-xl); position: relative; overflow: hidden; }
+  .subscribe::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .subscribe::after { content: ''; position: absolute; bottom: -150px; right: -100px; width: 300px; height: 300px; background: var(--accent-glow); border-radius: 50%; filter: blur(80px); opacity: 0.4; pointer-events: none; }
+  .subscribe-inner { position: relative; z-index: 1; max-width: 600px; }
+  .subscribe-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; }
+  .subscribe h2 { font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 500; letter-spacing: -0.025em; margin-bottom: 0.75rem; }
+  .subscribe p { color: var(--fg-2); font-size: 0.9375rem; line-height: 1.65; margin-bottom: 1.75rem; }
+  .subscribe-form { display: flex; gap: 0.5rem; }
+  .subscribe-input { flex: 1; padding: 0.875rem 1.25rem; background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--fg); font-size: 0.9375rem; transition: border-color 150ms ease; }
+  .subscribe-input:focus { outline: none; border-color: var(--accent); }
+  .subscribe-input::placeholder { color: var(--fg-4); }
+  .subscribe-btn { padding: 0.875rem 1.5rem; background: var(--gradient-button); color: #06070B; border-radius: var(--radius-md); font-weight: 600; font-size: 0.9375rem; transition: transform 200ms ease, filter 200ms ease, box-shadow 200ms ease; cursor: pointer; border: none; }
+  .subscribe-btn:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: var(--shadow-glow); }
+
+  /* NEXT NAV */
+  .next-nav { padding: 4rem 0; border-top: 1px solid var(--border); }
+  .next-nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .next-cell { padding: 2rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-lg); transition: border-color 200ms ease, transform 200ms ease; position: relative; overflow: hidden; }
+  .next-cell::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .next-cell:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+  .next-cell.next-prev { text-align: left; }
+  .next-cell.next-next { text-align: right; }
+  .next-cell .nav-dir { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+  .next-cell h3 { font-size: 1.25rem; font-weight: 500; letter-spacing: -0.02em; }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--border); padding: 3rem 0; background: var(--bg); }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .footer-name { font-size: 0.875rem; color: var(--fg-2); }
+  .footer-links { display: flex; gap: 1.75rem; font-size: 0.875rem; color: var(--fg-3); align-items: center; }
+  .footer-links a { transition: color 150ms ease; }
+  .footer-links a:hover { color: var(--fg); }
+  .footer-recruiter { font-size: 12px; color: var(--fg-2); border: 1px solid var(--border-strong); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); background: transparent; transition: color 150ms ease, border-color 150ms ease; cursor: pointer; }
+  .footer-recruiter:hover { color: var(--fg); border-color: var(--fg-3); }
+
+  @media (max-width: 900px) {
+    .wrap { padding: 0 1.5rem; }
+    .hero { padding: 3rem 0 2rem; }
+    .ticker-row { grid-template-columns: 16px 1fr; gap: 1rem; padding: 1.5rem 0; }
+    .ticker-date { grid-column: 2; padding-top: 0; }
+    .ticker-meta { display: none; }
+    .ticker-body { grid-column: 2; }
+    .subscribe { padding: 2rem; }
+    .subscribe-form { flex-direction: column; }
+    .next-nav-grid { grid-template-columns: 1fr; }
+    .next-cell.next-next { text-align: left; }
+    .nav-links { display: none; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="01-homepage.html" class="nav-mark"><span class="nav-mark-dot"></span>Sanjit Majumdar</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="01-homepage.html">Home</a>
+      <a href="02-work.html">Work</a>
+      <a href="06-about.html">About</a>
+      <a href="07-lab.html">Lab</a>
+      <a href="05-now.html" aria-current="page">Now</a>
+    </nav>
+  </div>
+</header>
+
+<div class="live-strip">
+  <div class="wrap live-strip-inner">
+    <span class="live-pill"><span class="live-dot" aria-hidden="true"></span> Live ticker · last updated 2 hours ago</span>
+    <span class="live-meta">What I'm working on right now, in priority order. Updates monthly, sometimes more.</span>
+  </div>
+</div>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap hero-inner">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="01-homepage.html">Home</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span aria-current="page">Now</span>
+    </nav>
+
+    <div class="hero-label">/now · status page format</div>
+    <h1 class="hero-title">What I'm focused on,<br>right now.</h1>
+    <p class="hero-spine">Inspired by Derek Sivers's /now page convention. Current projects, learning, and what I'm avoiding. The page reads like a status page — NOT at the top, everything else below. Honest last-updated stamp. Subscribe if you want this in your inbox when it actually changes.</p>
+  </div>
+</section>
+
+<section class="now-section">
+  <div class="wrap">
+    <div class="ticker">
+
+      <article class="ticker-row">
+        <div class="ticker-dot" aria-hidden="true"></div>
+        <div class="ticker-date">NOW · Sep 23</div>
+        <div class="ticker-body">
+          <div class="ticker-title-row">
+            <h2 class="ticker-title">CityFix pilot expansion</h2>
+            <span class="ticker-status">Shipping</span>
+          </div>
+          <p class="ticker-desc">Two city corporations are running the offline-first civic reporting pilot. Working through edge cases in the conflict-resolution layer — specifically when a field worker submits a duplicate report from two devices while a sync is in flight. <span class="ticker-tag">[engineering]</span> <span class="ticker-tag">[cityfix]</span></p>
+        </div>
+        <div class="ticker-meta">Updated today</div>
+      </article>
+
+      <article class="ticker-row">
+        <div class="ticker-dot" aria-hidden="true"></div>
+        <div class="ticker-date">Sep 18</div>
+        <div class="ticker-body">
+          <div class="ticker-title-row">
+            <h2 class="ticker-title">Writing the Surakkha case study</h2>
+            <span class="ticker-status draft">Drafting</span>
+          </div>
+          <p class="ticker-desc">Slowly. The dispatch-time metric (90s vs 8 minutes pre-system) is the centrepiece. Working through how to present the SignalR architecture decisions without making it a SignalR tutorial. <span class="ticker-tag">[writing]</span> <span class="ticker-tag">[case-study]</span></p>
+        </div>
+        <div class="ticker-meta">5 days ago</div>
+      </article>
+
+      <article class="ticker-row">
+        <div class="ticker-dot" aria-hidden="true"></div>
+        <div class="ticker-date">Sep 12</div>
+        <div class="ticker-body">
+          <div class="ticker-title-row">
+            <h2 class="ticker-title">Reading: Designing Data-Intensive Applications (re-read)</h2>
+            <span class="ticker-status">In progress</span>
+          </div>
+          <p class="ticker-desc">Going through the consistency chapters again with fresh eyes after the Wellbook build. Specifically thinking about whether our nightly reconciliation could have benefited from a real CDC pipeline. Conclusion so far: no — audit-committee trust was the binding constraint, not latency. <span class="ticker-tag">[reading]</span></p>
+        </div>
+        <div class="ticker-meta">11 days ago</div>
+      </article>
+
+      <article class="ticker-row">
+        <div class="ticker-dot prior" aria-hidden="true"></div>
+        <div class="ticker-date">Sep 04</div>
+        <div class="ticker-body">
+          <div class="ticker-title-row">
+            <h2 class="ticker-title">Brain Station 23 — Q3 internal architecture review</h2>
+            <span class="ticker-status prior">Closed</span>
+          </div>
+          <p class="ticker-desc">Presented the canonical model approach to the wider engineering org. Useful session — a procurement team is now adopting it for a similar consolidation problem. <span class="ticker-tag">[internal]</span> <span class="ticker-tag">[architecture]</span></p>
+        </div>
+        <div class="ticker-meta">19 days ago</div>
+      </article>
+
+      <article class="ticker-row">
+        <div class="ticker-dot prior" aria-hidden="true"></div>
+        <div class="ticker-date">Aug 21</div>
+        <div class="ticker-body">
+          <div class="ticker-title-row">
+            <h2 class="ticker-title">Canonical Model pattern page shipped</h2>
+            <span class="ticker-status prior">Closed</span>
+          </div>
+          <p class="ticker-desc">First engineering playbook page on this site. Four moves, one counter-line, one worked example. Took longer than expected because the "When NOT to use it" section had to be honest. <span class="ticker-tag">[writing]</span> <span class="ticker-tag">[pattern]</span></p>
+        </div>
+        <div class="ticker-meta">~1 month ago</div>
+      </article>
+
+      <article class="ticker-row">
+        <div class="ticker-dot prior" aria-hidden="true"></div>
+        <div class="ticker-date">Aug 09</div>
+        <div class="ticker-body">
+          <div class="ticker-title-row">
+            <h2 class="ticker-title">Site rebuild — Studio Fusion direction</h2>
+            <span class="ticker-status prior">Closed</span>
+          </div>
+          <p class="ticker-desc">Third visual iteration of this site. Layered glass surfaces, cursor-reactive orb, magnetic CTAs, refined shadows. Replaced the v2 dark-violet direction. Kept the typography, replaced the depth model. <span class="ticker-tag">[this-site]</span></p>
+        </div>
+        <div class="ticker-meta">~6 weeks ago</div>
+      </article>
+
+      <article class="ticker-row">
+        <div class="ticker-dot prior" aria-hidden="true"></div>
+        <div class="ticker-date">Jul 14</div>
+        <div class="ticker-body">
+          <div class="ticker-title-row">
+            <h2 class="ticker-title">CityFix v0.1 first pilot</h2>
+            <span class="ticker-status prior">Closed</span>
+          </div>
+          <p class="ticker-desc">First city corporation signed on. Tested offline-first submit-then-sync flow during a city-wide power outage. Worked. <span class="ticker-tag">[cityfix]</span> <span class="ticker-tag">[engineering]</span></p>
+        </div>
+        <div class="ticker-meta">~2 months ago</div>
+      </article>
+
+    </div>
+
+    <div class="subscribe">
+      <div class="subscribe-inner">
+        <div class="subscribe-num">Subscribe</div>
+        <h2>Get the next /now in your inbox.</h2>
+        <p>No schedule. No newsletter cadence. One email per genuine update — when something ships, when I ship the next pattern page, or when the CityFix pilot reaches a milestone. Plain text. Unsubscribe in one click.</p>
+        <form class="subscribe-form" onsubmit="event.preventDefault();">
+          <label for="subscribe-email" class="visually-hidden">Email address</label>
+          <input type="email" id="subscribe-email" class="subscribe-input" placeholder="you@domain.com" required>
+          <button type="submit" class="subscribe-btn">Subscribe</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="next-nav">
+  <div class="wrap">
+    <div class="next-nav-grid">
+      <a href="02-work.html" class="next-cell next-prev">
+        <div class="nav-dir">← Read about</div>
+        <h3>Selected work</h3>
+      </a>
+      <a href="06-about.html" class="next-cell next-next">
+        <div class="nav-dir">Next →</div>
+        <h3>About me</h3>
+      </a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh · UTC+6</div>
+    <div class="footer-links">
+      <a href="#">GitHub</a><a href="#">LinkedIn</a><a href="06-about.html#contact">Email</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

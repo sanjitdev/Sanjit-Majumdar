@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Now — Live ticker · Sanjit Majumdar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06070B; --bg-2: #0B0D14; --bg-3: #10131C;
+    --glass: rgba(255,255,255,0.03);
+    --glass-strong: rgba(255,255,255,0.06);
+    --fg: #FAFAFA; --fg-2: #D4D4D8; --fg-3: #8B8E97; --fg-4: #5C5F68;
+    --border: rgba(255,255,255,0.06);
+    --border-strong: rgba(255,255,255,0.12);
+    --border-accent: rgba(167,139,250,0.30);
+    --accent: #A78BFA; --accent-2: #67E8F9; --accent-3: #F472B6;
+    --accent-glow: rgba(167,139,250,0.25);
+    --live: #34D399; --live-glow: rgba(52,211,153,0.20);
+    --shadow-md: 0 4px 24px rgba(0,0,0,0.30);
+    --shadow-lg: 0 16px 48px rgba(0,0,0,0.45);
+    --shadow-glow: 0 0 40px rgba(167,139,250,0.30);
+    --shadow-glow-strong: 0 0 60px rgba(167,139,250,0.40);
+    --gradient-hero: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(52,211,153,0.16) 0%, rgba(167,139,250,0.08) 35%, transparent 65%);
+    --gradient-card: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 50%);
+    --gradient-text: linear-gradient(135deg, #A78BFA 0%, #67E8F9 50%, #F472B6 100%);
+    --gradient-button: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%);
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 20px; --radius-xl: 28px; --radius-full: 9999px;
+    --gutter: clamp(1.5rem, 4vw, 3rem);
+    --section-y: clamp(4.5rem, 10vw, 8rem);
+    --max-w: 1320px;
+    --progress: 0;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--fg); font-family: 'Inter', system-ui, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.025em; line-height: 1.05; font-weight: 500; color: var(--fg); }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  img, svg { max-width: 100%; }
+
+  a:focus-visible, button:focus-visible, input:focus-visible, .now-row:focus-visible, .next-cell:focus-visible, .subscribe-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--radius-md); }
+  .nav-cta-magnetic:focus-visible, .input-subscribe:focus-visible { outline-offset: 2px; }
+  .now-row:focus-visible { outline-offset: 4px; padding-left: 1rem; padding-right: 1rem; border-color: var(--border-strong); }
+  .next-cell:focus-visible { outline-offset: 4px; border-color: var(--border-accent); transform: translateY(-2px); }
+  .footer-recruiter:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--radius-sm); }
+
+  /* UTIL */
+  .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+  .skip { position: absolute; top: -100px; left: 1rem; background: var(--glass-strong); color: var(--fg); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); z-index: 100; backdrop-filter: blur(20px); transition: top 200ms ease; }
+  .skip:focus { top: 1rem; }
+  .wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--gutter); }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(6,7,11,0.72); border-bottom: 1px solid var(--border); }
+  .nav-progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: transparent; overflow: hidden; }
+  .nav-progress::before { content: ''; display: block; height: 100%; width: 100%; background: var(--accent); transform-origin: left center; transform: scaleX(var(--progress, 0)); transition: transform 100ms linear; }
+  .nav-inner { height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .nav-mark { display: flex; align-items: center; gap: 0.7rem; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 500; font-size: 15px; letter-spacing: -0.01em; }
+  .nav-mark-icon { width: 28px; height: 28px; border-radius: var(--radius-sm); background: var(--gradient-button); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; color: #06070B; position: relative; }
+  .nav-mark-icon::after { content: ''; position: absolute; inset: -3px; border-radius: var(--radius-sm); border: 1px solid var(--border-accent); opacity: 0.6; animation: nodePulse 2.4s ease-in-out infinite; }
+  @keyframes nodePulse { 0%, 100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.18); opacity: 0; } }
+  .nav-links { display: flex; gap: 2rem; font-size: 14px; color: var(--fg-3); }
+  .nav-links a { transition: color 150ms ease; padding: 0.4rem 0; position: relative; }
+  .nav-links a::after { content: ''; position: absolute; left: 0; right: 0; bottom: -2px; height: 1px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 200ms ease; }
+  .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--fg); }
+  .nav-links a:hover::after, .nav-links a[aria-current="page"]::after { transform: scaleX(1); }
+  .nav-right { display: flex; align-items: center; gap: 0.5rem; }
+  .nav-cmdk { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.85rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--glass); font-size: 12px; color: var(--fg-3); transition: border-color 150ms ease, color 150ms ease, background 150ms ease; font-family: 'JetBrains Mono', monospace; }
+  .nav-cmdk:hover { border-color: var(--border-strong); color: var(--fg); background: var(--glass-strong); }
+  .nav-cmdk kbd { font-family: inherit; font-size: 10px; padding: 0.15rem 0.4rem; border: 1px solid var(--border); border-radius: 4px; color: var(--fg-2); background: rgba(255,255,255,0.04); }
+  .nav-cta-magnetic { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.1rem; background: var(--glass-strong); border: 1px solid var(--border-strong); border-radius: var(--radius-md); font-size: 13px; font-weight: 500; color: var(--fg); transition: background 150ms ease, border-color 150ms ease, transform 250ms cubic-bezier(0.16, 1, 0.3, 1); will-change: transform; position: relative; }
+  .nav-cta-magnetic:hover { background: var(--accent); color: #06070B; border-color: var(--accent); }
+
+  /* SIGNATURE CANVAS — Now mode: activity-feed graph */
+  .sig-canvas-wrap { position: fixed; top: 96px; right: 24px; width: 240px; height: 240px; z-index: 30; pointer-events: none; }
+  @media (max-width: 1280px) { .sig-canvas-wrap { display: none; } }
+  .sig-canvas-frame { width: 100%; height: 100%; border: 1px solid var(--border); border-radius: var(--radius-xl); background: rgba(6,7,11,0.55); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); position: relative; overflow: hidden; }
+  .sig-canvas-frame::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); }
+  .sig-canvas-label { position: absolute; top: 12px; left: 14px; font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-4); }
+  .sig-canvas-meta { position: absolute; bottom: 12px; left: 14px; right: 14px; display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--fg-4); text-transform: uppercase; letter-spacing: 0.06em; }
+  .sig-canvas-svg { position: absolute; inset: 28px; }
+  .sig-edge { fill: none; stroke: var(--border-strong); stroke-width: 1; transition: stroke 300ms ease, stroke-width 300ms ease; }
+  .sig-edge.is-active { stroke: var(--live); stroke-width: 1.5; filter: drop-shadow(0 0 4px var(--live-glow)); stroke-dasharray: 4 4; animation: sigFlow 2s linear infinite; }
+  @keyframes sigFlow { to { stroke-dashoffset: -16; } }
+  .sig-node { fill: var(--bg-3); stroke: var(--border-strong); stroke-width: 1; transition: fill 250ms ease, stroke 250ms ease; }
+  .sig-node-glyph { fill: var(--fg-3); font-family: 'JetBrains Mono', monospace; font-size: 7px; font-weight: 500; text-anchor: middle; dominant-baseline: central; transition: fill 250ms ease; pointer-events: none; }
+  .sig-node.is-active { fill: var(--live); stroke: var(--live); }
+  .sig-node.is-active ~ .sig-node-glyph { fill: #06070B; }
+  .sig-node.is-prior { fill: var(--fg-4); stroke: var(--fg-4); }
+  .sig-node.is-prior ~ .sig-node-glyph { fill: var(--fg-4); stroke: var(--fg-4); }
+  .sig-node-pulse { fill: var(--live); opacity: 0; transition: opacity 250ms ease; }
+  .sig-node.is-active ~ .sig-node-pulse { opacity: 0.5; animation: nodePulse 2s ease-in-out infinite; }
+
+  /* LIVE STRIP */
+  .live-strip { padding: 1.25rem 0; background: var(--bg-2); border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+  .live-strip::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at top left, var(--live-glow), transparent 60%); pointer-events: none; opacity: 0.6; }
+  .live-strip-inner { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .live-strip-left { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  .live-pill { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.85rem; background: var(--glass); border: 1px solid var(--border-strong); border-radius: var(--radius-full); font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-2); }
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--live); box-shadow: 0 0 12px var(--live-glow); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.85); } }
+  .live-meta { font-size: 0.8125rem; color: var(--fg-3); }
+  .live-stats { display: flex; gap: 2rem; }
+  .live-stat { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-3); }
+  .live-stat strong { color: var(--fg); font-weight: 500; margin-right: 0.4rem; }
+
+  /* HERO */
+  .hero { position: relative; padding: 5rem 0 3rem; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100%; background: var(--gradient-hero); pointer-events: none; z-index: 0; }
+  .hero-inner { position: relative; z-index: 1; }
+  .breadcrumb { display: flex; align-items: center; gap: 0.6rem; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2.5rem; }
+  .breadcrumb a { color: var(--fg-3); transition: color 150ms ease; }
+  .breadcrumb a:hover { color: var(--fg); }
+  .breadcrumb .sep { color: var(--fg-4); }
+  .breadcrumb [aria-current="page"] { color: var(--accent); }
+  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1.75rem; display: flex; align-items: center; gap: 0.7rem; }
+  .hero-label::before { content: ''; width: 28px; height: 1px; background: var(--accent); }
+  .hero-title {
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    margin-bottom: 2rem;
+    max-width: 14ch;
+  }
+  .hero-title-grad {
+    background: var(--gradient-text);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: hueShift 8s ease-in-out infinite;
+  }
+  @keyframes hueShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+  .hero-spine { font-size: clamp(1.0625rem, 1.4vw, 1.375rem); color: var(--fg-2); line-height: 1.55; max-width: 60ch; }
+  .hero-spine strong { color: var(--fg); font-weight: 500; }
+
+  /* TICKER */
+  .now-section { padding: 4rem 0 var(--section-y); }
+  .ticker { display: flex; flex-direction: column; gap: 0; }
+  .ticker-rule { height: 1px; background: var(--border); margin-bottom: 0; }
+  .now-row { position: relative; display: grid; grid-template-columns: 24px 140px 1fr 200px; gap: 2.5rem; padding: 2.25rem 0; border-bottom: 1px solid var(--border); align-items: start; transition: padding 250ms cubic-bezier(0.16, 1, 0.3, 1), border-color 200ms ease, background 200ms ease; }
+  .now-row:hover { padding-left: 1rem; padding-right: 1rem; }
+  .now-row:hover .now-title { color: var(--fg); }
+  .now-row:hover .now-dot { transform: scale(1.3); }
+  .now-row.now-active .now-title { color: var(--fg); }
+  .now-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--live); box-shadow: 0 0 16px var(--live-glow); margin-top: 0.6rem; animation: pulse 2s ease-in-out infinite; transition: transform 200ms ease; }
+  .now-dot.prior { background: var(--fg-4); box-shadow: none; animation: none; width: 8px; height: 8px; margin-top: 0.8rem; }
+  .now-dot.draft { background: var(--accent); box-shadow: 0 0 14px var(--accent-glow); animation: none; width: 8px; height: 8px; margin-top: 0.8rem; }
+  .now-when { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; padding-top: 0.4rem; }
+  .now-when strong { color: var(--fg-2); display: block; font-weight: 500; margin-bottom: 0.2rem; }
+  .now-when small { font-size: 10px; opacity: 0.7; }
+  .now-body { min-width: 0; }
+  .now-title-row { display: flex; align-items: baseline; gap: 0.85rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+  .now-title { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 1.375rem; font-weight: 500; letter-spacing: -0.025em; transition: color 150ms ease; }
+  .now-status { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 0.25rem 0.65rem; border-radius: var(--radius-full); text-transform: uppercase; letter-spacing: 0.06em; }
+  .now-status.is-live { color: var(--live); background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.25); }
+  .now-status.is-prior { color: var(--fg-3); background: var(--glass); border: 1px solid var(--border); }
+  .now-status.is-draft { color: var(--accent); background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.25); }
+  .now-desc { color: var(--fg-2); font-size: 0.9375rem; line-height: 1.7; margin-bottom: 1rem; max-width: 60ch; }
+  .now-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .now-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent); padding: 0.25rem 0.65rem; background: rgba(167,139,250,0.06); border: 1px solid rgba(167,139,250,0.20); border-radius: var(--radius-full); text-transform: uppercase; letter-spacing: 0.06em; }
+  .now-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-3); text-align: right; padding-top: 0.45rem; }
+
+  /* SUBSCRIBE */
+  .subscribe { margin-top: var(--section-y); padding: 3rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-xl); position: relative; overflow: hidden; }
+  .subscribe::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .subscribe::after { content: ''; position: absolute; bottom: -150px; right: -100px; width: 300px; height: 300px; background: var(--accent-glow); border-radius: 50%; filter: blur(80px); opacity: 0.4; pointer-events: none; }
+  .subscribe-inner { position: relative; z-index: 1; max-width: 640px; }
+  .subscribe-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.7rem; }
+  .subscribe-label::before { content: ''; width: 28px; height: 1px; background: var(--accent); }
+  .subscribe h2 { font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 500; letter-spacing: -0.03em; margin-bottom: 1rem; line-height: 1.1; }
+  .subscribe p { color: var(--fg-2); font-size: 0.9375rem; line-height: 1.65; margin-bottom: 2rem; }
+  .subscribe-form { display: flex; gap: 0.5rem; }
+  .input-subscribe { flex: 1; padding: 1rem 1.25rem; background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--fg); font-size: 0.9375rem; font-family: inherit; transition: border-color 150ms ease, box-shadow 150ms ease; }
+  .input-subscribe:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(167,139,250,0.15); }
+  .input-subscribe::placeholder { color: var(--fg-4); }
+  .subscribe-btn { padding: 1rem 1.5rem; background: var(--gradient-button); color: #06070B; border-radius: var(--radius-md); font-weight: 600; font-size: 0.9375rem; transition: transform 200ms ease, filter 200ms ease, box-shadow 200ms ease; }
+  .subscribe-btn:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: var(--shadow-glow); }
+  .subscribe-foot { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-4); margin-top: 1.25rem; text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* NEXT NAV */
+  .next-nav { padding: 4rem 0; border-top: 1px solid var(--border); }
+  .next-nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .next-cell { position: relative; padding: 2rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-lg); transition: border-color 200ms ease, transform 250ms cubic-bezier(0.16, 1, 0.3, 1); overflow: hidden; display: block; }
+  .next-cell::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); }
+  .next-cell:hover { border-color: var(--border-accent); transform: translateY(-2px); background: var(--glass-strong); }
+  .next-cell.next-prev { text-align: left; }
+  .next-cell.next-next { text-align: right; }
+  .next-cell .nav-dir { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+  .next-cell h3 { font-size: 1.25rem; font-weight: 500; letter-spacing: -0.02em; }
+
+  /* COMMAND PALETTE */
+  .cmdk { position: fixed; inset: 0; z-index: 100; display: none; align-items: flex-start; justify-content: center; padding-top: 12vh; }
+  .cmdk[data-open="true"] { display: flex; }
+  .cmdk-scrim { position: absolute; inset: 0; background: rgba(6,7,11,0.72); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+  .cmdk-panel { position: relative; width: min(640px, 92vw); background: var(--bg-2); border: 1px solid var(--border-strong); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); overflow: hidden; }
+  .cmdk-panel::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); }
+  .cmdk-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+  .cmdk-input { width: 100%; padding: 1.1rem 1.25rem; background: transparent; color: var(--fg); font-size: 16px; border: none; border-bottom: 1px solid var(--border); font-family: inherit; }
+  .cmdk-input:focus { outline: none; }
+  .cmdk-input::placeholder { color: var(--fg-4); }
+  .cmdk-list { list-style: none; max-height: 50vh; overflow-y: auto; padding: 0.5rem 0; }
+  .cmdk-item { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1.25rem; font-size: 14px; color: var(--fg-2); cursor: pointer; border-left: 2px solid transparent; }
+  .cmdk-item:hover, .cmdk-item[aria-selected="true"] { background: var(--glass-strong); color: var(--fg); border-left-color: var(--accent); }
+  .cmdk-item-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-4); text-transform: uppercase; letter-spacing: 0.06em; }
+  .cmdk-foot { display: flex; gap: 1rem; padding: 0.75rem 1.25rem; border-top: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-4); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--border); padding: 3rem 0; background: var(--bg); }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .footer-name { font-size: 0.875rem; color: var(--fg-2); }
+  .footer-links { display: flex; gap: 1.75rem; font-size: 0.875rem; color: var(--fg-3); align-items: center; }
+  .footer-links a { transition: color 150ms ease; }
+  .footer-links a:hover { color: var(--fg); }
+  .footer-recruiter { font-size: 12px; color: var(--fg-2); border: 1px solid var(--border-strong); padding: 0.5rem 1rem; border-radius: var(--radius-sm); background: var(--glass); transition: color 150ms ease, border-color 150ms ease; }
+  .footer-recruiter:hover { color: var(--fg); border-color: var(--accent); }
+
+  /* RESPONSIVE */
+  @media (max-width: 1100px) {
+    .nav-links { display: none; }
+    .nav-cmdk { display: none; }
+    .live-stats { display: none; }
+  }
+  @media (max-width: 900px) {
+    .now-row { grid-template-columns: 16px 1fr; gap: 1rem; padding: 1.5rem 0; }
+    .now-when { grid-column: 2; padding-top: 0; }
+    .now-body { grid-column: 2; }
+    .now-meta { display: none; }
+    .now-row:hover { padding-left: 0; padding-right: 0; }
+    .subscribe { padding: 2rem; }
+    .subscribe-form { flex-direction: column; }
+    .next-nav-grid { grid-template-columns: 1fr; }
+    .next-cell.next-next { text-align: left; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav" role="banner">
+  <div class="nav-progress" aria-hidden="true"></div>
+  <div class="wrap nav-inner">
+    <a href="01-homepage.html" class="nav-mark" aria-label="Sanjit Majumdar home">
+      <span class="nav-mark-icon" aria-hidden="true">S</span>
+      Sanjit Majumdar
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="01-homepage.html">Home</a>
+      <a href="02-work.html">Work</a>
+      <a href="06-about.html">About</a>
+      <a href="07-lab.html">Lab</a>
+      <a href="05-now.html" aria-current="page">Now</a>
+    </nav>
+    <div class="nav-right">
+      <button class="nav-cmdk" type="button" data-cmdk-open aria-label="Open command palette">
+        <span>Search</span>
+        <kbd>⌘K</kbd>
+      </button>
+      <a href="06-about.html#contact" class="nav-cta-magnetic">Get in touch →</a>
+    </div>
+  </div>
+</header>
+
+<!-- SIGNATURE CANVAS — Now mode: activity-feed graph, latest node pulses live -->
+<aside class="sig-canvas-wrap" aria-hidden="true">
+  <div class="sig-canvas-frame">
+    <div class="sig-canvas-label">Now · Activity</div>
+    <svg class="sig-canvas-svg" viewBox="0 0 184 184" preserveAspectRatio="xMidYMid meet">
+      <!-- edges between recent activity nodes -->
+      <path class="sig-edge is-active" d="M 30 60  L 90 60" />
+      <path class="sig-edge" d="M 90 60 L 140 50" />
+      <path class="sig-edge" d="M 140 50 L 150 110" />
+      <path class="sig-edge" d="M 150 110 L 100 140" />
+      <path class="sig-edge" d="M 100 140 L 50 130" />
+      <path class="sig-edge" d="M 50 130 L 30 80" />
+      <!-- active nodes (recent activity) -->
+      <circle class="sig-node is-active" cx="30" cy="60" r="6" />
+      <text class="sig-node-glyph" x="30" y="46" text-anchor="middle">+3d</text>
+      <circle class="sig-node is-active" cx="140" cy="50" r="6" />
+      <text class="sig-node-glyph" x="140" y="36" text-anchor="middle">+1w</text>
+      <circle class="sig-node is-active" cx="150" cy="110" r="6" />
+      <text class="sig-node-glyph" x="170" y="110" text-anchor="start">+2w</text>
+      <!-- prior nodes -->
+      <circle class="sig-node is-prior" cx="100" cy="140" r="5" />
+      <circle class="sig-node is-prior" cx="50" cy="130" r="5" />
+      <circle class="sig-node is-prior" cx="30" cy="80" r="5" />
+      <!-- pulse on first node -->
+      <circle class="sig-node-pulse" cx="30" cy="60" r="6" />
+    </svg>
+    <div class="sig-canvas-meta">
+      <span>last 6 entries</span>
+      <span>●</span>
+    </div>
+  </div>
+</aside>
+
+<div class="live-strip" aria-label="Live status">
+  <div class="wrap live-strip-inner">
+    <div class="live-strip-left">
+      <span class="live-pill"><span class="live-dot" aria-hidden="true"></span> Live ticker · updated 2 hours ago</span>
+      <span class="live-meta">What I'm focused on, in priority order.</span>
+    </div>
+    <div class="live-stats">
+      <span class="live-stat"><strong>3</strong>active</span>
+      <span class="live-stat"><strong>4</strong>closed</span>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap hero-inner">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="01-homepage.html">Home</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span aria-current="page">Now</span>
+    </nav>
+
+    <div class="hero-label">/now · status page format</div>
+    <h1 class="hero-title">What I'm focused on,<br><span class="hero-title-grad">right now.</span></h1>
+    <p class="hero-spine">Inspired by Derek Sivers's /now page convention. Current projects, learning, and what I'm avoiding. The page reads like a status page — NOT at the top, everything else below. Honest last-updated stamp. <strong>Subscribe</strong> if you want this in your inbox when it actually changes.</p>
+  </div>
+</section>
+
+<section class="now-section" id="ticker">
+  <div class="wrap">
+    <div class="ticker">
+      <div class="ticker-rule" aria-hidden="true"></div>
+
+      <article class="now-row">
+        <div class="now-dot" aria-hidden="true"></div>
+        <div class="now-when">
+          <strong>Now · Sep 23</strong>
+          <small>today</small>
+        </div>
+        <div class="now-body">
+          <div class="now-title-row">
+            <h2 class="now-title">CityFix pilot expansion</h2>
+            <span class="now-status is-live">● Shipping</span>
+          </div>
+          <p class="now-desc">Two city corporations are running the offline-first civic reporting pilot. Working through edge cases in the conflict-resolution layer — specifically when a field worker submits a duplicate report from two devices while a sync is in flight.</p>
+          <div class="now-tags">
+            <span class="now-tag">[engineering]</span>
+            <span class="now-tag">[cityfix]</span>
+          </div>
+        </div>
+        <div class="now-meta">Updated today</div>
+      </article>
+
+      <article class="now-row">
+        <div class="now-dot draft" aria-hidden="true"></div>
+        <div class="now-when"><strong>Sep 18</strong><small>5d ago</small></div>
+        <div class="now-body">
+          <div class="now-title-row">
+            <h2 class="now-title">Writing the Surakkha case study</h2>
+            <span class="now-status is-draft">Drafting</span>
+          </div>
+          <p class="now-desc">Slowly. The dispatch-time metric (90s vs 8 minutes pre-system) is the centrepiece. Working through how to present the SignalR architecture decisions without making it a SignalR tutorial.</p>
+          <div class="now-tags">
+            <span class="now-tag">[writing]</span>
+            <span class="now-tag">[case-study]</span>
+          </div>
+        </div>
+        <div class="now-meta">5 days ago</div>
+      </article>
+
+      <article class="now-row">
+        <div class="now-dot" aria-hidden="true"></div>
+        <div class="now-when"><strong>Sep 12</strong><small>11d ago</small></div>
+        <div class="now-body">
+          <div class="now-title-row">
+            <h2 class="now-title">Reading: Designing Data-Intensive Applications (re-read)</h2>
+            <span class="now-status is-live">● In progress</span>
+          </div>
+          <p class="now-desc">Going through the consistency chapters again with fresh eyes after the Wellbook build. Specifically thinking about whether our nightly reconciliation could have benefited from a real CDC pipeline. Conclusion so far: no — audit-committee trust was the binding constraint, not latency.</p>
+          <div class="now-tags">
+            <span class="now-tag">[reading]</span>
+          </div>
+        </div>
+        <div class="now-meta">11 days ago</div>
+      </article>
+
+      <article class="now-row">
+        <div class="now-dot prior" aria-hidden="true"></div>
+        <div class="now-when"><strong>Sep 04</strong><small>19d ago</small></div>
+        <div class="now-body">
+          <div class="now-title-row">
+            <h2 class="now-title">Brain Station 23 — Q3 internal architecture review</h2>
+            <span class="now-status is-prior">Closed</span>
+          </div>
+          <p class="now-desc">Presented the canonical model approach to the wider engineering org. Useful session — a procurement team is now adopting it for a similar consolidation problem.</p>
+          <div class="now-tags">
+            <span class="now-tag">[internal]</span>
+            <span class="now-tag">[architecture]</span>
+          </div>
+        </div>
+        <div class="now-meta">19 days ago</div>
+      </article>
+
+      <article class="now-row">
+        <div class="now-dot prior" aria-hidden="true"></div>
+        <div class="now-when"><strong>Aug 21</strong><small>~1mo ago</small></div>
+        <div class="now-body">
+          <div class="now-title-row">
+            <h2 class="now-title">Canonical Model pattern page shipped</h2>
+            <span class="now-status is-prior">Closed</span>
+          </div>
+          <p class="now-desc">First engineering playbook page on this site. Four moves, one counter-line, one worked example. Took longer than expected because the "When NOT to use it" section had to be honest.</p>
+          <div class="now-tags">
+            <span class="now-tag">[writing]</span>
+            <span class="now-tag">[pattern]</span>
+          </div>
+        </div>
+        <div class="now-meta">~1 month ago</div>
+      </article>
+
+      <article class="now-row">
+        <div class="now-dot prior" aria-hidden="true"></div>
+        <div class="now-when"><strong>Aug 09</strong><small>~6w ago</small></div>
+        <div class="now-body">
+          <div class="now-title-row">
+            <h2 class="now-title">Site rebuild — Cinematic direction</h2>
+            <span class="now-status is-prior">Closed</span>
+          </div>
+          <p class="now-desc">Fourth visual iteration of this site. Cinematic dark UI, signature nodes-graph canvas, command palette (⌘K), magnetic CTAs, liquid-glass surfaces. Replaced the Studio Fusion direction. Kept the typography, replaced the depth model.</p>
+          <div class="now-tags">
+            <span class="now-tag">[this-site]</span>
+          </div>
+        </div>
+        <div class="now-meta">~6 weeks ago</div>
+      </article>
+
+      <article class="now-row">
+        <div class="now-dot prior" aria-hidden="true"></div>
+        <div class="now-when"><strong>Jul 14</strong><small>~2mo ago</small></div>
+        <div class="now-body">
+          <div class="now-title-row">
+            <h2 class="now-title">CityFix v0.1 first pilot</h2>
+            <span class="now-status is-prior">Closed</span>
+          </div>
+          <p class="now-desc">First city corporation signed on. Tested offline-first submit-then-sync flow during a city-wide power outage. Worked.</p>
+          <div class="now-tags">
+            <span class="now-tag">[cityfix]</span>
+            <span class="now-tag">[engineering]</span>
+          </div>
+        </div>
+        <div class="now-meta">~2 months ago</div>
+      </article>
+
+    </div>
+
+    <div class="subscribe" id="subscribe" aria-label="Subscribe">
+      <div class="subscribe-inner">
+        <div class="subscribe-label">Subscribe</div>
+        <h2>Get the next /now in your inbox.</h2>
+        <p>No schedule. No newsletter cadence. One email per genuine update — when something ships, when the next pattern page lands, or when the CityFix pilot reaches a milestone. Plain text. Unsubscribe in one click.</p>
+        <form class="subscribe-form" id="subscribe-form">
+          <label for="subscribe-email" class="visually-hidden">Email address</label>
+          <input type="email" id="subscribe-email" class="input-subscribe" placeholder="you@domain.com" required>
+          <button type="submit" class="subscribe-btn">Subscribe</button>
+        </form>
+        <div class="subscribe-foot" id="subscribe-foot">No spam · one-click unsubscribe</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="next-nav">
+  <div class="wrap">
+    <div class="next-nav-grid">
+      <a href="02-work.html" class="next-cell next-prev">
+        <div class="nav-dir">← Read about</div>
+        <h3>Selected work</h3>
+      </a>
+      <a href="06-about.html" class="next-cell next-next">
+        <div class="nav-dir">Next →</div>
+        <h3>About me</h3>
+      </a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh · UTC+6</div>
+    <div class="footer-links">
+      <a href="#">GitHub</a>
+      <a href="#">LinkedIn</a>
+      <a href="06-about.html#contact">Email</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+<!-- COMMAND PALETTE -->
+<div class="cmdk" id="cmdk" role="dialog" aria-modal="true" aria-labelledby="cmdk-title">
+  <div class="cmdk-scrim" data-cmdk-close></div>
+  <div class="cmdk-panel">
+    <h2 class="cmdk-title" id="cmdk-title">Command palette</h2>
+    <input class="cmdk-input" id="cmdk-input" type="text" placeholder="Jump to…   pages, sections, experiments" aria-label="Search the portfolio" autocomplete="off" />
+    <ul class="cmdk-list" id="cmdk-list">
+      <li class="cmdk-item" data-href="01-homepage.html"><span>Home</span><span class="cmdk-item-meta">Index</span></li>
+      <li class="cmdk-item" data-href="02-work.html"><span>All case studies</span><span class="cmdk-item-meta">Work index</span></li>
+      <li class="cmdk-item" data-href="03-case-study.html"><span>Wellbook case study</span><span class="cmdk-item-meta">Case study</span></li>
+      <li class="cmdk-item" data-href="04-pattern.html"><span>Canonical Model — Engineering playbook</span><span class="cmdk-item-meta">Pattern</span></li>
+      <li class="cmdk-item" data-href="#ticker"><span>Skip to ticker</span><span class="cmdk-item-meta">/now</span></li>
+      <li class="cmdk-item" data-href="#subscribe"><span>Subscribe to /now</span><span class="cmdk-item-meta">Email updates</span></li>
+      <li class="cmdk-item" data-href="06-about.html"><span>About</span><span class="cmdk-item-meta">Bio + personality</span></li>
+      <li class="cmdk-item" data-href="07-lab.html"><span>Project Lab</span><span class="cmdk-item-meta">Tools, games, experiments</span></li>
+      <li class="cmdk-item" data-href="08-built.html"><span>How this site is built</span><span class="cmdk-item-meta">Architecture</span></li>
+      <li class="cmdk-item" data-href="09-recruiter.html"><span>Recruiter view</span><span class="cmdk-item-meta">Resume condensed</span></li>
+    </ul>
+    <div class="cmdk-foot">
+      <span>↑↓ navigate</span>
+      <span>↵ open</span>
+      <span>esc close</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function(){
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+    // Scroll progress
+    var navProgress = document.querySelector('.nav-progress');
+    if (navProgress) {
+      var updateProgress = function(){
+        var h = document.documentElement;
+        var max = h.scrollHeight - h.clientHeight;
+        var p = max > 0 ? Math.min(1, Math.max(0, h.scrollTop / max)) : 0;
+        h.style.setProperty('--progress', p);
+      };
+      document.addEventListener('scroll', updateProgress, { passive: true });
+      updateProgress();
+    }
+
+    // Subscribe form
+    var form = document.getElementById('subscribe-form');
+    var foot = document.getElementById('subscribe-foot');
+    if (form) {
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        var input = document.getElementById('subscribe-email');
+        if (input && input.value) {
+          if (foot) foot.textContent = 'subscribed · check ' + input.value + ' for confirmation';
+          input.value = '';
+          input.blur();
+        }
+      });
+    }
+
+    // Magnetic CTA (nav)
+    var mag = document.querySelector('.nav-cta-magnetic');
+    if (mag && !reduce.matches && matchMedia('(pointer:fine)').matches) {
+      mag.addEventListener('pointermove', function(e){
+        var r = mag.getBoundingClientRect();
+        var x = (e.clientX - r.left - r.width / 2) * 0.18;
+        var y = (e.clientY - r.top - r.height / 2) * 0.18;
+        mag.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px)';
+      });
+      mag.addEventListener('pointerleave', function(){ mag.style.transform = ''; });
+    }
+
+    // Command palette
+    var cmdk = document.getElementById('cmdk');
+    var cmdkInput = document.getElementById('cmdk-input');
+    var cmdkList = document.getElementById('cmdk-list');
+    var cmdkOpeners = document.querySelectorAll('[data-cmdk-open]');
+    var cmdkClosers = document.querySelectorAll('[data-cmdk-close]');
+    var open = function(){
+      cmdk.setAttribute('data-open', 'true');
+      cmdkInput.value = '';
+      filter('');
+      setTimeout(function(){ cmdkInput.focus(); }, 30);
+    };
+    var close = function(){ cmdk.setAttribute('data-open', 'false'); };
+    cmdkOpeners.forEach(function(b){ b.addEventListener('click', open); });
+    cmdkClosers.forEach(function(b){ b.addEventListener('click', close); });
+    function filter(q){
+      var items = cmdkList.querySelectorAll('.cmdk-item');
+      items.forEach(function(it){
+        var txt = it.textContent.toLowerCase();
+        it.style.display = !q || txt.indexOf(q.toLowerCase()) !== -1 ? '' : 'none';
+      });
+    }
+    cmdkInput && cmdkInput.addEventListener('input', function(e){ filter(e.target.value); });
+    cmdkList && cmdkList.addEventListener('click', function(e){
+      var li = e.target.closest('.cmdk-item');
+      if (li && li.dataset.href) {
+        if (li.dataset.href.charAt(0) === '#') {
+          close();
+          var t = document.querySelector(li.dataset.href);
+          if (t) t.scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth' });
+        } else {
+          window.location.href = li.dataset.href;
+        }
+      }
+    });
+    document.addEventListener('keydown', function(e){
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        if (cmdk.getAttribute('data-open') === 'true') close(); else open();
+      } else if (e.key === 'Escape' && cmdk.getAttribute('data-open') === 'true') {
+        close();
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>

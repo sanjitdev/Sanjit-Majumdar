@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sanjit Majumdar — Senior Software Engineer · Recruiter view</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAFAFA;
+    --fg: #0A0A0B;
+    --muted-fg: #475569;
+    --border: #E4E4E7;
+    --card: #FFFFFF;
+    --accent: #1D4ED8;
+    --accent-soft: #EFF6FF;
+    --live: #059669;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    font-weight: 500;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+  /* RECRUITER STRIP — full-bleed accent band */
+  .strip {
+    width: 100%;
+    background: var(--accent-soft);
+    border-bottom: 1px solid var(--border);
+  }
+  .strip-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    font-size: 13px;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .strip-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .strip-meta { color: var(--muted-fg); font-family: 'Archivo', system-ui, sans-serif; margin-left: 0.5rem; }
+  .strip-toggle {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 0.35rem 0.85rem;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .strip-toggle:hover { background: var(--accent); color: var(--bg); }
+  .strip-toggle:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .footer-recruiter:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  /* NAV */
+  .nav {
+    width: 100%;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .nav-mark {
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+  }
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    font-size: 14px;
+    color: var(--muted-fg);
+  }
+  .nav-links a:hover { color: var(--fg); }
+  /* HERO — recruiter-optimized: compressed, all-key-facts */
+  .hero {
+    padding: 3rem 0 2.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 3rem;
+    align-items: end;
+  }
+  .hero-left { padding-right: 0.5rem; }
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.25rem;
+  }
+  .hero-name {
+    font-size: clamp(2.5rem, 5.5vw, 4rem);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+    margin-bottom: 1.5rem;
+  }
+  .hero-spine {
+    font-size: 1.0625rem;
+    line-height: 1.45;
+    max-width: 560px;
+    font-family: 'Archivo', system-ui, sans-serif;
+    color: var(--fg);
+    border-left: 3px solid var(--fg);
+    padding: 0.25rem 0 0.25rem 1.25rem;
+  }
+  /* SIDEBAR — recruiter contact block */
+  .hero-side { padding-left: 0.5rem; }
+  .sidebar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem 1.25rem;
+  }
+  .sidebar-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.85rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .sidebar-list li {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0.85rem;
+    font-size: 14px;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+  .sidebar-list li:last-child { border-bottom: none; padding-bottom: 0; }
+  .sidebar-key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding-top: 0.15rem;
+  }
+  .sidebar-val {
+    font-family: 'Archivo', system-ui, sans-serif;
+    color: var(--fg);
+    line-height: 1.45;
+  }
+  .sidebar-val a { color: var(--accent); }
+  /* PROOF — full-width strip */
+  .proof {
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 0;
+  }
+  .proof-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .proof-cell {
+    padding: 0 1.25rem;
+    border-left: 1px solid var(--border);
+  }
+  .proof-cell:first-child { border-left: none; padding-left: 0; }
+  .proof-num {
+    font-size: 2rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.35rem;
+  }
+  .proof-label {
+    font-family: 'Archivo', system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--muted-fg);
+    line-height: 1.35;
+  }
+  /* SECTIONS */
+  .section {
+    padding: 3.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-head {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 2.5rem;
+    margin-bottom: 2rem;
+    align-items: start;
+  }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding-top: 0.5rem;
+  }
+  .section h2 {
+    font-size: clamp(1.375rem, 2.25vw, 1.75rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    max-width: 720px;
+    line-height: 1.2;
+  }
+  /* FORWARD BLOCK — full-width dark inversion */
+  .forward {
+    background: var(--fg);
+    color: var(--bg);
+    padding: 3rem 0;
+  }
+  .forward-inner {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  .forward-text { padding-right: 0.5rem; }
+  .forward h2 {
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin-bottom: 0.85rem;
+  }
+  .forward p {
+    font-family: 'Archivo', system-ui, sans-serif;
+    color: #D4D4D8;
+    font-size: 1rem;
+    line-height: 1.55;
+    max-width: 560px;
+  }
+  .forward-cta { padding-left: 0.5rem; }
+  .forward-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    background: var(--bg);
+    color: var(--fg);
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    width: 100%;
+    transition: transform 200ms ease;
+    line-height: 1.2;
+  }
+  .forward-btn:hover { transform: translateY(-2px); }
+  .forward-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  /* RESUME / CASE STUDIES */
+  .resume-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+  .resume-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .resume-meta {
+    display: flex;
+    gap: 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .resume-card h3 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: 1.25;
+  }
+  .resume-card p {
+    font-family: 'Archivo', system-ui, sans-serif;
+    color: var(--muted-fg);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+  .resume-metric {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.85rem;
+    margin-top: auto;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--border);
+  }
+  .resume-metric-cell .num {
+    font-size: 1.375rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 0.35rem;
+  }
+  .resume-metric-cell .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  /* TIMELINE — compact */
+  .timeline {
+    border-left: 2px solid var(--border);
+    padding-left: 2rem;
+  }
+  .timeline-row {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 1.5rem;
+  }
+  .timeline-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .timeline-row:first-child { padding-top: 0; }
+  .timeline-when {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding-top: 0.25rem;
+  }
+  .timeline-title {
+    font-size: 1.0625rem;
+    font-weight: 500;
+    margin-bottom: 0.35rem;
+    line-height: 1.3;
+  }
+  .timeline-desc {
+    font-family: 'Archivo', system-ui, sans-serif;
+    color: var(--muted-fg);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+  /* FOOTER */
+  .footer {
+    padding: 2rem 0;
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .footer-name {
+    font-weight: 500;
+    font-size: 0.9375rem;
+  }
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 13px;
+    color: #A1A1AA;
+    align-items: center;
+  }
+  .footer-recruiter {
+    font-size: 12px;
+    color: var(--bg);
+    border: 1px solid #3F3F46;
+    padding: 0.4rem 0.85rem;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    margin-left: 0.5rem;
+  }
+  .footer-recruiter:hover { border-color: var(--bg); }
+  @media (max-width: 900px) {
+    .hero { padding: 2.5rem 0 2rem; }
+    .hero-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .hero-left, .hero-side { padding: 0; }
+    .forward { padding: 2.5rem 0; }
+    .forward-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+    .forward-text, .forward-cta { padding: 0; }
+    .proof-grid { grid-template-columns: repeat(2, 1fr); row-gap: 1.25rem; }
+    .proof-cell { padding: 0; border-left: none; padding-right: 1rem; }
+    .resume-grid { grid-template-columns: 1fr; }
+    .section { padding: 2.5rem 0; }
+    .section-head { grid-template-columns: 1fr; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .section-label { padding-top: 0; }
+    .timeline-row { grid-template-columns: 1fr; gap: 0.35rem; padding: 0.85rem 0; }
+    .strip-inner { flex-direction: column; gap: 0.5rem; align-items: flex-start; }
+    .nav-links { display: none; }
+    .wrap { padding: 0 1.25rem; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- RECRUITER STRIP — full width, accent-soft background -->
+<div class="strip">
+  <div class="wrap strip-inner">
+    <div>
+      <span class="strip-label">Recruiter view · active</span>
+      <span class="strip-meta">The ?for=recruiter URL is shareable — this state isn't stored.</span>
+    </div>
+    <button class="strip-toggle" type="button">Switch to visitor view</button>
+  </div>
+</div>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="nav-mark">Sanjit Majumdar</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#resume">Resume</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#contact">Contact</a>
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-left">
+        <div class="hero-label">Recruiter view · Tech Lead · 7+ years</div>
+        <h1 class="hero-name">Sanjit<br>Majumdar.</h1>
+        <p class="hero-spine">"He can do it — whatever you give him to build, he can build it for you, and better than others."</p>
+      </div>
+      <div class="hero-side">
+        <div class="sidebar">
+        <div class="sidebar-label">Contact · Right now</div>
+        <ul class="sidebar-list">
+          <li>
+            <span class="sidebar-key">Role</span>
+            <span class="sidebar-val">Senior Software Engineer / Tech Lead</span>
+          </li>
+          <li>
+            <span class="sidebar-key">Stack</span>
+            <span class="sidebar-val">.NET · Angular · TypeScript · SQL Server</span>
+          </li>
+          <li>
+            <span class="sidebar-key">Tenure</span>
+            <span class="sidebar-val">7+ years at Brain Station 23 (since Nov 2018)</span>
+          </li>
+          <li>
+            <span class="sidebar-key">Location</span>
+            <span class="sidebar-val">Dhaka, Bangladesh · UTC+6 · Remote-friendly</span>
+          </li>
+          <li>
+            <span class="sidebar-key">Email</span>
+            <span class="sidebar-val"><a href="#">sanjit@example.dev</a></span>
+          </li>
+          <li>
+            <span class="sidebar-key">Availability</span>
+            <span class="sidebar-val">Open to senior + lead conversations</span>
+          </li>
+        </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="proof" aria-label="Track record">
+  <div class="wrap">
+    <div class="proof-grid">
+      <div class="proof-cell">
+        <div class="proof-num">7+</div>
+        <div class="proof-label">Years building enterprise systems</div>
+      </div>
+      <div class="proof-cell">
+        <div class="proof-num">10K+</div>
+        <div class="proof-label">Daily active users served</div>
+      </div>
+      <div class="proof-cell">
+        <div class="proof-num">35%</div>
+        <div class="proof-label">Faster workflows delivered</div>
+      </div>
+      <div class="proof-cell">
+        <div class="proof-num">7</div>
+        <div class="proof-label">Engineers led across the team</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORWARD BLOCK — full width, dark inversion -->
+<section class="forward" id="contact">
+  <div class="wrap forward-inner">
+    <div class="forward-text">
+      <h2>Forward this page to your hiring manager.</h2>
+      <p>One link. The case studies, the proof cluster, and a one-click email template — no cover-letter rewriting, no "tell me about yourself." Skip past the recruiter screen with receipts attached.</p>
+    </div>
+    <div class="forward-cta">
+      <button class="forward-btn" type="button">Forward to hiring manager →</button>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="resume">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-label">Resume · Selected impact</div>
+      <h2>Two case studies that say it better than a CV.</h2>
+    </div>
+    <div class="resume-grid">
+      <article class="resume-card">
+        <div class="resume-meta"><span>2020 — 2021</span><span>·</span><span>Enterprise governance</span></div>
+        <h3>Wellbook</h3>
+        <p>Enterprise project &amp; governance platform for an international oil &amp; gas organization. 10K+ daily users across three ERPs. Tech Lead on a 7-person engineering team through cutover and migration.</p>
+        <div class="resume-metric">
+          <div class="resume-metric-cell">
+            <div class="num">10K+</div>
+            <div class="lbl">DAU served</div>
+          </div>
+          <div class="resume-metric-cell">
+            <div class="num">14h</div>
+            <div class="lbl">Migration window</div>
+          </div>
+          <div class="resume-metric-cell">
+            <div class="num">$74k</div>
+            <div class="lbl">License cost removed</div>
+          </div>
+        </div>
+      </article>
+      <article class="resume-card">
+        <div class="resume-meta"><span>2019 — 2020</span><span>·</span><span>Engineering operations</span></div>
+        <h3>Syncfusion Data-Grid replacement</h3>
+        <p>Removed a third-party dependency across multiple Angular apps. Cut bundle size 35% and reclaimed $74k/year in license costs. Led the 7-person rollout; zero regressions in production.</p>
+        <div class="resume-metric">
+          <div class="resume-metric-cell">
+            <div class="num">−35%</div>
+            <div class="lbl">Bundle size</div>
+          </div>
+          <div class="resume-metric-cell">
+            <div class="num">$74k</div>
+            <div class="lbl">License cost / yr</div>
+          </div>
+          <div class="resume-metric-cell">
+            <div class="num">7</div>
+            <div class="lbl">Engineers led</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="timeline">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-label">Timeline · Career arc</div>
+      <h2>Eight years, three roles, one stack.</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-row">
+        <div class="timeline-when">2018 — Now</div>
+        <div class="timeline-body">
+          <div class="timeline-title">Brain Station 23 PLC · Senior Software Engineer</div>
+          <div class="timeline-desc">Tech Lead on enterprise platforms — Wellbook (oil &amp; gas governance), Surakkha (civic safety), CityFix prototype. .NET, Angular, multi-tenant SQL Server. Led teams of 5–7.</div>
+        </div>
+      </div>
+      <div class="timeline-row">
+        <div class="timeline-when">2017 — 2018</div>
+        <div class="timeline-body">
+          <div class="timeline-title">Brain Station 23 PLC · Software Engineer</div>
+          <div class="timeline-desc">Full-stack on enterprise Angular + .NET projects. First nopCommerce plugin architecture; first multi-tenant deployment. Promoted to senior within twelve months.</div>
+        </div>
+      </div>
+      <div class="timeline-row">
+        <div class="timeline-when">2016</div>
+        <div class="timeline-body">
+          <div class="timeline-title">B.Sc. in Computer Science · Ahsanullah University</div>
+          <div class="timeline-desc">Thesis on schema migration patterns for multi-system integrations — the seed for what became the Canonical Model pattern page.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh</div>
+    <div class="footer-links">
+      <a href="#">GitHub</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">Email</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Now · Sanjit Majumdar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAFAFA;
+    --fg: #0A0A0B;
+    --muted-fg: #475569;
+    --border: #E4E4E7;
+    --card: #FFFFFF;
+    --accent: #1D4ED8;
+    --accent-soft: #EFF6FF;
+    --live: #059669;
+    --live-soft: #ECFDF5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    font-weight: 500;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+  .read {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+  .prose {
+    max-width: 800px;
+  }
+  /* NAV */
+  .nav {
+    width: 100%;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .nav-mark {
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+  }
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    font-size: 14px;
+    color: var(--muted-fg);
+  }
+  .nav-links a:hover { color: var(--fg); }
+  /* HERO */
+  .hero {
+    padding: 3rem 0 2.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 3rem;
+    align-items: end;
+  }
+  .hero-left { padding-right: 0.75rem; }
+  .live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--live);
+    background: var(--live-soft);
+    padding: 0.3rem 0.85rem;
+    border-radius: 999px;
+    margin-bottom: 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+  }
+  .live-pill::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--live);
+  }
+  .hero-name {
+    font-size: clamp(2.25rem, 5.5vw, 4rem);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+    margin-bottom: 1rem;
+    padding-top: 0.25rem;
+  }
+  .hero-sub {
+    color: var(--muted-fg);
+    font-size: 1.0625rem;
+    font-family: 'Archivo', system-ui, sans-serif;
+    max-width: 540px;
+    line-height: 1.55;
+    padding-bottom: 0.25rem;
+  }
+  .hero-side {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem 1.15rem;
+    margin-left: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+  .side-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.85rem;
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .side-row {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 1rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    align-items: start;
+  }
+  .side-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .side-row:first-of-type { padding-top: 0; }
+  .side-key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding-top: 0.2rem;
+  }
+  .side-val {
+    font-family: 'Archivo', system-ui, sans-serif;
+    line-height: 1.5;
+  }
+  .side-val a { color: var(--accent); }
+  /* UPDATED BAR */
+  .updated-bar {
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg);
+  }
+  .updated-bar .right { display: flex; gap: 1.5rem; align-items: center; padding: 0.25rem 0; }
+  .updated-bar a { color: var(--accent); padding: 0.25rem 0; }
+  /* TICKER SECTION */
+  .ticker-section { padding: 3rem 0 3.5rem; }
+  .ticker-list { list-style: none; }
+  .entry {
+    display: grid;
+    grid-template-columns: 140px 1fr 160px;
+    gap: 2rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+    position: relative;
+  }
+  .entry:first-child { padding-top: 0; }
+  .entry:last-child { border-bottom: none; padding-bottom: 0; }
+  .entry::before {
+    content: '';
+    position: absolute;
+    left: 130px;
+    top: 2rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--live);
+  }
+  .entry::after {
+    content: '';
+    position: absolute;
+    left: 126px;
+    top: 1.75rem;
+    width: 16px;
+    height: 24px;
+    border-radius: 8px;
+    background: var(--live-soft);
+    opacity: 0.6;
+  }
+  .entry.prior::before { background: var(--muted-fg); }
+  .entry.prior::after { display: none; }
+  .entry-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding-top: 0.3rem;
+    padding-left: 1.75rem;
+  }
+  .entry-body { padding-left: 1.75rem; }
+  .entry-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+    padding-top: 0.15rem;
+  }
+  .entry-tag.active { color: var(--live); }
+  .entry-body h3 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    padding-top: 0.15rem;
+  }
+  .entry-body p {
+    font-family: 'Archivo', system-ui, sans-serif;
+    color: var(--muted-fg);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    max-width: 640px;
+  }
+  .entry-aside {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end;
+    padding-top: 0.3rem;
+  }
+  .entry-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.65rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    line-height: 1.2;
+  }
+  .entry-status.active { color: var(--live); }
+  .entry-status.prior { color: var(--muted-fg); }
+  .entry-aside-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-align: right;
+    line-height: 1.4;
+    padding-top: 0.15rem;
+  }
+  /* EMPTY-SLOT — quiet, honest */
+  .entry-empty {
+    background: var(--card);
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    padding: 1.75rem;
+    margin-top: 1.75rem;
+    text-align: center;
+  }
+  .entry-empty-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+    padding-top: 0.15rem;
+  }
+  .entry-empty p {
+    font-family: 'Archivo', system-ui, sans-serif;
+    color: var(--muted-fg);
+    font-size: 15px;
+    line-height: 1.55;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  /* SUBSCRIBE BLOCK */
+  .subscribe {
+    background: var(--fg);
+    color: var(--bg);
+    padding: 3rem 0;
+  }
+  .subscribe-inner {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  .subscribe-text { padding-right: 0.75rem; }
+  .subscribe-form { padding-left: 0.75rem; }
+  .subscribe h2 {
+    font-size: clamp(1.375rem, 2.25vw, 1.75rem);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.75rem;
+    line-height: 1.2;
+    padding-top: 0.15rem;
+  }
+  .subscribe p {
+    font-family: 'Archivo', system-ui, sans-serif;
+    color: #D4D4D8;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    max-width: 540px;
+  }
+  .subscribe-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .subscribe-input {
+    flex: 1;
+    padding: 0.85rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #3F3F46;
+    background: transparent;
+    color: var(--bg);
+    font-size: 14px;
+    font-family: inherit;
+    line-height: 1.4;
+  }
+  .subscribe-input::placeholder { color: #71717A; }
+  .subscribe-input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-color: var(--bg);
+  }
+  .subscribe-btn {
+    padding: 0.85rem 1.25rem;
+    background: var(--bg);
+    color: var(--fg);
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    line-height: 1.4;
+  }
+  .subscribe-btn:hover { opacity: 0.9; }
+  .subscribe-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  /* FOOTER */
+  .footer {
+    padding: 2rem 0;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .footer-name {
+    font-weight: 500;
+    font-size: 0.9375rem;
+    padding: 0.25rem 0;
+  }
+  .footer-links {
+    display: flex;
+    gap: 1.75rem;
+    font-size: 13px;
+    color: var(--muted-fg);
+    align-items: center;
+  }
+  .footer-links a { color: var(--accent); padding: 0.25rem 0; }
+  .footer-recruiter {
+    font-size: 12px;
+    color: var(--fg);
+    border: 1px solid var(--border);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    margin-left: 0.5rem;
+  }
+  .footer-recruiter:hover { border-color: var(--fg); }
+  @media (max-width: 900px) {
+    .hero { padding: 2.5rem 0 2rem; }
+    .hero-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .hero-left, .hero-side { padding: 0; margin: 0; }
+    .side-row { padding: 0.55rem 0; }
+    .ticker-section { padding: 2.5rem 0 3rem; }
+    .subscribe { padding: 2.5rem 0; }
+    .subscribe-inner { grid-template-columns: 1fr; gap: 1.75rem; }
+    .subscribe-text, .subscribe-form { padding: 0; }
+    .entry { grid-template-columns: 1fr; gap: 0.65rem; padding: 1.25rem 0; }
+    .entry::before, .entry::after { display: none; }
+    .entry-meta, .entry-body { padding-left: 0; }
+    .entry-aside { align-items: flex-start; }
+    .entry-aside-meta { text-align: left; }
+    .nav-links { display: none; }
+    .wrap, .read { padding: 0 1.25rem; }
+    .subscribe-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="nav-mark">Sanjit Majumdar</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#patterns">Patterns</a>
+      <a href="#lab">Lab</a>
+      <a href="#now">Now</a>
+      <a href="#about">About</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-left">
+        <span class="live-pill">Live · updated weekly</span>
+        <h1 class="hero-name">Now.</h1>
+        <p class="hero-sub">What I'm building right now. Updated by hand, not by automation. Quiet email when it changes.</p>
+      </div>
+      <div class="hero-side">
+        <div class="side-label">Channel info</div>
+        <div class="side-row">
+          <span class="side-key">Cadence</span>
+          <span class="side-val">Weekly, sometimes less</span>
+        </div>
+        <div class="side-row">
+          <span class="side-key">Format</span>
+          <span class="side-val">Plain text · 60-second read</span>
+        </div>
+        <div class="side-row">
+          <span class="side-key">RSS</span>
+          <span class="side-val"><a href="#">/now-feed.xml</a></span>
+        </div>
+        <div class="side-row">
+          <span class="side-key">Email</span>
+          <span class="side-val"><a href="#">Quiet weekly digest</a></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="updated-bar">
+  <div class="read" style="display: flex; justify-content: space-between; align-items: center;">
+    <span>Last updated · September 23, 2026 · Tuesday</span>
+    <span class="right">
+      <span>3 active · 2 prior</span>
+      <a href="#">Subscribe by RSS →</a>
+    </span>
+  </div>
+</div>
+
+<div class="ticker-section">
+  <div class="read">
+    <ul class="ticker-list">
+      <li class="entry">
+        <div class="entry-meta">Sep 2026</div>
+        <div class="entry-body">
+          <span class="entry-tag active">Now</span>
+          <h3>CityFix</h3>
+          <p>A better way to deal with annoying city problems. React + AI prototype is live; validating with two pilot neighborhoods in Dhaka. Looking for one more NGO partner to scale the second pilot.</p>
+        </div>
+        <div class="entry-aside">
+          <span class="entry-status active">Active</span>
+          <span class="entry-aside-meta">3 months in · private beta</span>
+        </div>
+      </li>
+      <li class="entry">
+        <div class="entry-meta">Aug 2026</div>
+        <div class="entry-body">
+          <span class="entry-tag active">Active</span>
+          <h3>Surakkha</h3>
+          <p>Water safety monitoring concept for Bangladesh. Talking to NGOs about arsenic-test data ingestion. Need a frontend engineer if you're interested — happy to collaborate.</p>
+        </div>
+        <div class="entry-aside">
+          <span class="entry-status active">Active</span>
+          <span class="entry-aside-meta">Research phase</span>
+        </div>
+      </li>
+      <li class="entry">
+        <div class="entry-meta">Ongoing</div>
+        <div class="entry-body">
+          <span class="entry-tag active">Active</span>
+          <h3>AI Engineering Lab</h3>
+          <p>Experiments with AI-assisted software development. What's worth using, what's theater, what gets me in trouble. Notes published monthly. Last write-up: "When AI gets the schema wrong."</p>
+        </div>
+        <div class="entry-aside">
+          <span class="entry-status active">Active</span>
+          <span class="entry-aside-meta">11 essays · monthly</span>
+        </div>
+      </li>
+      <li class="entry prior">
+        <div class="entry-meta">Jul 2026</div>
+        <div class="entry-body">
+          <span class="entry-tag">Prior</span>
+          <h3>Personal finance experiment</h3>
+          <p>Self-hosted finance tracker. Privacy-first, no SaaS hand-off. Decided against a PWA — too many assumptions for a tool I want to trust. Archived; might revisit as a CLI.</p>
+        </div>
+        <div class="entry-aside">
+          <span class="entry-status prior">Prior</span>
+          <span class="entry-aside-meta">4 weeks · abandoned</span>
+        </div>
+      </li>
+      <li class="entry prior">
+        <div class="entry-meta">May 2026</div>
+        <div class="entry-body">
+          <span class="entry-tag">Prior</span>
+          <h3>Random Useful Tool #17</h3>
+          <p>Because apparently I needed another calculator. Shipped. 200 users. Took longer than it should have because I rewrote it twice. Settled on a single-file vanilla JS build.</p>
+        </div>
+        <div class="entry-aside">
+          <span class="entry-status prior">Prior</span>
+          <span class="entry-aside-meta">Shipped · 200 users</span>
+        </div>
+      </li>
+    </ul>
+
+    <div class="entry-empty">
+      <div class="entry-empty-label">Quiet week</div>
+      <p>Nothing new to ship right now. Active items are above; next update lands when something is actually done, not on a cadence.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SUBSCRIBE — full-width dark inversion -->
+<section class="subscribe">
+  <div class="wrap subscribe-inner">
+    <div class="subscribe-text">
+      <h2>Subscribe to a quiet email when this updates.</h2>
+      <p>One short note when something on this page actually changes. No tracking pixels. No list management theater. Plain text from a single-recipient mailer.</p>
+    </div>
+    <form class="subscribe-row subscribe-form" onsubmit="return false;">
+      <input class="subscribe-input" type="email" placeholder="you@yourdomain.dev" aria-label="Email address">
+      <button class="subscribe-btn" type="submit">Subscribe →</button>
+    </form>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh</div>
+    <div class="footer-links">
+      <a href="#">RSS</a>
+      <a href="#">GitHub</a>
+      <a href="#">LinkedIn</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

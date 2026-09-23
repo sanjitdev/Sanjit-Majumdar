@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Sanjit Majumdar · Senior Software Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06070B; --bg-3: #10131C;
+    --glass: rgba(255,255,255,0.03);
+    --fg: #FAFAFA; --fg-2: #D4D4D8; --fg-3: #8B8E97; --fg-4: #5C5F68;
+    --border: rgba(255,255,255,0.06); --border-strong: rgba(255,255,255,0.12);
+    --border-accent: rgba(167,139,250,0.30);
+    --accent: #A78BFA;
+    --accent-glow: rgba(167,139,250,0.25);
+    --live: #34D399; --live-glow: rgba(52,211,153,0.30);
+    --gradient-button: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%);
+    --gradient-card: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 50%);
+    --shadow-md: 0 4px 24px rgba(0,0,0,0.30);
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 20px;
+    --radius-full: 9999px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--fg); font-family: 'Inter', system-ui, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.03em; line-height: 1.1; font-weight: 500; }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--radius-sm); }
+  /* Display cards (philosophy, personality, contact) are non-interactive <article> elements; visual hover state preserved for cursor users only */
+  .contact-val a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+  .footer-recruiter:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--radius-sm); }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  .skip { position: absolute; top: -100px; left: 1.5rem; background: var(--bg-3); color: var(--fg); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); z-index: 100; transition: top 200ms ease; }
+  .skip:focus { top: 1rem; }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 0 3rem; }
+  .prose { max-width: 800px; }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(6,7,11,0.7); border-bottom: 1px solid var(--border); }
+  .nav-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-mark { display: flex; align-items: center; gap: 0.6rem; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 500; font-size: 15px; letter-spacing: -0.01em; }
+  .nav-mark-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gradient-button); box-shadow: 0 0 12px var(--accent-glow); }
+  .nav-links { display: flex; gap: 2.25rem; font-size: 14px; color: var(--fg-3); }
+  .nav-links a { transition: color 150ms ease; position: relative; }
+  .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--fg); }
+  .nav-links a[aria-current="page"]::after { content: ''; position: absolute; left: 0; right: 0; bottom: -24px; height: 1px; background: var(--gradient-button); }
+
+  /* HERO */
+  .hero { position: relative; padding: 5rem 0 4rem; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100%; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(167,139,250,0.16) 0%, rgba(103,232,249,0.06) 35%, transparent 65%); pointer-events: none; z-index: 0; }
+  .hero-inner { position: relative; z-index: 1; max-width: 1080px; }
+  .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2.5rem; }
+  .breadcrumb a { color: var(--fg-3); transition: color 150ms ease; }
+  .breadcrumb a:hover { color: var(--fg); }
+  .breadcrumb span.sep { color: var(--fg-4); }
+  .breadcrumb [aria-current="page"] { color: var(--accent); }
+
+  .hero-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 4rem; align-items: start; }
+  .hero-left { padding-right: 1rem; }
+  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.6rem; }
+  .hero-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .hero-title { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 500; letter-spacing: -0.04em; line-height: 1; margin-bottom: 1.5rem; }
+  .hero-bio { font-size: 1.0625rem; color: var(--fg-2); line-height: 1.7; }
+  .hero-bio strong { color: var(--fg); font-weight: 500; }
+  .hero-spine { font-size: 1.0625rem; color: var(--fg-2); line-height: 1.65; margin-top: 1.5rem; padding-left: 1rem; border-left: 2px solid var(--accent); max-width: 560px; }
+
+  /* SIDEBAR PROFILE */
+  .profile-card { padding: 1.75rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-lg); position: relative; overflow: hidden; }
+  .profile-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--gradient-button); display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 1.75rem; font-weight: 500; color: #06070B; margin-bottom: 1.25rem; box-shadow: var(--shadow-glow); }
+  .profile-name { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 1.25rem; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 0.25rem; }
+  .profile-role { font-size: 0.875rem; color: var(--fg-3); margin-bottom: 1.5rem; }
+  .profile-list { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+  .profile-list li { display: grid; grid-template-columns: 80px 1fr; gap: 0.75rem; font-size: 0.875rem; }
+  .profile-key { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; padding-top: 0.2rem; }
+  .profile-val { color: var(--fg); }
+  .profile-val a { color: var(--accent); transition: opacity 150ms ease; }
+  .profile-val a:hover { opacity: 0.75; }
+
+  /* SECTION */
+  .section { padding: 5rem 0; border-top: 1px solid var(--border); }
+  .section-head { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 2rem; border-bottom: 1px solid var(--border); margin-bottom: 3rem; gap: 2rem; flex-wrap: wrap; }
+  .section-head-left { flex: 1; min-width: 280px; }
+  .section-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+  .section h2 { font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 500; letter-spacing: -0.03em; }
+  .section-sub { color: var(--fg-3); font-size: 0.9375rem; margin-top: 0.75rem; max-width: 480px; }
+  .section p a, .section-sub a { color: var(--accent); transition: opacity 150ms ease; }
+  .section p a:hover, .section-sub a:hover { opacity: 0.8; }
+
+  /* EXPERIENCE TIMELINE */
+  .timeline { position: relative; padding-left: 2rem; }
+  .timeline::before { content: ''; position: absolute; top: 0; bottom: 0; left: 7px; width: 1px; background: var(--border); }
+  .timeline-row { display: grid; grid-template-columns: 200px 1fr; gap: 3rem; padding: 2rem 0; border-bottom: 1px solid var(--border); position: relative; }
+  .timeline-row:last-child { border-bottom: none; }
+  .timeline-marker { position: absolute; left: -2rem; top: 2.5rem; width: 14px; height: 14px; border-radius: 50%; background: var(--bg); border: 2px solid var(--border-strong); z-index: 1; }
+  .timeline-row:first-child .timeline-marker { background: var(--live); border-color: var(--live); box-shadow: 0 0 12px var(--live-glow); }
+  .timeline-meta { padding-top: 0.5rem; }
+  .timeline-period { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+  .timeline-company { font-size: 0.9375rem; color: var(--fg); margin-bottom: 0.25rem; font-weight: 500; }
+  .timeline-role { font-size: 0.8125rem; color: var(--fg-3); }
+  .timeline-body { min-width: 0; }
+  .timeline-title { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 1.375rem; font-weight: 500; letter-spacing: -0.025em; margin-bottom: 0.75rem; }
+  .timeline-desc { color: var(--fg-2); font-size: 0.9375rem; line-height: 1.7; margin-bottom: 1.25rem; max-width: 720px; }
+  .timeline-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .timeline-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 0.3rem 0.7rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-full); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* PHILOSOPHY */
+  .phil-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 2rem; }
+  .phil-card { padding: 2rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-lg); position: relative; overflow: hidden; transition: border-color 200ms ease, transform 200ms ease; }
+  .phil-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .phil-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+  .phil-icon { width: 40px; height: 40px; border-radius: var(--radius-md); background: var(--gradient-button); display: flex; align-items: center; justify-content: center; color: #06070B; margin-bottom: 1.25rem; box-shadow: var(--shadow-glow); }
+  .phil-card h3 { font-size: 1.125rem; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+  .phil-card p { font-size: 0.875rem; color: var(--fg-2); line-height: 1.6; }
+
+  /* PERSONALITY */
+  .person-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 2rem; }
+  .person-card { padding: 1.75rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-lg); position: relative; overflow: hidden; transition: border-color 200ms ease, transform 200ms ease; }
+  .person-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .person-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+  .person-num { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; }
+  .person-card h3 { font-size: 1.0625rem; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+  .person-card p { font-size: 0.875rem; color: var(--fg-2); line-height: 1.6; }
+
+  /* CONTACT */
+  .contact { padding: 5rem 0; border-top: 1px solid var(--border); }
+  .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 2rem; }
+  .contact-card { padding: 2rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-lg); transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease; position: relative; overflow: hidden; }
+  .contact-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .contact-card:hover { border-color: var(--border-accent); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .contact-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+  .contact-val { font-size: 1.0625rem; color: var(--fg); margin-bottom: 0.5rem; }
+  .contact-val a { color: var(--fg); transition: color 150ms ease; border-bottom: 1px solid transparent; padding-bottom: 1px; }
+  .contact-val a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+  .contact-note { font-size: 0.8125rem; color: var(--fg-3); line-height: 1.5; }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--border); padding: 3rem 0; background: var(--bg); }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .footer-name { font-size: 0.875rem; color: var(--fg-2); }
+  .footer-links { display: flex; gap: 1.75rem; font-size: 0.875rem; color: var(--fg-3); align-items: center; }
+  .footer-links a { transition: color 150ms ease; }
+  .footer-links a:hover { color: var(--fg); }
+  .footer-recruiter { font-size: 12px; color: var(--fg-2); border: 1px solid var(--border-strong); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); background: transparent; transition: color 150ms ease, border-color 150ms ease; }
+  .footer-recruiter:hover { color: var(--fg); border-color: var(--fg-3); }
+
+  @media (max-width: 900px) {
+    .wrap { padding: 0 1.5rem; }
+    .hero { padding: 3rem 0 2.5rem; }
+    .hero-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .hero-left { padding-right: 0; }
+    .timeline-row { grid-template-columns: 1fr; gap: 1rem; padding-left: 1rem; }
+    .timeline-marker { left: -1rem; top: 1.5rem; }
+    .phil-grid, .person-grid, .contact-grid { grid-template-columns: 1fr; }
+    .section { padding: 3.5rem 0; }
+    .nav-links { display: none; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="01-homepage.html" class="nav-mark"><span class="nav-mark-dot"></span>Sanjit Majumdar</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="01-homepage.html">Home</a>
+      <a href="02-work.html">Work</a>
+      <a href="06-about.html" aria-current="page">About</a>
+      <a href="07-lab.html">Lab</a>
+      <a href="05-now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap hero-inner">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="01-homepage.html">Home</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span aria-current="page">About</span>
+    </nav>
+
+    <div class="hero-grid">
+      <div class="hero-left">
+        <div class="hero-label">About · Bio + Experience + Philosophy</div>
+        <h1 class="hero-title">Senior engineer who<br>ships and writes about it.</h1>
+        <p class="hero-bio">I've spent seven years building enterprise systems that <strong>actually have to work</strong> — the kind where a regression costs the client real money or an audit committee gets invoked. I'm a senior software engineer and tech lead at Brain Station 23 in Dhaka, working in <strong>.NET, Angular, SQL Server</strong>, with side projects in Next.js and offline-first PWA tooling.</p>
+        <p class="hero-spine">I write engineering playbooks because the patterns I reach for at work took me years to learn the hard way. Better to compress that into four numbered moves than make the next person learn it the same way.</p>
+      </div>
+
+      <aside class="profile-card" aria-label="Quick facts">
+        <div class="avatar" aria-hidden="true">SM</div>
+        <div class="profile-name">Sanjit Majumdar</div>
+        <div class="profile-role">Senior Software Engineer · Tech Lead</div>
+        <ul class="profile-list">
+          <li><span class="profile-key">Location</span><span class="profile-val">Dhaka, Bangladesh · UTC+6</span></li>
+          <li><span class="profile-key">Tenure</span><span class="profile-val">Brain Station 23 · since Nov 2018</span></li>
+          <li><span class="profile-key">Stack</span><span class="profile-val">.NET · Angular · SQL Server</span></li>
+          <li><span class="profile-key">Side</span><span class="profile-val">Next.js · PWA · offline-first</span></li>
+          <li><span class="profile-key">Email</span><span class="profile-val"><a href="mailto:sanjit@example.dev">sanjit@example.dev</a></span></li>
+          <li><span class="profile-key">Status</span><span class="profile-val">Open to senior + lead roles</span></li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="experience">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-num">01 / Experience</div>
+        <h2>What I've been doing, in order.</h2>
+      </div>
+      <p class="section-sub">Seven years at one company. Two promotions. One side-quest into civic-tech tooling.</p>
+    </div>
+
+    <div class="timeline">
+      <article class="timeline-row">
+        <div class="timeline-marker" aria-hidden="true"></div>
+        <div class="timeline-meta">
+          <div class="timeline-period">2022 — Now</div>
+          <div class="timeline-company">Brain Station 23</div>
+          <div class="timeline-role">Senior Software Engineer</div>
+        </div>
+        <div class="timeline-body">
+          <h3 class="timeline-title">Tech lead, multi-region enterprise platforms</h3>
+          <p class="timeline-desc">Lead engineer on the Wellbook governance platform — 10K+ daily users across three continents. Own the technical roadmap, architecture reviews, and the 7-person engineering team's delivery cadence. Direct client interface for the audit committee and regional IT directors.</p>
+          <div class="timeline-tags">
+            <span class="timeline-tag">Tech lead</span>
+            <span class="timeline-tag">Architecture</span>
+            <span class="timeline-tag">Stakeholder mgmt</span>
+            <span class="timeline-tag">.NET 5</span>
+            <span class="timeline-tag">Angular</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="timeline-row">
+        <div class="timeline-marker" aria-hidden="true"></div>
+        <div class="timeline-meta">
+          <div class="timeline-period">2020 — 2022</div>
+          <div class="timeline-company">Brain Station 23</div>
+          <div class="timeline-role">Software Engineer</div>
+        </div>
+        <div class="timeline-body">
+          <h3 class="timeline-title">Enterprise integrations and migration projects</h3>
+          <p class="timeline-desc">Cut over the Syncfusion Data-Grid dependency across multiple Angular apps — 35% bundle reduction, $74K/yr reclaimed, zero production regressions. Built the migration playbook that the team still uses for third-party dependency swaps.</p>
+          <div class="timeline-tags">
+            <span class="timeline-tag">Angular 11</span>
+            <span class="timeline-tag">Migration</span>
+            <span class="timeline-tag">Cost-out</span>
+            <span class="timeline-tag">Team lead</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="timeline-row">
+        <div class="timeline-marker" aria-hidden="true"></div>
+        <div class="timeline-meta">
+          <div class="timeline-period">2018 — 2020</div>
+          <div class="timeline-company">Brain Station 23</div>
+          <div class="timeline-role">Software Engineer</div>
+        </div>
+        <div class="timeline-body">
+          <h3 class="timeline-title">Full-stack enterprise delivery</h3>
+          <p class="timeline-desc">Joined in November 2018. Worked across the full stack on enterprise delivery — Angular front ends, .NET APIs, SQL Server data layers. Shipped a procurement workflow automation for a Bangladeshi conglomerate (16 business units, ~3,200 daily users) that replaced an Access-database-and-email process.</p>
+          <div class="timeline-tags">
+            <span class="timeline-tag">Angular</span>
+            <span class="timeline-tag">.NET</span>
+            <span class="timeline-tag">SQL Server</span>
+            <span class="timeline-tag">Workflow</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="philosophy">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-num">02 / Philosophy</div>
+        <h2>How I think about the work.</h2>
+      </div>
+      <p class="section-sub">Three beliefs I keep returning to. Not principles I learned in a book — patterns I noticed across seven years of shipping.</p>
+    </div>
+
+    <div class="phil-grid">
+      <article class="phil-card">
+        <div class="phil-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3>Right-size architecture to the team that has to operate it.</h3>
+        <p>Microservices look great on a whiteboard. They're a different story at 2am when the on-call rotation is two people. The right architecture is the one your team can actually run, not the one that scales to 100x traffic you'll never have.</p>
+      </article>
+      <article class="phil-card">
+        <div class="phil-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3>Ship the smallest honest thing first.</h3>
+        <p>A read-only reconciliation view beats a write-back platform that's been "two weeks from shipping" for six months. Ship the smallest version that does what it says, then grow it. Users trust what they can verify against their Excel.</p>
+      </article>
+      <article class="phil-card">
+        <div class="phil-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <h3>Write down what you learned, while you still remember the cost.</h3>
+        <p>The best engineering playbook entries are written three weeks after the project shipped, not three years later. The hard parts are still fresh, the rationalizations haven't settled in yet. Capture the playbook while the scar tissue is still tender.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="personality">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-num">03 / Outside production code</div>
+        <h2>What I build when nobody's paying me to.</h2>
+      </div>
+      <p class="section-sub">The personality section. Things I built because the gap was annoying me, or because the game needed to exist.</p>
+    </div>
+
+    <div class="person-grid">
+      <article class="person-card">
+        <div class="person-num">01</div>
+        <h3>CityFix</h3>
+        <p>Offline-first civic issue reporting app for municipalities with patchy connectivity. Built because the existing CMS-driven forms failed every monsoon. Now in pilot with two city corporations.</p>
+      </article>
+      <article class="person-card">
+        <div class="person-num">02</div>
+        <h3>Surakkha worker-safety tool</h3>
+        <p>Internal side-tool for incident reporting on industrial sites. Cut dispatch time from 8 minutes to 90 seconds in pilot. The full case study is in the queue — drafting this quarter.</p>
+      </article>
+      <article class="person-card">
+        <div class="person-num">03</div>
+        <h3>Loop pattern playground</h3>
+        <p>Browser-based synth/sequencer for teaching the loop concept to junior engineers. Because nothing teaches reactive thinking like hearing your function pipe into itself.</p>
+      </article>
+      <article class="person-card">
+        <div class="person-num">04</div>
+        <h3>Indie web revival blog</h3>
+        <p>Personal writing blog on RSS, webmentions, and the small web. No tracking, no JavaScript bloat. Because the web used to feel like a place, not a feed.</p>
+      </article>
+      <article class="person-card">
+        <div class="person-num">05</div>
+        <h3>Engineering playbooks</h3>
+        <p>Pattern pages on this site. Canonical Model is live; more on the way. Four-numbered-moves-and-a-counter-line format. Built because patterns I learned the hard way shouldn't stay tribal knowledge.</p>
+      </article>
+      <article class="person-card">
+        <div class="person-num">06</div>
+        <h3>Games (when I can)</h3>
+        <p>Tiny web games built in evenings. Puzzle, idle, sometimes experimental. Most never get past v0.2 because the idea runs out of steam. The ones that ship live on the <a href="07-lab.html">Lab page</a>.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-num">04 / Get in touch</div>
+        <h2>How to reach me.</h2>
+      </div>
+      <p class="section-sub">Email is fastest. LinkedIn for the formal version. Recruiters — there's a dedicated <a href="09-recruiter.html">/?for=recruiter</a> view with the resume condensed.</p>
+    </div>
+
+    <div class="contact-grid">
+      <article class="contact-card">
+        <div class="contact-label">Email · fastest</div>
+        <div class="contact-val"><a href="mailto:sanjit@example.dev">sanjit@example.dev</a></div>
+        <p class="contact-note">I check this daily. Best for substantive threads about work, collaboration, or speaking requests.</p>
+      </article>
+      <article class="contact-card">
+        <div class="contact-label">GitHub · code</div>
+        <div class="contact-val"><a href="#">github.com/sanjit-majumdar</a></div>
+        <p class="contact-note">Side projects, CityFix source, lab experiments. Issues are open if you find something interesting.</p>
+      </article>
+      <article class="contact-card">
+        <div class="contact-label">LinkedIn · formal</div>
+        <div class="contact-val"><a href="#">linkedin.com/in/sanjitmajumdar</a></div>
+        <p class="contact-note">For recruiters and HR screening. Faster to email directly for actual conversations.</p>
+      </article>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh · UTC+6</div>
+    <div class="footer-links">
+      <a href="#">GitHub</a><a href="#">LinkedIn</a><a href="#contact">Email</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

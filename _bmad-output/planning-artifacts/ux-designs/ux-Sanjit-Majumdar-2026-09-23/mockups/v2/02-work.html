@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work — Sanjit Majumdar · Engineering Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08090C; --bg-2: #0E1014; --bg-3: #15181F;
+    --fg: #F5F5F7; --fg-2: #C7C9D1; --fg-3: #7A7E89;
+    --border: rgba(255,255,255,0.08); --border-strong: rgba(255,255,255,0.16);
+    --accent: #A78BFA; --accent-2: #60A5FA; --accent-glow: rgba(167,139,250,0.18);
+    --live: #34D399; --live-glow: rgba(52,211,153,0.20);
+    --gradient-accent: linear-gradient(135deg, #A78BFA 0%, #60A5FA 100%);
+    --gradient-hero: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(167,139,250,0.10) 0%, transparent 55%);
+    --gradient-card: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
+    --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 16px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  h1, h2, h3, h4 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    letter-spacing: -0.025em; line-height: 1.1; font-weight: 500;
+  }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  .skip { position: absolute; top: -100px; left: 1rem; background: var(--bg-3); color: var(--fg); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); z-index: 100; transition: top 200ms ease; }
+  .skip:focus { top: 1rem; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 4rem; }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(8,9,12,0.7); border-bottom: 1px solid var(--border); }
+  .nav-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-mark { display: flex; align-items: center; gap: 0.6rem; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 500; font-size: 15px; letter-spacing: -0.01em; }
+  .nav-mark-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gradient-accent); box-shadow: 0 0 12px var(--accent-glow); }
+  .nav-links { display: flex; gap: 2.25rem; font-size: 14px; color: var(--fg-3); }
+  .nav-links a { transition: color 150ms ease; }
+  .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--fg); }
+  .nav-cta { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border: 1px solid var(--border-strong); border-radius: var(--radius-md); font-size: 13px; font-weight: 500; color: var(--fg); transition: background 150ms ease, border-color 150ms ease; }
+  .nav-cta:hover { background: var(--bg-3); border-color: var(--fg-3); }
+
+  /* HERO */
+  .hero { position: relative; padding: 6rem 0 5rem; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100%; background: var(--gradient-hero); pointer-events: none; z-index: 0; }
+  .hero-inner { position: relative; z-index: 1; max-width: 880px; }
+  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.6rem; }
+  .hero-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .hero h1 { font-size: clamp(2.5rem, 5.5vw, 4.5rem); font-weight: 500; letter-spacing: -0.035em; line-height: 1.05; margin-bottom: 1.5rem; }
+  .hero-lede { font-size: clamp(1rem, 1.4vw, 1.25rem); color: var(--fg-2); line-height: 1.55; max-width: 640px; margin-bottom: 3rem; }
+  .hero-meta { display: flex; gap: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+  .hero-meta-cell-num { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 1.75rem; font-weight: 500; margin-bottom: 0.4rem; background: var(--gradient-accent); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero-meta-cell-lbl { font-size: 13px; color: var(--fg-3); }
+
+  /* FILTER */
+  .filter { padding: 2rem 0; border-bottom: 1px solid var(--border); }
+  .filter-inner { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+  .filter-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-3); margin-right: 1rem; }
+  .filter-chip { padding: 0.4rem 0.85rem; border: 1px solid var(--border-strong); border-radius: var(--radius-full); font-size: 13px; color: var(--fg-2); transition: all 150ms ease; cursor: pointer; background: transparent; }
+  .filter-chip:hover { color: var(--fg); border-color: var(--fg-3); }
+  .filter-chip.active { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+  /* CASE STUDY GRID */
+  .work-section { padding: 4rem 0 7rem; }
+  .work-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  .work-card {
+    position: relative;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2.25rem;
+    transition: transform 200ms ease, border-color 200ms ease, background 200ms ease;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .work-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent); }
+  .work-card:hover { transform: translateY(-3px); border-color: var(--border-strong); background: var(--bg-3); }
+  .work-card:hover .work-card-arrow { color: var(--accent); transform: translateX(4px); }
+  .work-card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+  .work-card-year { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fg-3); padding: 0.3rem 0.7rem; background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius-full); }
+  .work-card-arrow { color: var(--fg-3); font-size: 18px; transition: all 200ms ease; }
+  .work-card h3 { font-size: 1.5rem; font-weight: 500; margin-bottom: 0.85rem; letter-spacing: -0.02em; }
+  .work-card-cat { font-size: 0.875rem; color: var(--accent); margin-bottom: 1.25rem; }
+  .work-card p { color: var(--fg-2); font-size: 0.9375rem; line-height: 1.6; margin-bottom: 2rem; flex-grow: 1; }
+  .work-card-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+  .work-card-metric-num { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 1.25rem; font-weight: 500; margin-bottom: 0.25rem; }
+  .work-card-metric-lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fg-3); }
+  .work-card-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; }
+  .work-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fg-2); padding: 0.3rem 0.7rem; background: var(--bg-3); border: 1px solid var(--border); border-radius: var(--radius-full); }
+
+  /* CTA STRIP */
+  .cta-strip { padding: 5rem 0; background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .cta-strip-inner { display: flex; justify-content: space-between; align-items: center; gap: 3rem; flex-wrap: wrap; }
+  .cta-strip h3 { font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 500; letter-spacing: -0.025em; max-width: 600px; }
+  .cta-strip p { color: var(--fg-2); font-size: 0.9375rem; margin-top: 0.5rem; max-width: 600px; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.875rem 1.75rem; background: var(--gradient-accent); color: #08090C; border-radius: var(--radius-md); font-size: 15px; font-weight: 600; transition: transform 150ms ease, filter 150ms ease, box-shadow 150ms ease; }
+  .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 8px 32px var(--accent-glow); }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--border); padding: 3rem 0; background: var(--bg); }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .footer-name { font-size: 0.875rem; color: var(--fg-2); }
+  .footer-links { display: flex; gap: 1.75rem; font-size: 0.875rem; color: var(--fg-3); align-items: center; }
+  .footer-links a { transition: color 150ms ease; }
+  .footer-links a:hover { color: var(--fg); }
+  .footer-recruiter { font-size: 12px; color: var(--fg-2); border: 1px solid var(--border-strong); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); background: transparent; transition: color 150ms ease, border-color 150ms ease; }
+  .footer-recruiter:hover { color: var(--fg); border-color: var(--fg-3); }
+  .footer-recruiter:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  @media (max-width: 900px) {
+    .wrap { padding: 0 1.5rem; }
+    .hero { padding: 4rem 0 3rem; }
+    .hero-meta { gap: 1.5rem; }
+    .work-grid { grid-template-columns: 1fr; gap: 1rem; }
+    .work-section { padding: 3rem 0 4rem; }
+    .cta-strip { padding: 3.5rem 0; }
+    .cta-strip-inner { flex-direction: column; align-items: flex-start; gap: 2rem; }
+    .nav-links { display: none; }
+    .nav-cta { display: none; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="nav-mark"><span class="nav-mark-dot"></span>Sanjit Majumdar</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#">Home</a>
+      <a href="#" aria-current="page">Work</a>
+      <a href="#">Patterns</a>
+      <a href="#">Side projects</a>
+      <a href="#">About</a>
+    </nav>
+    <a href="#" class="nav-cta">Get in touch →</a>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-label">Work · Case studies · Engineering judgment in production</div>
+      <h1>Selected case studies.<br>Receipts, not summaries.</h1>
+      <p class="hero-lede">Each entry below names the problem, the decision, the result. Skim the card, follow the link for the full architecture and the trade-offs. No fluff, no "passionate about clean code."</p>
+      <div class="hero-meta">
+        <div>
+          <div class="hero-meta-cell-num">5</div>
+          <div class="hero-meta-cell-lbl">Case studies</div>
+        </div>
+        <div>
+          <div class="hero-meta-cell-num">7+</div>
+          <div class="hero-meta-cell-lbl">Years</div>
+        </div>
+        <div>
+          <div class="hero-meta-cell-num">10K+</div>
+          <div class="hero-meta-cell-lbl">Daily users served</div>
+        </div>
+        <div>
+          <div class="hero-meta-cell-num">$74k</div>
+          <div class="hero-meta-cell-lbl">Annual license costs removed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="filter">
+  <div class="wrap filter-inner">
+    <span class="filter-label">Filter</span>
+    <button class="filter-chip active" type="button">All</button>
+    <button class="filter-chip" type="button">Enterprise</button>
+    <button class="filter-chip" type="button">Engineering ops</button>
+    <button class="filter-chip" type="button">Civic</button>
+    <button class="filter-chip" type="button">Commerce</button>
+    <button class="filter-chip" type="button">Side project</button>
+  </div>
+</section>
+
+<section class="work-section">
+  <div class="wrap">
+    <div class="work-grid">
+      <a href="#" class="work-card">
+        <div class="work-card-head">
+          <span class="work-card-year">2020 — 2021 · Lead case study</span>
+          <span class="work-card-arrow">→</span>
+        </div>
+        <h3>Wellbook — Enterprise governance for an oil &amp; gas organisation</h3>
+        <div class="work-card-cat">Enterprise · Multi-tenant · Cutover migration</div>
+        <p>Three ERPs, one canonical schema, a 14-hour migration window. Tech lead on a 7-person team. 10K+ daily users, zero P1 incidents post-cutover.</p>
+        <div class="work-card-metrics">
+          <div><div class="work-card-metric-num">10K+</div><div class="work-card-metric-lbl">DAU served</div></div>
+          <div><div class="work-card-metric-num">14h</div><div class="work-card-metric-lbl">Migration window</div></div>
+          <div><div class="work-card-metric-num">$74k</div><div class="work-card-metric-lbl">License cost / yr</div></div>
+        </div>
+        <div class="work-card-tags">
+          <span class="work-tag">.NET</span><span class="work-tag">Angular</span><span class="work-tag">SQL Server</span><span class="work-tag">Multi-tenant</span>
+        </div>
+      </a>
+
+      <a href="#" class="work-card">
+        <div class="work-card-head">
+          <span class="work-card-year">2019 — 2020 · Engineering operations</span>
+          <span class="work-card-arrow">→</span>
+        </div>
+        <h3>Syncfusion Data-Grid replacement</h3>
+        <div class="work-card-cat">Engineering ops · Library migration</div>
+        <p>Removed a third-party dependency across multiple Angular apps. Cut bundle size 35%, reclaimed $74k/year. Led the 7-person rollout to zero regressions.</p>
+        <div class="work-card-metrics">
+          <div><div class="work-card-metric-num">−35%</div><div class="work-card-metric-lbl">Bundle size</div></div>
+          <div><div class="work-card-metric-num">$74k</div><div class="work-card-metric-lbl">Reclaimed / yr</div></div>
+          <div><div class="work-card-metric-num">7</div><div class="work-card-metric-lbl">Engineers led</div></div>
+        </div>
+        <div class="work-card-tags">
+          <span class="work-tag">Angular</span><span class="work-tag">TypeScript</span><span class="work-tag">Component architecture</span>
+        </div>
+      </a>
+
+      <a href="#" class="work-card">
+        <div class="work-card-head">
+          <span class="work-card-year">2021 — 2022 · Civic safety</span>
+          <span class="work-card-arrow">→</span>
+        </div>
+        <h3>Surakkha — Water safety monitoring</h3>
+        <div class="work-card-cat">Civic · Multi-tenant · Regulator compliance</div>
+        <p>Multi-tenant platform for water quality data ingestion across districts. Field-officer workflows, audit trails, regulator reporting for Bangladesh water safety boards.</p>
+        <div class="work-card-metrics">
+          <div><div class="work-card-metric-num">10+</div><div class="work-card-metric-lbl">Districts</div></div>
+          <div><div class="work-card-metric-num">&lt;24h</div><div class="work-card-metric-lbl">Round-trip</div></div>
+          <div><div class="work-card-metric-num">100%</div><div class="work-card-metric-lbl">Audit-pass</div></div>
+        </div>
+        <div class="work-card-tags">
+          <span class="work-tag">.NET</span><span class="work-tag">Angular</span><span class="work-tag">SQL Server</span>
+        </div>
+      </a>
+
+      <a href="#" class="work-card">
+        <div class="work-card-head">
+          <span class="work-card-year">2018 — 2019 · Commerce platform</span>
+          <span class="work-card-arrow">→</span>
+        </div>
+        <h3>nopCommerce plugin architecture</h3>
+        <div class="work-card-cat">Commerce · Plugin SDK · Platform upgrade survivability</div>
+        <p>Designed the plugin model that became the team's house style. Composable, fork-free, upgrade-survivable across three platform upgrades.</p>
+        <div class="work-card-metrics">
+          <div><div class="work-card-metric-num">3</div><div class="work-card-metric-lbl">Upgrades survived</div></div>
+          <div><div class="work-card-metric-num">0</div><div class="work-card-metric-lbl">Forks required</div></div>
+          <div><div class="work-card-metric-num">12+</div><div class="work-card-metric-lbl">Plugins shipped</div></div>
+        </div>
+        <div class="work-card-tags">
+          <span class="work-tag">.NET</span><span class="work-tag">C#</span><span class="work-tag">Plugin SDK</span>
+        </div>
+      </a>
+
+      <a href="#" class="work-card" style="grid-column: span 2;">
+        <div class="work-card-head">
+          <span class="work-card-year">2022 — Now · Side project</span>
+          <span class="work-card-arrow">→</span>
+        </div>
+        <h3>CityFix — Civic complaint routing for Dhaka</h3>
+        <div class="work-card-cat">Civic · AI · Private beta</div>
+        <p>React + AI prototype matching complaints to municipal departments. Currently in private beta with two neighborhoods. Pilot data is honest — for every closed ticket, two weren't.</p>
+        <div class="work-card-metrics">
+          <div><div class="work-card-metric-num">2</div><div class="work-card-metric-lbl">Neighborhoods</div></div>
+          <div><div class="work-card-metric-num">~33%</div><div class="work-card-metric-lbl">Closure rate (honest)</div></div>
+          <div><div class="work-card-metric-num">β</div><div class="work-card-metric-lbl">Status</div></div>
+        </div>
+        <div class="work-card-tags">
+          <span class="work-tag">React</span><span class="work-tag">TypeScript</span><span class="work-tag">AI/LLM</span><span class="work-tag">Civic</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="cta-strip">
+  <div class="wrap cta-strip-inner">
+    <div>
+      <h3>Want the architecture behind these case studies?</h3>
+      <p>The patterns I extracted are on the Patterns page — engineering playbooks for Canonical Model, Syncfusion replacement, and more.</p>
+    </div>
+    <a href="#" class="btn-primary">Browse patterns →</a>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh · UTC+6</div>
+    <div class="footer-links">
+      <a href="#">GitHub</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">Email</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

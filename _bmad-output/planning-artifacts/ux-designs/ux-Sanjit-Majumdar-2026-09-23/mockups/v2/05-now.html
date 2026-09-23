@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Now — Sanjit Majumdar · Currently building</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08090C; --bg-2: #0E1014; --bg-3: #15181F;
+    --fg: #F5F5F7; --fg-2: #C7C9D1; --fg-3: #7A7E89;
+    --border: rgba(255,255,255,0.08); --border-strong: rgba(255,255,255,0.16);
+    --accent: #A78BFA; --accent-2: #60A5FA; --accent-glow: rgba(167,139,250,0.18);
+    --live: #34D399; --live-glow: rgba(52,211,153,0.20);
+    --gradient-accent: linear-gradient(135deg, #A78BFA 0%, #60A5FA 100%);
+    --gradient-hero: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(52,211,153,0.08) 0%, transparent 55%);
+    --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--fg); font-family: 'Inter', system-ui, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.025em; line-height: 1.1; font-weight: 500; }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  .skip { position: absolute; top: -100px; left: 1rem; background: var(--bg-3); color: var(--fg); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); z-index: 100; transition: top 200ms ease; }
+  .skip:focus { top: 1rem; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 4rem; }
+  .prose { max-width: 800px; }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(8,9,12,0.7); border-bottom: 1px solid var(--border); }
+  .nav-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-mark { display: flex; align-items: center; gap: 0.6rem; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 500; font-size: 15px; letter-spacing: -0.01em; }
+  .nav-mark-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gradient-accent); box-shadow: 0 0 12px var(--accent-glow); }
+  .nav-links { display: flex; gap: 2.25rem; font-size: 14px; color: var(--fg-3); }
+  .nav-links a { transition: color 150ms ease; }
+  .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--fg); }
+
+  /* HERO */
+  .hero { position: relative; padding: 6rem 0 5rem; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100%; background: var(--gradient-hero); pointer-events: none; z-index: 0; }
+  .hero-inner { position: relative; z-index: 1; max-width: 880px; }
+  .live-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.4rem 0.85rem;
+    background: var(--bg-2);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-full);
+    font-size: 13px;
+    color: var(--live);
+    margin-bottom: 2.5rem;
+  }
+  .live-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--live);
+    box-shadow: 0 0 12px var(--live-glow);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.85); } }
+  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.6rem; }
+  .hero-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .hero h1 { font-size: clamp(2.5rem, 5.5vw, 4.5rem); font-weight: 500; letter-spacing: -0.035em; line-height: 1.05; margin-bottom: 1.5rem; }
+  .hero-lede { font-size: clamp(1rem, 1.4vw, 1.25rem); color: var(--fg-2); line-height: 1.55; max-width: 720px; }
+
+  /* META BAR */
+  .meta-bar { padding: 1.5rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 4rem; }
+  .meta-row { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .meta-info { display: flex; gap: 2.5rem; align-items: center; flex-wrap: wrap; }
+  .meta-item-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--fg-3); margin-bottom: 0.3rem; }
+  .meta-item-value { font-size: 0.9375rem; color: var(--fg); }
+  .rss-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border: 1px solid var(--border-strong); border-radius: var(--radius-md); font-size: 13px; color: var(--fg); transition: background 150ms ease, border-color 150ms ease; }
+  .rss-btn:hover { background: var(--bg-3); border-color: var(--fg-3); }
+
+  /* TICKER */
+  .ticker-section { padding-bottom: 7rem; }
+  .ticker-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
+  .ticker-entry {
+    display: grid; grid-template-columns: 80px 1fr auto;
+    gap: 2rem;
+    padding: 2rem 0;
+    border-top: 1px solid var(--border);
+    align-items: start;
+  }
+  .ticker-entry:last-child { border-bottom: 1px solid var(--border); }
+  .ticker-entry.now { padding: 3rem 0; }
+  .ticker-when {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--fg-3);
+    padding-top: 0.4rem;
+  }
+  .ticker-entry.now .ticker-when { color: var(--live); }
+  .ticker-body { display: flex; flex-direction: column; gap: 0.85rem; }
+  .ticker-status-row { display: flex; align-items: center; gap: 0.75rem; }
+  .status-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--live);
+    box-shadow: 0 0 12px var(--live-glow);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  .status-dot.prior { background: var(--fg-3); box-shadow: none; animation: none; }
+  .status-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--fg-3);
+  }
+  .ticker-entry.now .status-label { color: var(--live); }
+  .ticker-title {
+    font-size: 1.5rem; font-weight: 500; letter-spacing: -0.02em;
+  }
+  .ticker-entry.now .ticker-title { font-size: 1.875rem; }
+  .ticker-desc { font-size: 1rem; color: var(--fg-2); line-height: 1.65; max-width: 640px; }
+  .ticker-meta { display: flex; gap: 1.5rem; align-items: center; padding-top: 0.5rem; flex-wrap: wrap; }
+  .ticker-meta-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--fg-2);
+    padding: 0.3rem 0.7rem;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+  }
+  .ticker-meta-link { font-size: 13px; color: var(--accent); transition: opacity 150ms ease; }
+  .ticker-meta-link:hover { opacity: 0.75; }
+
+  /* SUBSCRIBE BLOCK */
+  .subscribe-block {
+    margin-top: 4rem;
+    padding: 3rem;
+    background: var(--bg-2);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .subscribe-block::before {
+    content: '';
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 500px; height: 200px;
+    background: radial-gradient(ellipse, var(--accent-glow), transparent 70%);
+    pointer-events: none;
+  }
+  .subscribe-inner { position: relative; z-index: 1; }
+  .subscribe-block h3 { font-size: 1.5rem; font-weight: 500; margin-bottom: 1rem; }
+  .subscribe-block p { color: var(--fg-2); font-size: 0.9375rem; margin-bottom: 2rem; max-width: 480px; margin-left: auto; margin-right: auto; }
+  .subscribe-form { display: flex; gap: 0.5rem; justify-content: center; max-width: 420px; margin: 0 auto; flex-wrap: wrap; }
+  .subscribe-input { flex: 1; min-width: 200px; padding: 0.875rem 1rem; background: var(--bg); border: 1px solid var(--border-strong); border-radius: var(--radius-md); color: var(--fg); font-size: 0.9375rem; font-family: inherit; }
+  .subscribe-input:focus { outline: 2px solid var(--accent); outline-offset: 2px; border-color: var(--accent); }
+  .subscribe-input::placeholder { color: var(--fg-3); }
+  .subscribe-btn { padding: 0.875rem 1.5rem; background: var(--gradient-accent); color: #08090C; border-radius: var(--radius-md); font-size: 14px; font-weight: 600; transition: transform 150ms ease, filter 150ms ease; }
+  .subscribe-btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--border); padding: 3rem 0; background: var(--bg); }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .footer-name { font-size: 0.875rem; color: var(--fg-2); }
+  .footer-links { display: flex; gap: 1.75rem; font-size: 0.875rem; color: var(--fg-3); align-items: center; }
+  .footer-links a { transition: color 150ms ease; }
+  .footer-links a:hover { color: var(--fg); }
+  .footer-recruiter { font-size: 12px; color: var(--fg-2); border: 1px solid var(--border-strong); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); background: transparent; transition: color 150ms ease, border-color 150ms ease; }
+  .footer-recruiter:hover { color: var(--fg); border-color: var(--fg-3); }
+
+  @media (max-width: 900px) {
+    .wrap { padding: 0 1.5rem; }
+    .hero { padding: 4rem 0 3rem; }
+    .meta-bar { margin-bottom: 2rem; }
+    .meta-row { flex-direction: column; align-items: flex-start; }
+    .ticker-entry { grid-template-columns: 1fr; gap: 1rem; padding: 1.5rem 0; }
+    .ticker-entry.now { padding: 2rem 0; }
+    .ticker-section { padding-bottom: 4rem; }
+    .nav-links { display: none; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="nav-mark"><span class="nav-mark-dot"></span>Sanjit Majumdar</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#">Home</a>
+      <a href="#">Work</a>
+      <a href="#">Patterns</a>
+      <a href="#" aria-current="page">Now</a>
+      <a href="#">Side projects</a>
+      <a href="#">About</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="live-badge"><span class="live-dot"></span>Live · Updated weekly</div>
+      <div class="hero-label">Now · Currently building</div>
+      <h1>What's on my plate<br>right now.</h1>
+      <p class="hero-lede">A live ticker of the things I'm actively working on. Honest timestamps. When something lands, it moves down. When I start something, it shows up at the top.</p>
+    </div>
+  </div>
+</section>
+
+<section class="meta-bar">
+  <div class="wrap">
+    <div class="meta-row">
+      <div class="meta-info">
+        <div>
+          <div class="meta-item-label">Entries</div>
+          <div class="meta-item-value">6 · live</div>
+        </div>
+        <div>
+          <div class="meta-item-label">Last updated</div>
+          <div class="meta-item-value">3 days ago · September 20</div>
+        </div>
+        <div>
+          <div class="meta-item-label">Cadence</div>
+          <div class="meta-item-value">Weekly · Fridays</div>
+        </div>
+      </div>
+      <a href="#" class="rss-btn">RSS feed →</a>
+    </div>
+  </div>
+</section>
+
+<section class="ticker-section">
+  <div class="wrap">
+    <ul class="ticker-list" aria-label="Currently building">
+
+      <li class="ticker-entry now">
+        <div class="ticker-when">Sep 20<br><span style="font-size: 10px; opacity: 0.7;">3d ago</span></div>
+        <div class="ticker-body">
+          <div class="ticker-status-row">
+            <span class="status-dot"></span>
+            <span class="status-label">● Now · Active</span>
+          </div>
+          <h2 class="ticker-title">CityFix — private beta with two neighborhoods</h2>
+          <p class="ticker-desc">Complaint routing is live in Mohammadpur and Mirpur. The model is learning which departments actually close tickets vs. which ones mark them "resolved." Pilot data: for every closed ticket, two weren't. Closing the gap.</p>
+          <div class="ticker-meta">
+            <span class="ticker-meta-tag">React</span>
+            <span class="ticker-meta-tag">TypeScript</span>
+            <span class="ticker-meta-tag">AI/LLM</span>
+            <a href="#" class="ticker-meta-link">Read more →</a>
+          </div>
+        </div>
+        <div></div>
+      </li>
+
+      <li class="ticker-entry">
+        <div class="ticker-when">Sep 13<br><span style="font-size: 10px; opacity: 0.7;">1w ago</span></div>
+        <div class="ticker-body">
+          <div class="ticker-status-row">
+            <span class="status-dot"></span>
+            <span class="status-label">● Active</span>
+          </div>
+          <h2 class="ticker-title">AI Engineering Lab — September essay</h2>
+          <p class="ticker-desc">Writing this month's piece on schema-migration patterns where AI agents touch production data. Spoiler: the agent didn't break anything; the team's confidence that the agent wouldn't break anything did.</p>
+          <div class="ticker-meta">
+            <span class="ticker-meta-tag">Essay</span>
+            <span class="ticker-meta-tag">AI/agents</span>
+            <a href="#" class="ticker-meta-link">Subscribe →</a>
+          </div>
+        </div>
+        <div></div>
+      </li>
+
+      <li class="ticker-entry">
+        <div class="ticker-when">Sep 06<br><span style="font-size: 10px; opacity: 0.7;">2w ago</span></div>
+        <div class="ticker-body">
+          <div class="ticker-status-row">
+            <span class="status-dot"></span>
+            <span class="status-label">● Active</span>
+          </div>
+          <h2 class="ticker-title">Surakkha — research phase</h2>
+          <p class="ticker-desc">Water safety monitoring concept for Bangladesh. Arsenic test data ingestion, NGO coordination, district-level reporting. Looking for a frontend engineer to help. Slow on purpose.</p>
+          <div class="ticker-meta">
+            <span class="ticker-meta-tag">Research</span>
+            <span class="ticker-meta-tag">Civic</span>
+            <a href="#" class="ticker-meta-link">Get involved →</a>
+          </div>
+        </div>
+        <div></div>
+      </li>
+
+      <li class="ticker-entry">
+        <div class="ticker-when">Aug 30<br><span style="font-size: 10px; opacity: 0.7;">3w ago</span></div>
+        <div class="ticker-body">
+          <div class="ticker-status-row">
+            <span class="status-dot prior"></span>
+            <span class="status-label">Prior</span>
+          </div>
+          <h2 class="ticker-title">Random Useful Tool #17 — shipped</h2>
+          <p class="ticker-desc">Calculator #17. Apparently I needed another one. Shipped to 200 users. Took longer than it should have.</p>
+          <div class="ticker-meta">
+            <span class="ticker-meta-tag">Tool</span>
+            <span class="ticker-meta-tag">Shipped</span>
+          </div>
+        </div>
+        <div></div>
+      </li>
+
+      <li class="ticker-entry">
+        <div class="ticker-when">Aug 16<br><span style="font-size: 10px; opacity: 0.7;">5w ago</span></div>
+        <div class="ticker-body">
+          <div class="ticker-status-row">
+            <span class="status-dot prior"></span>
+            <span class="status-label">Prior</span>
+          </div>
+          <h2 class="ticker-title">Pattern library — added Syncfusion Data-Grid pattern</h2>
+          <p class="ticker-desc">Documented the third-party-dependency-replacement playbook from the 2019 — 2020 work. Three moves; the second one ("freeze the API surface first") is the load-bearing one.</p>
+          <div class="ticker-meta">
+            <span class="ticker-meta-tag">Pattern</span>
+            <span class="ticker-meta-tag">Published</span>
+            <a href="#" class="ticker-meta-link">Read →</a>
+          </div>
+        </div>
+        <div></div>
+      </li>
+
+      <li class="ticker-entry">
+        <div class="ticker-when">Aug 02<br><span style="font-size: 10px; opacity: 0.7;">7w ago</span></div>
+        <div class="ticker-body">
+          <div class="ticker-status-row">
+            <span class="status-dot prior"></span>
+            <span class="status-label">Prior</span>
+          </div>
+          <h2 class="ticker-title">CityFix prototype — React + AI scaffold</h2>
+          <p class="ticker-desc">Built the first end-to-end routing prototype. Three complaints in, two routed correctly. The third one was a pothole; the system tried to route it to the Water Authority. Iteration.</p>
+          <div class="ticker-meta">
+            <span class="ticker-meta-tag">Prototype</span>
+            <span class="ticker-meta-tag">Shipped</span>
+          </div>
+        </div>
+        <div></div>
+      </li>
+
+    </ul>
+
+    <div class="subscribe-block">
+      <div class="subscribe-inner">
+        <h3>Subscribe to /now</h3>
+        <p>One email per week. Honest updates only. No "exciting announcements," no "thoughts on the industry." Just what's shipping and what's stuck.</p>
+        <form class="subscribe-form" onsubmit="event.preventDefault();">
+          <input class="subscribe-input" type="email" placeholder="you@domain.dev" required aria-label="Email address">
+          <button class="subscribe-btn" type="submit">Subscribe →</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh · UTC+6</div>
+    <div class="footer-links">
+      <a href="#">GitHub</a><a href="#">LinkedIn</a><a href="#">Email</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

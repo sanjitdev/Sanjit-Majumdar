@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work — Sanjit Majumdar · Selected engineering projects</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06070B; --bg-3: #10131C;
+    --glass: rgba(255,255,255,0.03); --glass-strong: rgba(255,255,255,0.05);
+    --fg: #FAFAFA; --fg-2: #D4D4D8; --fg-3: #8B8E97; --fg-4: #5C5F68;
+    --border: rgba(255,255,255,0.06); --border-strong: rgba(255,255,255,0.12);
+    --accent: #A78BFA; --accent-glow: rgba(167,139,250,0.25);
+    --gradient-text: linear-gradient(135deg, #A78BFA 0%, #67E8F9 50%, #F472B6 100%);
+    --gradient-button: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%);
+    --gradient-card: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 50%);
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 20px;
+    --radius-full: 9999px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--fg); font-family: 'Inter', system-ui, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.03em; line-height: 1.1; font-weight: 500; }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible, button:focus-visible, .work-card:focus-visible, .filter-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--radius-md); }
+  .filter-chip:focus-visible { outline-offset: 2px; }
+  .work-card:focus-visible { outline-offset: 4px; }
+  .work-card:focus-visible .stack-tag { color: var(--fg-2); border-color: var(--border-strong); }
+  .work-card:focus-visible .arrow-icon { color: var(--accent); }
+  .footer-recruiter:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--radius-sm); }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  .skip { position: absolute; top: -100px; left: 1.5rem; background: var(--bg-3); color: var(--fg); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); z-index: 100; transition: top 200ms ease; }
+  .skip:focus { top: 1rem; }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 0 3rem; }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(6,7,11,0.7); border-bottom: 1px solid var(--border); }
+  .nav-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-mark { display: flex; align-items: center; gap: 0.6rem; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 500; font-size: 15px; letter-spacing: -0.01em; }
+  .nav-mark-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gradient-button); box-shadow: 0 0 12px var(--accent-glow); }
+  .nav-links { display: flex; gap: 2.25rem; font-size: 14px; color: var(--fg-3); }
+  .nav-links a { transition: color 150ms ease; position: relative; }
+  .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--fg); }
+  .nav-links a[aria-current="page"]::after { content: ''; position: absolute; left: 0; right: 0; bottom: -24px; height: 1px; background: var(--gradient-button); }
+
+  /* HERO */
+  .hero { position: relative; padding: 5rem 0 3.5rem; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100%; background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(167,139,250,0.18) 0%, rgba(103,232,249,0.06) 35%, transparent 65%); pointer-events: none; z-index: 0; }
+  .hero-inner { position: relative; z-index: 1; }
+  .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2.5rem; }
+  .breadcrumb a { color: var(--fg-3); transition: color 150ms ease; }
+  .breadcrumb a:hover { color: var(--fg); }
+  .breadcrumb span.sep { color: var(--fg-4); }
+  .breadcrumb [aria-current="page"] { color: var(--accent); }
+  .hero-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 4rem; align-items: start; }
+  .hero-left { padding-right: 1rem; }
+  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.6rem; }
+  .hero-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .hero-title { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 500; letter-spacing: -0.04em; line-height: 1; margin-bottom: 1.5rem; }
+  .hero-spine { font-size: 1.0625rem; color: var(--fg-2); line-height: 1.65; max-width: 560px; }
+
+  /* FILTERS */
+  .filters { display: flex; gap: 0.5rem; padding: 1.25rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-md); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); position: relative; overflow: hidden; }
+  .filters::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .filter-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-3); align-self: center; padding-right: 0.5rem; border-right: 1px solid var(--border); margin-right: 0.25rem; }
+  .filter-chip { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.45rem 1rem; background: transparent; border: 1px solid var(--border); border-radius: var(--radius-full); color: var(--fg-2); transition: all 150ms ease; cursor: pointer; }
+  .filter-chip:hover { background: var(--glass-strong); border-color: var(--border-strong); }
+  .filter-chip[aria-pressed="true"] { background: var(--accent-glow); border-color: var(--accent); color: var(--fg); }
+
+  /* IMPACT STRIP */
+  .impact { padding: 2rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: 0; }
+  .impact-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+  .impact-cell { padding: 0 2rem; border-left: 1px solid var(--border); }
+  .impact-cell:first-child { border-left: none; padding-left: 0; }
+  .impact-num { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: clamp(1.75rem, 2.5vw, 2.25rem); font-weight: 500; letter-spacing: -0.03em; background: var(--gradient-text); background-size: 200% 200%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.4rem; }
+  .impact-label { font-size: 13px; color: var(--fg-3); line-height: 1.4; }
+
+  /* SECTION HEAD */
+  .section { padding: 5rem 0; }
+  .section.is-flush { padding-top: 0; }
+  .section-head { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 2rem; border-bottom: 1px solid var(--border); margin-bottom: 3rem; gap: 2rem; flex-wrap: wrap; }
+  .section-head-left { flex: 1; min-width: 280px; }
+  .section-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; }
+  .section h2 { font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 500; letter-spacing: -0.03em; }
+  .section-sub { color: var(--fg-3); font-size: 0.9375rem; margin-top: 0.75rem; max-width: 480px; }
+  .section-sub a { color: var(--accent); transition: opacity 150ms ease; }
+  .section-sub a:hover { opacity: 0.75; }
+
+  /* WORK CARDS */
+  .work-list { display: flex; flex-direction: column; gap: 1.5rem; }
+  .work-card { display: grid; grid-template-columns: 1.2fr 1fr; gap: 0; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; position: relative; transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1), border-color 200ms ease, box-shadow 250ms ease; cursor: pointer; }
+  .work-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; z-index: 2; }
+  .work-card:hover { transform: translateY(-4px); border-color: var(--border-strong); box-shadow: var(--shadow-lg); }
+  .work-card:hover .screenshot-bg { transform: scale(1.04); }
+  .work-card:hover .arrow-icon { transform: translateX(6px); color: var(--accent); }
+
+  .work-card.reverse { grid-template-columns: 1fr 1.2fr; }
+  .work-card.reverse .screenshot { order: 1; }
+  .work-card.reverse .work-body { order: 2; }
+
+  .screenshot { position: relative; aspect-ratio: 16/10; overflow: hidden; background: var(--bg-3); }
+  .screenshot-bg { position: absolute; inset: 0; transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1); width: 100%; height: 100%; }
+  .screenshot-tag { position: absolute; top: 1rem; left: 1rem; z-index: 2; padding: 0.4rem 0.75rem; background: rgba(6,7,11,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-2); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .work-body { padding: 2rem 2.25rem; display: flex; flex-direction: column; justify-content: center; position: relative; }
+  .work-meta { display: flex; gap: 0.75rem; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; align-items: center; }
+  .work-meta span { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .work-meta .meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--fg-4); display: inline-block; }
+  .work-title-row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 0.75rem; }
+  .work-title { font-size: clamp(1.375rem, 2vw, 1.625rem); font-weight: 500; letter-spacing: -0.025em; }
+  .arrow-icon { color: var(--fg-3); transition: transform 200ms ease, color 200ms ease; flex-shrink: 0; font-size: 1.25rem; }
+  .work-desc { color: var(--fg-2); font-size: 0.9375rem; line-height: 1.65; margin-bottom: 1.25rem; }
+  .work-stack { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+  .stack-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 0.35rem 0.75rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-full); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.04em; }
+  .work-outcome { display: flex; gap: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); }
+  .outcome-cell .num { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 1.25rem; font-weight: 500; letter-spacing: -0.02em; color: var(--fg); margin-bottom: 0.2rem; }
+  .outcome-cell .lbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* Draft-state styling (replaces inline styles on upcoming projects) */
+  .work-card.is-draft { cursor: default; }
+  .work-card.is-draft .screenshot-bg { opacity: 0.5; }
+  .work-card.is-draft.is-far .screenshot-bg { opacity: 0.4; }
+  .work-card.is-draft .arrow-icon { opacity: 0.4; }
+  .work-card.is-draft.is-far { opacity: 0.7; }
+
+  /* Visual treatments for screenshot backgrounds */
+  .vis-1 { background: linear-gradient(135deg, rgba(167,139,250,0.25) 0%, rgba(103,232,249,0.15) 50%, rgba(244,114,182,0.1) 100%); position: relative; }
+  .vis-1::after { content: ''; position: absolute; inset: 20%; border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); background: rgba(6,7,11,0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+  .vis-1::before { content: ''; position: absolute; top: 30%; left: 30%; width: 40%; height: 40%; background: var(--gradient-button); border-radius: var(--radius-sm); opacity: 0.3; filter: blur(20px); }
+
+  .vis-2 { background: linear-gradient(180deg, rgba(103,232,249,0.18) 0%, rgba(167,139,250,0.12) 100%); position: relative; }
+  .vis-2::before { content: ''; position: absolute; top: 15%; left: 8%; right: 8%; height: 12px; background: rgba(255,255,255,0.06); border-radius: 6px; }
+  .vis-2::after { content: ''; position: absolute; top: 30%; left: 8%; right: 8%; bottom: 15%; border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-md); background: rgba(6,7,11,0.5); }
+
+  .vis-3 { background: radial-gradient(circle at 30% 50%, rgba(244,114,182,0.18) 0%, rgba(167,139,250,0.1) 60%, transparent 100%); position: relative; }
+  .vis-3::before { content: ''; position: absolute; top: 25%; left: 20%; width: 60%; height: 50%; border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-md); background: rgba(6,7,11,0.5); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+  .vis-3::after { content: ''; position: absolute; top: 40%; left: 35%; width: 30%; height: 20%; background: var(--gradient-button); border-radius: var(--radius-sm); opacity: 0.4; filter: blur(15px); }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--border); padding: 3rem 0; background: var(--bg); margin-top: 4rem; }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .footer-name { font-size: 0.875rem; color: var(--fg-2); }
+  .footer-links { display: flex; gap: 1.75rem; font-size: 0.875rem; color: var(--fg-3); align-items: center; }
+  .footer-links a { transition: color 150ms ease; }
+  .footer-links a:hover { color: var(--fg); }
+  .footer-recruiter { font-size: 12px; color: var(--fg-2); border: 1px solid var(--border-strong); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); background: transparent; transition: color 150ms ease, border-color 150ms ease; }
+  .footer-recruiter:hover { color: var(--fg); border-color: var(--fg-3); }
+
+  @media (max-width: 900px) {
+    .wrap { padding: 0 1.5rem; }
+    .hero { padding: 3rem 0 2.5rem; }
+    .hero-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .hero-left { padding-right: 0; }
+    .filters { flex-wrap: wrap; }
+    .impact-grid { grid-template-columns: repeat(2, 1fr); row-gap: 1.5rem; }
+    .impact-cell { padding: 0; border-left: none; padding-right: 1rem; }
+    .work-card { grid-template-columns: 1fr; }
+    .work-card.reverse { grid-template-columns: 1fr; }
+    .work-card.reverse .screenshot { order: 0; }
+    .work-card.reverse .work-body { order: 1; }
+    .screenshot { aspect-ratio: 16/9; }
+    .work-body { padding: 1.5rem; }
+    .section { padding: 3.5rem 0; }
+    .nav-links { display: none; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="01-homepage.html" class="nav-mark"><span class="nav-mark-dot"></span>Sanjit Majumdar</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="01-homepage.html">Home</a>
+      <a href="02-work.html" aria-current="page">Work</a>
+      <a href="06-about.html">About</a>
+      <a href="07-lab.html">Lab</a>
+      <a href="05-now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap hero-inner">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="01-homepage.html">Home</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span aria-current="page">Work</span>
+    </nav>
+    <div class="hero-grid">
+      <div class="hero-left">
+        <div class="hero-label">Selected work · 2018 — 2026</div>
+        <h1 class="hero-title">Engines I've built<br>and outcomes shipped.</h1>
+        <p class="hero-spine">A working record of systems I've designed end-to-end — governance platforms for energy operators, ERP integrations, license-cost takeouts, and tools I built because nobody else had time to. Receipts attached.</p>
+      </div>
+      <div class="filters" role="group" aria-label="Filter projects">
+        <span class="filter-label">Filter</span>
+        <button class="filter-chip" type="button" aria-pressed="true">All</button>
+        <button class="filter-chip" type="button">Enterprise</button>
+        <button class="filter-chip" type="button">Migration</button>
+        <button class="filter-chip" type="button">Internal</button>
+        <button class="filter-chip" type="button">Lab</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="impact" aria-label="Track record">
+  <div class="wrap">
+    <div class="impact-grid">
+      <div class="impact-cell"><div class="impact-num">7+</div><div class="impact-label">Years in production code</div></div>
+      <div class="impact-cell"><div class="impact-num">10K+</div><div class="impact-label">Daily users across shipped systems</div></div>
+      <div class="impact-cell"><div class="impact-num">$74K</div><div class="impact-label">License cost reclaimed / year</div></div>
+      <div class="impact-cell"><div class="impact-num">7</div><div class="impact-label">Engineers led across teams</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="featured">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-num">01 / Featured projects</div>
+        <h2>Three projects that defined the last seven years.</h2>
+      </div>
+      <p class="section-sub">Click any card to read the full case study — context, decisions, and measurable outcomes.</p>
+    </div>
+
+    <div class="work-list">
+      <a href="03-case-study.html" class="work-card" aria-label="Wellbook case study">
+        <div class="screenshot">
+          <div class="screenshot-bg vis-1"></div>
+          <span class="screenshot-tag">Featured · Enterprise</span>
+        </div>
+        <div class="work-body">
+          <div class="work-meta">
+            <span>2020 — 2021</span>
+            <span class="meta-dot" aria-hidden="true"></span>
+            <span>Lead engineer</span>
+            <span class="meta-dot" aria-hidden="true"></span>
+            <span>Energy sector</span>
+          </div>
+          <div class="work-title-row">
+            <h3 class="work-title">Wellbook</h3>
+            <span class="arrow-icon" aria-hidden="true">→</span>
+          </div>
+          <p class="work-desc">Enterprise project &amp; governance platform for an international oil &amp; gas operator. Replaced three legacy ERPs across 14-hour migration windows with zero downtime. 10K+ daily users, full audit trail, multi-region failover drills every quarter.</p>
+          <div class="work-stack">
+            <span class="stack-tag">.NET 5</span>
+            <span class="stack-tag">Angular</span>
+            <span class="stack-tag">SQL Server</span>
+            <span class="stack-tag">Azure</span>
+            <span class="stack-tag">EF Core</span>
+          </div>
+          <div class="work-outcome">
+            <div class="outcome-cell"><div class="num">10K+</div><div class="lbl">DAU served</div></div>
+            <div class="outcome-cell"><div class="num">14h</div><div class="lbl">Migration window</div></div>
+            <div class="outcome-cell"><div class="num">3 → 1</div><div class="lbl">ERPs consolidated</div></div>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="work-card reverse" aria-label="Syncfusion replacement case study">
+        <div class="screenshot">
+          <div class="screenshot-bg vis-2"></div>
+          <span class="screenshot-tag">Migration · Cost-out</span>
+        </div>
+        <div class="work-body">
+          <div class="work-meta">
+            <span>2019 — 2020</span>
+            <span class="meta-dot" aria-hidden="true"></span>
+            <span>Tech lead</span>
+            <span class="meta-dot" aria-hidden="true"></span>
+            <span>Multi-app rollout</span>
+          </div>
+          <div class="work-title-row">
+            <h3 class="work-title">Syncfusion Data-Grid replacement</h3>
+            <span class="arrow-icon" aria-hidden="true">→</span>
+          </div>
+          <p class="work-desc">Removed a third-party grid dependency across multiple Angular apps. Built an in-house virtualized grid tuned for the actual data shapes our ops teams use. Led the rollout across 7 engineers, 4 apps, zero regressions in production.</p>
+          <div class="work-stack">
+            <span class="stack-tag">Angular 11</span>
+            <span class="stack-tag">TypeScript</span>
+            <span class="stack-tag">CDK Virtual Scroll</span>
+            <span class="stack-tag">RxJS</span>
+          </div>
+          <div class="work-outcome">
+            <div class="outcome-cell"><div class="num">−35%</div><div class="lbl">Bundle size</div></div>
+            <div class="outcome-cell"><div class="num">$74K</div><div class="lbl">Reclaimed / yr</div></div>
+            <div class="outcome-cell"><div class="num">0</div><div class="lbl">Prod regressions</div></div>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="work-card" aria-label="CityFix case study">
+        <div class="screenshot">
+          <div class="screenshot-bg vis-3"></div>
+          <span class="screenshot-tag">Lab → Pilot</span>
+        </div>
+        <div class="work-body">
+          <div class="work-meta">
+            <span>2024</span>
+            <span class="meta-dot" aria-hidden="true"></span>
+            <span>Solo build</span>
+            <span class="meta-dot" aria-hidden="true"></span>
+            <span>Civic tech</span>
+          </div>
+          <div class="work-title-row">
+            <h3 class="work-title">CityFix</h3>
+            <span class="arrow-icon" aria-hidden="true">→</span>
+          </div>
+          <p class="work-desc">Offline-first civic issue reporting app for municipalities with patchy connectivity. Built it because the existing CMS-driven forms failed every monsoon. Local SQLite queue, conflict-free sync, geo-tagged photos — currently piloting with two city corporations.</p>
+          <div class="work-stack">
+            <span class="stack-tag">Next.js</span>
+            <span class="stack-tag">PWA</span>
+            <span class="stack-tag">IndexedDB</span>
+            <span class="stack-tag">Workbox</span>
+          </div>
+          <div class="work-outcome">
+            <div class="outcome-cell"><div class="num">2</div><div class="lbl">City pilots</div></div>
+            <div class="outcome-cell"><div class="num">Offline</div><div class="lbl">First-class</div></div>
+            <div class="outcome-cell"><div class="num">~2KB</div><div class="lbl">JS budget</div></div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section is-flush" id="upcoming">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-head-left">
+        <div class="section-num">02 / Coming soon</div>
+        <h2>More case studies in the queue.</h2>
+      </div>
+      <p class="section-sub">Writing them in the order I can do them justice. Subscribe to <a href="05-now.html">/now</a> for the publishing cadence.</p>
+    </div>
+
+    <div class="work-list">
+      <div class="work-card is-draft">
+        <div class="screenshot">
+          <div class="screenshot-bg vis-2"></div>
+          <span class="screenshot-tag">Q4 2026 · Drafting</span>
+        </div>
+        <div class="work-body">
+          <div class="work-meta">
+            <span>2022 — 2024</span>
+            <span class="meta-dot" aria-hidden="true"></span>
+            <span>Sr. engineer</span>
+          </div>
+          <div class="work-title-row">
+            <h3 class="work-title">Surakkha</h3>
+            <span class="arrow-icon" aria-hidden="true">●</span>
+          </div>
+          <p class="work-desc">Worker-safety incident reporting and dispatch system for industrial sites. Replaced a paper-based escalation process with a real-time workflow — incidents now reach the right supervisor in under 90 seconds.</p>
+          <div class="work-stack">
+            <span class="stack-tag">.NET</span>
+            <span class="stack-tag">Angular</span>
+            <span class="stack-tag">SignalR</span>
+            <span class="stack-tag">SQL Server</span>
+          </div>
+          <div class="work-outcome">
+            <div class="outcome-cell"><div class="num">90s</div><div class="lbl">Dispatch time</div></div>
+            <div class="outcome-cell"><div class="num">12</div><div class="lbl">Sites deployed</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="work-card reverse is-draft is-far">
+        <div class="screenshot">
+          <div class="screenshot-bg vis-3"></div>
+          <span class="screenshot-tag">Q1 2027 · Sketching</span>
+        </div>
+        <div class="work-body">
+          <div class="work-meta">
+            <span>2023</span>
+            <span class="meta-dot" aria-hidden="true"></span>
+            <span>Architect + lead</span>
+          </div>
+          <div class="work-title-row">
+            <h3 class="work-title">Multi-platform ERP integration</h3>
+            <span class="arrow-icon" aria-hidden="true">●</span>
+          </div>
+          <p class="work-desc">Procurement, finance, and vendor-portal data unified through a canonical model layer. Three ERPs, one source of truth, real-time reconciliation. The engineering playbook write-up of this one becomes the <a href="04-pattern.html">Canonical Model</a> pattern page.</p>
+          <div class="work-stack">
+            <span class="stack-tag">.NET</span>
+            <span class="stack-tag">Kafka</span>
+            <span class="stack-tag">Canonical model</span>
+            <span class="stack-tag">Event sourcing</span>
+          </div>
+          <div class="work-outcome">
+            <div class="outcome-cell"><div class="num">3</div><div class="lbl">ERPs reconciled</div></div>
+            <div class="outcome-cell"><div class="num">Real-time</div><div class="lbl">Sync</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh · UTC+6</div>
+    <div class="footer-links">
+      <a href="#">GitHub</a><a href="#">LinkedIn</a><a href="06-about.html#contact">Email</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canonical Model — Engineering playbook · Sanjit Majumdar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06070B; --bg-3: #10131C;
+    --glass: rgba(255,255,255,0.03); --glass-strong: rgba(255,255,255,0.05);
+    --fg: #FAFAFA; --fg-2: #D4D4D8; --fg-3: #8B8E97; --fg-4: #5C5F68;
+    --border: rgba(255,255,255,0.06); --border-strong: rgba(255,255,255,0.12);
+    --accent: #A78BFA; --accent-glow: rgba(167,139,250,0.25);
+    --warn: #FCA5A5;
+    --gradient-text: linear-gradient(135deg, #A78BFA 0%, #67E8F9 50%, #F472B6 100%);
+    --gradient-button: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%);
+    --gradient-card: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 50%);
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 20px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--fg); font-family: 'Inter', system-ui, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.03em; line-height: 1.1; font-weight: 500; }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible, button:focus-visible, .move:focus-visible, .next-cell:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--radius-lg); }
+  .move:focus-visible, .next-cell:focus-visible { outline-offset: 4px; }
+  .move:focus-visible { border-color: var(--border-strong); transform: translateY(-2px); }
+  .next-cell:focus-visible { border-color: var(--border-strong); transform: translateY(-2px); }
+  .footer-recruiter:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--radius-sm); }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  .skip { position: absolute; top: -100px; left: 1.5rem; background: var(--bg-3); color: var(--fg); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); z-index: 100; transition: top 200ms ease; }
+  .skip:focus { top: 1rem; }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 0 3rem; }
+  .prose { max-width: 800px; }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(6,7,11,0.7); border-bottom: 1px solid var(--border); }
+  .nav-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-mark { display: flex; align-items: center; gap: 0.6rem; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 500; font-size: 15px; letter-spacing: -0.01em; }
+  .nav-mark-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gradient-button); box-shadow: 0 0 12px var(--accent-glow); }
+  .nav-links { display: flex; gap: 2.25rem; font-size: 14px; color: var(--fg-3); }
+  .nav-links a { transition: color 150ms ease; position: relative; }
+  .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--fg); }
+  .nav-links a[aria-current="page"]::after { content: ''; position: absolute; left: 0; right: 0; bottom: -24px; height: 1px; background: var(--gradient-button); }
+
+  /* HERO */
+  .hero { position: relative; padding: 5rem 0 3rem; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100%; background: radial-gradient(ellipse 70% 60% at 70% 0%, rgba(103,232,249,0.14) 0%, transparent 60%); pointer-events: none; z-index: 0; }
+  .hero-inner { position: relative; z-index: 1; max-width: 1080px; }
+  .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2.5rem; }
+  .breadcrumb a { color: var(--fg-3); transition: color 150ms ease; }
+  .breadcrumb a:hover { color: var(--fg); }
+  .breadcrumb span.sep { color: var(--fg-4); }
+  .breadcrumb [aria-current="page"] { color: var(--accent); }
+
+  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.6rem; }
+  .hero-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .hero-title { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 500; letter-spacing: -0.04em; line-height: 1; margin-bottom: 1.5rem; }
+  .hero-spine { font-size: 1.0625rem; color: var(--fg-2); line-height: 1.65; max-width: 720px; }
+  .hero-meta { display: flex; gap: 0; padding: 1.5rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: 2rem 0 0; }
+  .hero-meta-cell { flex: 1; padding: 0 1.5rem; border-left: 1px solid var(--border); }
+  .hero-meta-cell:first-child { border-left: none; padding-left: 0; }
+  .hero-meta-key { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-3); margin-bottom: 0.4rem; }
+  .hero-meta-val { font-size: 0.9375rem; color: var(--fg); }
+
+  /* LAYOUT */
+  .pattern-layout { display: grid; grid-template-columns: 240px 1fr; gap: 4rem; padding: 3rem 0 5rem; align-items: start; }
+  .toc { position: sticky; top: 96px; align-self: start; }
+  .toc-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-3); margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+  .toc-list { list-style: none; display: flex; flex-direction: column; gap: 0.1rem; }
+  .toc-list a { display: block; padding: 0.5rem 0; font-size: 0.875rem; color: var(--fg-3); transition: color 150ms ease; border-left: 2px solid transparent; padding-left: 0.75rem; margin-left: -0.75rem; }
+  .toc-list a:hover { color: var(--fg); }
+  .toc-list a.active { color: var(--fg); border-left-color: var(--accent); }
+
+  /* PATTERN SECTIONS */
+  .pattern-body { min-width: 0; }
+  .p-section { padding: 2.5rem 0; border-top: 1px solid var(--border); }
+  .p-section:first-of-type { border-top: none; padding-top: 0; }
+  .p-section .sec-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.6rem; }
+  .p-section .sec-num::before { content: ''; width: 16px; height: 1px; background: var(--accent); }
+  .p-section h2 { font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 500; letter-spacing: -0.025em; margin-bottom: 1.25rem; }
+  .p-section p { color: var(--fg-2); font-size: 1.0625rem; line-height: 1.7; margin-bottom: 1.25rem; max-width: 720px; }
+  .p-section p:last-child { margin-bottom: 0; }
+  .p-section strong { color: var(--fg); font-weight: 500; }
+  .p-section p a { color: var(--accent); transition: opacity 150ms ease; }
+  .p-section p a:hover { opacity: 0.8; }
+
+  /* MOVES */
+  .moves { display: flex; flex-direction: column; gap: 1.5rem; margin: 2rem 0; }
+  .move { display: grid; grid-template-columns: 80px 1fr; gap: 2rem; padding: 2rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-lg); position: relative; overflow: hidden; transition: border-color 200ms ease, transform 200ms ease; }
+  .move::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .move:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+  .move-num { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 2.5rem; font-weight: 500; letter-spacing: -0.04em; background: var(--gradient-text); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; padding-top: 0.4rem; }
+  .move-body h3 { font-size: 1.25rem; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+  .move-body p { font-size: 0.9375rem !important; color: var(--fg-2) !important; line-height: 1.65 !important; margin-bottom: 0 !important; max-width: 100% !important; }
+
+  /* COUNTER LINE */
+  .counter { margin: 2rem 0; padding: 1.5rem 1.75rem; background: rgba(252,165,165,0.04); border: 1px solid rgba(252,165,165,0.20); border-left: 3px solid var(--warn); border-radius: var(--radius-md); position: relative; overflow: hidden; }
+  .counter::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, rgba(252,165,165,0.3), transparent 50%); pointer-events: none; }
+  .counter-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--warn); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+  .counter-label::before { content: '⚠'; font-size: 12px; }
+  .counter p { margin: 0 !important; font-size: 0.9375rem !important; color: var(--fg-2) !important; }
+
+  /* EXAMPLE BOX */
+  .example { margin: 2.5rem 0; padding: 2rem; background: var(--glass-strong); border: 1px solid var(--border-strong); border-radius: var(--radius-lg); position: relative; overflow: hidden; }
+  .example::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .example-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; }
+  .example-label::before { content: '◇'; font-size: 14px; }
+  .example-scenario { font-size: 0.9375rem; color: var(--fg-2); line-height: 1.65; margin-bottom: 1.5rem; }
+  .example-scenario strong { color: var(--fg); }
+  .example-flow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+  .flow-cell { padding: 0 1rem; border-left: 1px solid var(--border); }
+  .flow-cell:first-child { border-left: none; padding-left: 0; }
+  .flow-key { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+  .flow-val { font-size: 0.875rem; color: var(--fg-2); line-height: 1.5; }
+
+  /* NEXT NAV */
+  .next-nav { padding: 4rem 0; border-top: 1px solid var(--border); }
+  .next-nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .next-cell { padding: 2rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-lg); transition: border-color 200ms ease, transform 200ms ease; position: relative; overflow: hidden; }
+  .next-cell::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .next-cell:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+  .next-cell.next-prev { text-align: left; }
+  .next-cell.next-next { text-align: right; }
+  .next-cell .nav-dir { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+  .next-cell h3 { font-size: 1.25rem; font-weight: 500; letter-spacing: -0.02em; }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--border); padding: 3rem 0; background: var(--bg); }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .footer-name { font-size: 0.875rem; color: var(--fg-2); }
+  .footer-links { display: flex; gap: 1.75rem; font-size: 0.875rem; color: var(--fg-3); align-items: center; }
+  .footer-links a { transition: color 150ms ease; }
+  .footer-links a:hover { color: var(--fg); }
+  .footer-recruiter { font-size: 12px; color: var(--fg-2); border: 1px solid var(--border-strong); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); background: transparent; transition: color 150ms ease, border-color 150ms ease; }
+  .footer-recruiter:hover { color: var(--fg); border-color: var(--fg-3); }
+
+  @media (max-width: 900px) {
+    .wrap { padding: 0 1.5rem; }
+    .hero { padding: 3rem 0 2rem; }
+    .pattern-layout { grid-template-columns: 1fr; gap: 2rem; padding: 2rem 0 3rem; }
+    .toc { position: static; }
+    .hero-meta { flex-wrap: wrap; gap: 1rem 0; }
+    .hero-meta-cell { flex: 0 0 50%; border-left: none; padding: 0 1rem 0 0; }
+    .move { grid-template-columns: 1fr; gap: 1rem; padding: 1.5rem; }
+    .move-num { padding-top: 0; }
+    .example-flow { grid-template-columns: 1fr; gap: 1rem; }
+    .flow-cell { border-left: none; border-top: 1px solid var(--border); padding: 1rem 0 0; }
+    .flow-cell:first-child { border-top: none; padding-top: 0; }
+    .next-nav-grid { grid-template-columns: 1fr; }
+    .next-cell.next-next { text-align: left; }
+    .nav-links { display: none; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="01-homepage.html" class="nav-mark"><span class="nav-mark-dot"></span>Sanjit Majumdar</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="01-homepage.html">Home</a>
+      <a href="02-work.html">Work</a>
+      <a href="06-about.html">About</a>
+      <a href="07-lab.html">Lab</a>
+      <a href="05-now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap hero-inner">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="01-homepage.html">Home</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <a href="#">Patterns</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span aria-current="page">Canonical Model</span>
+    </nav>
+
+    <div class="hero-label">Engineering playbook · Pattern 01</div>
+    <h1 class="hero-title">Canonical Model</h1>
+    <p class="hero-spine">How to unify multiple systems of record under one authoritative schema — without rip-and-replace. This is the pattern I reach for when an organization has grown through acquisition, when consolidation is mandated, and when the existing systems can't be retired.</p>
+
+    <div class="hero-meta">
+      <div class="hero-meta-cell"><div class="hero-meta-key">Status</div><div class="hero-meta-val">Battle-tested · shipped 2021</div></div>
+      <div class="hero-meta-cell"><div class="hero-meta-key">Domain</div><div class="hero-meta-val">Data integration</div></div>
+      <div class="hero-meta-cell"><div class="hero-meta-key">Team shape</div><div class="hero-meta-val">5 — 10 engineers</div></div>
+      <div class="hero-meta-cell"><div class="hero-meta-key">Used in</div><div class="hero-meta-val">Wellbook · ERP integration</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+<div class="pattern-layout">
+  <aside class="toc" aria-label="Sections">
+    <div class="toc-label">On this page</div>
+    <ul class="toc-list">
+      <li><a href="#when-to-use" class="active">When to use it</a></li>
+      <li><a href="#what-it-is">What it is</a></li>
+      <li><a href="#how-to-do-it">How to do it</a></li>
+      <li><a href="#when-not">When NOT to use it</a></li>
+      <li><a href="#example">Example</a></li>
+    </ul>
+  </aside>
+
+  <article class="pattern-body">
+
+    <section class="p-section" id="when-to-use">
+      <div class="sec-num">01 / When to use it</div>
+      <h2>The shape of the problem this fits.</h2>
+      <p>Reach for the canonical model pattern when <strong>two or more systems of record exist</strong> for the same business concept, when consolidation is mandated but rip-and-replace is not feasible, and when the people who run each system have legitimate reasons to keep running it.</p>
+      <p>That last clause is the one that gets skipped. If the people who own Finance's ERP, HR's HRIS, and Supply Chain's TMS all have sound reasons to keep their systems (regulatory, institutional knowledge, sunk cost, vendor lock-in), then a rip-and-replace is a 24-month political fight. The canonical model sidesteps that fight by giving each system owner what they want — autonomy over their system — while giving the business what it needs — a single view across them.</p>
+      <p>The pattern works less well when there is only one source system (just unify in place), when the source systems are unreliable (you'll be reconciling garbage), or when the business actually needs a true rip-and-replace for compliance reasons.</p>
+    </section>
+
+    <section class="p-section" id="what-it-is">
+      <div class="sec-num">02 / What it is</div>
+      <h2>An authoritative layer that owns the truth.</h2>
+      <p>A canonical model is a <strong>schema, owned by your platform, that represents every business concept the organization needs to query across systems</strong>. Each source system has a read-only integration that streams its deltas into the canonical model. A normalization layer resolves conflicts. A write-back layer propagates agreed corrections back to source systems through explicit, audited sync jobs.</p>
+      <p>The canonical model is the <strong>only writable surface</strong>. Source systems are read-only from the platform's perspective. This is the hard rule that makes the pattern work — without it, you end up with two competing sources of truth instead of one.</p>
+      <p>From the user-facing application's perspective, the canonical model is the database. It doesn't know or care that there are three ERPs underneath. It reads, it writes, it gets conflicts surfaced for analyst review.</p>
+    </section>
+
+    <section class="p-section" id="how-to-do-it">
+      <div class="sec-num">03 / How to do it</div>
+      <h2>Four moves, in order.</h2>
+
+      <div class="moves">
+        <div class="move">
+          <div class="move-num">01</div>
+          <div class="move-body">
+            <h3>Map the concepts before you map the schema.</h3>
+            <p>Before writing any code, spend two weeks doing a concept-mapping workshop with one subject-matter expert from each source system. For each business concept (project, contract, vendor, employee), write down how each system represents it, what fields disagree, and which system's version is authoritative for which dimension. This document becomes your migration target.</p>
+          </div>
+        </div>
+
+        <div class="move">
+          <div class="move-num">02</div>
+          <div class="move-body">
+            <h3>Build the canonical schema to express the business, not any source system.</h3>
+            <p>The canonical schema should not look like any of the source systems. It should look like the business. If your business thinks of a "project" as having one set of attributes, the canonical model has that set — not the union of attributes across three ERPs. The shim layer is where source-system attributes get mapped onto the canonical shape.</p>
+          </div>
+        </div>
+
+        <div class="move">
+          <div class="move-num">03</div>
+          <div class="move-body">
+            <h3>Run reconciliation on a schedule your business can absorb.</h3>
+            <p>Nightly reconciliation is the right default for most regulated, mid-cadence businesses. Real-time CDC streams are the right answer only when the business genuinely needs sub-minute latency — and most don't. Auditable, predictable, lower-cost nightly jobs age better than always-on streams. Pick the cadence your stakeholders will actually trust.</p>
+          </div>
+        </div>
+
+        <div class="move">
+          <div class="move-num">04</div>
+          <div class="move-body">
+            <h3>Ship the read-only view before the write-back.</h3>
+            <p>First deliverable: a read-only reconciliation view that lets analysts stop using Excel. Second deliverable: write-back for the most common correction types, gated by audit. Third deliverable: governance workflows (approvals, signoffs, audit trail). Each phase is a six-week cycle with regional pilots before global rollout. <strong>Don't ship write-back before read-only is trusted.</strong> Analysts will not trust write-back until they've validated read-only against their Excel for at least two quarters.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="p-section" id="when-not">
+      <div class="sec-num">04 / When NOT to use it</div>
+      <h2>The honest counter-cases.</h2>
+
+      <div class="counter">
+        <div class="counter-label">When this pattern is the wrong call</div>
+        <p>If there's only one source system, just unify in place — the canonical layer is overhead with no payoff. If the source systems are unreliable, you'll spend your life reconciling garbage into the canonical model and propagating that garbage downstream. If the business genuinely needs a true rip-and-replace for regulatory or audit reasons, the canonical model becomes a halfway house that delays the inevitable and doubles the engineering work.</p>
+      </div>
+
+      <p>The pattern also fails when there's no executive sponsor with the authority to enforce the "canonical model is the only writable surface" rule. If each system owner can still write directly to their source without going through your platform, you have a data lake, not a canonical model. Make sure the sponsor can enforce the rule before committing.</p>
+    </section>
+
+    <section class="p-section" id="example">
+      <div class="sec-num">05 / Example</div>
+      <h2>Multi-platform ERP integration.</h2>
+
+      <div class="example">
+        <div class="example-label">Worked example</div>
+        <p class="example-scenario">A mid-cap energy operator with three legacy ERPs (one per region, acquired through M&amp;A). Each ERP owns procurement, finance, and vendor master data for its region. The audit committee mandated consolidation in 18 months. Regional IT directors refused rip-and-replace — each ERP held critical regulatory knowledge for its jurisdiction. <strong>Solution:</strong> build the canonical model on .NET 5 + SQL Server, run nightly reconciliation jobs, ship a read-only analyst view first, then write-back for the most common contract corrections. Shipped in 14 months, two months ahead of the audit deadline.</p>
+
+        <div class="example-flow">
+          <div class="flow-cell">
+            <div class="flow-key">Source systems</div>
+            <div class="flow-val">3 legacy ERPs, each with procurement, finance, vendor master</div>
+          </div>
+          <div class="flow-cell">
+            <div class="flow-key">Canonical layer</div>
+            <div class="flow-val">SQL Server schema, normalized, single ID per business concept</div>
+          </div>
+          <div class="flow-cell">
+            <div class="flow-key">Reconciliation</div>
+            <div class="flow-val">Nightly Azure Functions, conflict surface for analysts</div>
+          </div>
+        </div>
+      </div>
+
+      <p>The full case study — context, architecture, decisions and tradeoffs, measurable outcomes — is on the <a href="03-case-study.html">Wellbook case study</a> page.</p>
+    </section>
+
+  </article>
+</div>
+</div>
+
+<section class="next-nav">
+  <div class="wrap">
+    <div class="next-nav-grid">
+      <a href="02-work.html" class="next-cell next-prev">
+        <div class="nav-dir">← Back to work</div>
+        <h3>See this pattern in production</h3>
+      </a>
+      <a href="06-about.html" class="next-cell next-next">
+        <div class="nav-dir">Next →</div>
+        <h3>About me</h3>
+      </a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh · UTC+6</div>
+    <div class="footer-links">
+      <a href="#">GitHub</a><a href="#">LinkedIn</a><a href="06-about.html#contact">Email</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

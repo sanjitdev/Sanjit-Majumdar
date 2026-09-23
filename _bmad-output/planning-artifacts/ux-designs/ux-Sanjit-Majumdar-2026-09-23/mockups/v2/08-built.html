@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How this site is built — Sanjit Majumdar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08090C; --bg-2: #0E1014; --bg-3: #15181F;
+    --fg: #F5F5F7; --fg-2: #C7C9D1; --fg-3: #7A7E89;
+    --border: rgba(255,255,255,0.08); --border-strong: rgba(255,255,255,0.16);
+    --accent: #A78BFA; --accent-2: #60A5FA; --accent-glow: rgba(167,139,250,0.18);
+    --live: #34D399; --live-glow: rgba(52,211,153,0.20);
+    --gradient-accent: linear-gradient(135deg, #A78BFA 0%, #60A5FA 100%);
+    --gradient-hero: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(167,139,250,0.10) 0%, transparent 55%);
+    --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--fg); font-family: 'Inter', system-ui, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.025em; line-height: 1.1; font-weight: 500; }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  .skip { position: absolute; top: -100px; left: 1rem; background: var(--bg-3); color: var(--fg); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); z-index: 100; transition: top 200ms ease; }
+  .skip:focus { top: 1rem; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 4rem; }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(8,9,12,0.7); border-bottom: 1px solid var(--border); }
+  .nav-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-mark { display: flex; align-items: center; gap: 0.6rem; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 500; font-size: 15px; letter-spacing: -0.01em; }
+  .nav-mark-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gradient-accent); box-shadow: 0 0 12px var(--accent-glow); }
+  .nav-links { display: flex; gap: 2.25rem; font-size: 14px; color: var(--fg-3); }
+  .nav-links a { transition: color 150ms ease; }
+  .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--fg); }
+
+  /* HERO */
+  .hero { position: relative; padding: 6rem 0 5rem; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100%; background: var(--gradient-hero); pointer-events: none; z-index: 0; }
+  .hero-inner { position: relative; z-index: 1; max-width: 880px; }
+  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.6rem; }
+  .hero-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .hero h1 { font-size: clamp(2.5rem, 5.5vw, 4.5rem); font-weight: 500; letter-spacing: -0.035em; line-height: 1.05; margin-bottom: 1.5rem; }
+  .hero-lede { font-size: clamp(1rem, 1.4vw, 1.25rem); color: var(--fg-2); line-height: 1.55; max-width: 720px; }
+
+  /* STACK STRIP */
+  .stack-strip { padding: 2rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .stack-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2rem; }
+  .stack-cell-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-3); margin-bottom: 0.5rem; }
+  .stack-cell-val { font-size: 1.0625rem; color: var(--fg); font-weight: 500; }
+
+  /* DIAGRAM */
+  .diagram-section { padding: 5rem 0 7rem; }
+  .diagram-head { margin-bottom: 3rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .diagram-head-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
+  .diagram-head-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .diagram-head h2 { font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 500; letter-spacing: -0.025em; }
+
+  .diagram-canvas { position: relative; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 3rem; }
+  .layer { display: grid; grid-template-columns: 200px 1fr; gap: 3rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); }
+  .layer:last-child { border-bottom: none; }
+  .layer-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-3); padding-top: 1.5rem; }
+  .layer-nodes { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .node {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.5rem;
+    transition: border-color 150ms ease, transform 150ms ease, background 150ms ease;
+    cursor: pointer;
+    min-width: 160px;
+    display: flex; flex-direction: column; gap: 0.5rem;
+  }
+  .node:hover { border-color: var(--fg-3); transform: translateY(-2px); background: var(--bg); }
+  .node:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .node-sub { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .node-title { font-size: 1rem; font-weight: 500; }
+  .node.accent { border-color: rgba(167,139,250,0.4); background: rgba(167,139,250,0.10); }
+  .node.accent .node-sub { color: var(--accent); }
+  .node.live { border-color: rgba(52,211,153,0.4); background: var(--live-glow); }
+  .node.live .node-sub { color: var(--live); }
+  .arrows { display: grid; grid-template-columns: 200px 1fr; gap: 3rem; padding: 0.85rem 0; }
+  .arrows-icon { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; padding: 0.25rem 0; }
+  .arrows-line { color: var(--fg-3); font-size: 14px; padding: 0.25rem 0; }
+  .legend { display: flex; gap: 2rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); flex-wrap: wrap; list-style: none; }
+  .legend-item { display: flex; align-items: center; gap: 0.6rem; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .legend-swatch { width: 16px; height: 16px; border-radius: 4px; }
+  .legend-swatch.accent { background: rgba(167,139,250,0.30); border: 1px solid rgba(167,139,250,0.5); }
+  .legend-swatch.live { background: var(--live-glow); border: 1px solid rgba(52,211,153,0.5); }
+  .legend-swatch.default { background: var(--bg-3); border: 1px solid var(--border-strong); }
+
+  /* PERF DETAIL */
+  .detail-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+  .detail-cell { padding: 2rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+  .detail-num { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 2.5rem; font-weight: 500; margin-bottom: 0.5rem; background: var(--gradient-accent); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .detail-label { font-size: 14px; color: var(--fg-2); line-height: 1.4; }
+
+  /* DECISIONS */
+  .decisions-section { padding: 5rem 0 7rem; background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .decisions-head { margin-bottom: 4rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .decisions-head-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
+  .decisions-head-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .decisions-head h2 { font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 500; letter-spacing: -0.025em; }
+  .decisions-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .decision-card { position: relative; padding: 2rem; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: border-color 200ms ease, transform 200ms ease; }
+  .decision-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent); }
+  .decision-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+  .decision-card-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 0.85rem; }
+  .decision-card h3 { font-size: 1.25rem; font-weight: 500; margin-bottom: 1rem; letter-spacing: -0.015em; }
+  .decision-card p { font-size: 0.9375rem; color: var(--fg-2); line-height: 1.65; margin: 0; }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--border); padding: 3rem 0; background: var(--bg); }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .footer-name { font-size: 0.875rem; color: var(--fg-2); }
+  .footer-links { display: flex; gap: 1.75rem; font-size: 0.875rem; color: var(--fg-3); align-items: center; }
+  .footer-links a { transition: color 150ms ease; }
+  .footer-links a:hover { color: var(--fg); }
+  .footer-recruiter { font-size: 12px; color: var(--fg-2); border: 1px solid var(--border-strong); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); background: transparent; transition: color 150ms ease, border-color 150ms ease; }
+  .footer-recruiter:hover { color: var(--fg); border-color: var(--fg-3); }
+
+  @media (max-width: 900px) {
+    .wrap { padding: 0 1.5rem; }
+    .hero { padding: 4rem 0 3rem; }
+    .stack-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .diagram-canvas { padding: 1.5rem; }
+    .layer, .arrows { grid-template-columns: 1fr; gap: 0.85rem; padding: 1rem 0; }
+    .decisions-grid { grid-template-columns: 1fr; }
+    .detail-row { grid-template-columns: 1fr; gap: 1rem; }
+    .diagram-section { padding: 3rem 0 4rem; }
+    .decisions-section { padding: 3rem 0 4rem; }
+    .nav-links { display: none; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="nav-mark"><span class="nav-mark-dot"></span>Sanjit Majumdar</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#">Home</a>
+      <a href="#">Work</a>
+      <a href="#">Patterns</a>
+      <a href="#">Now</a>
+      <a href="#">About</a>
+      <a href="#" aria-current="page">Built</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-label">How this site is built · Architecture &amp; decisions</div>
+      <h1>Same engineering judgment,<br>applied to my own site.</h1>
+      <p class="hero-lede">If I can ship a 10K-user enterprise platform on time, I should be able to ship a portfolio without breaking a sweat. Below: the stack, the architecture diagram, and the calls I made (and the ones I'd reconsider).</p>
+    </div>
+  </div>
+</section>
+
+<section class="stack-strip">
+  <div class="wrap">
+    <div class="stack-grid">
+      <div class="stack-cell">
+        <div class="stack-cell-label">Framework</div>
+        <div class="stack-cell-val">Next.js 16</div>
+      </div>
+      <div class="stack-cell">
+        <div class="stack-cell-label">Hosting</div>
+        <div class="stack-cell-val">Vercel</div>
+      </div>
+      <div class="stack-cell">
+        <div class="stack-cell-label">Content</div>
+        <div class="stack-cell-val">MDX</div>
+      </div>
+      <div class="stack-cell">
+        <div class="stack-cell-label">Styling</div>
+        <div class="stack-cell-val">CSS Modules</div>
+      </div>
+      <div class="stack-cell">
+        <div class="stack-cell-label">Analytics</div>
+        <div class="stack-cell-val">Plausible (self-host)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="diagram-section">
+  <div class="wrap">
+    <div class="diagram-head">
+      <div class="diagram-head-label">Architecture · Live diagram</div>
+      <h2>Every layer, every arrow,<br>every reason.</h2>
+    </div>
+
+    <div class="diagram-canvas" role="img" aria-label="Site architecture diagram showing source, build, deliver, and instrument layers">
+      <div class="layer">
+        <div class="layer-label">Source</div>
+        <div class="layer-nodes">
+          <a href="#" class="node accent">
+            <span class="node-sub">Git</span>
+            <span class="node-title">sanjit-portfolio</span>
+          </a>
+          <a href="#" class="node">
+            <span class="node-sub">Git</span>
+            <span class="node-title">sanjit-portfolio-content</span>
+          </a>
+          <a href="#" class="node">
+            <span class="node-sub">File</span>
+            <span class="node-title">MDX + frontmatter</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="arrows" aria-hidden="true">
+        <div class="arrows-icon">↓</div>
+        <div class="arrows-line">git push &nbsp;→&nbsp; git clone &nbsp;→&nbsp; MDX parsed</div>
+      </div>
+
+      <div class="layer">
+        <div class="layer-label">Build</div>
+        <div class="layer-nodes">
+          <a href="#" class="node">
+            <span class="node-sub">Next.js 16</span>
+            <span class="node-title">Turbopack build</span>
+          </a>
+          <a href="#" class="node">
+            <span class="node-sub">SSG + ISR</span>
+            <span class="node-title">Static routes</span>
+          </a>
+          <a href="#" class="node live">
+            <span class="node-sub">Serverless</span>
+            <span class="node-title">RSS + email</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="arrows" aria-hidden="true">
+        <div class="arrows-icon">↓</div>
+        <div class="arrows-line">next build &nbsp;→&nbsp; CDN-upload artifacts</div>
+      </div>
+
+      <div class="layer">
+        <div class="layer-label">Deliver</div>
+        <div class="layer-nodes">
+          <a href="#" class="node accent">
+            <span class="node-sub">Vercel CDN</span>
+            <span class="node-title">Global edge</span>
+          </a>
+          <a href="#" class="node">
+            <span class="node-sub">Image</span>
+            <span class="node-title">Vercel Image Opt</span>
+          </a>
+          <a href="#" class="node">
+            <span class="node-sub">Font</span>
+            <span class="node-title">next/font</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="arrows" aria-hidden="true">
+        <div class="arrows-icon">↓</div>
+        <div class="arrows-line">HTML &nbsp;→&nbsp; visitor (TTFB &lt; 200ms global)</div>
+      </div>
+
+      <div class="layer">
+        <div class="layer-label">Instrument</div>
+        <div class="layer-nodes">
+          <a href="#" class="node">
+            <span class="node-sub">Analytics</span>
+            <span class="node-title">Plausible (self-host)</span>
+          </a>
+          <a href="#" class="node">
+            <span class="node-sub">Errors</span>
+            <span class="node-title">Sentry (deferred)</span>
+          </a>
+          <a href="#" class="node">
+            <span class="node-sub">Uptime</span>
+            <span class="node-title">Better Stack</span>
+          </a>
+        </div>
+      </div>
+
+      <ul class="legend" aria-label="Diagram legend">
+        <li class="legend-item"><span class="legend-swatch accent" aria-hidden="true"></span>Primary entry point</li>
+        <li class="legend-item"><span class="legend-swatch live" aria-hidden="true"></span>Live endpoint (serverless)</li>
+        <li class="legend-item"><span class="legend-swatch default" aria-hidden="true"></span>Static / cached</li>
+        <li class="legend-item">Click any node for details</li>
+      </ul>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-cell">
+        <div class="detail-num">&lt; 1.8s</div>
+        <div class="detail-label">LCP on Slow 4G</div>
+      </div>
+      <div class="detail-cell">
+        <div class="detail-num">8 KB</div>
+        <div class="detail-label">Nav JS budget</div>
+      </div>
+      <div class="detail-cell">
+        <div class="detail-num">100%</div>
+        <div class="detail-label">Static (SSG) routes</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="decisions-section">
+  <div class="wrap">
+    <div class="decisions-head">
+      <div class="decisions-head-label">Key decisions · Why these, not the alternatives</div>
+      <h2>The calls I made — and<br>the ones I'd reconsider.</h2>
+    </div>
+
+    <div class="decisions-grid">
+      <div class="decision-card">
+        <div class="decision-card-label">Decision · Next.js over plain HTML</div>
+        <h3>I almost shipped a static site.</h3>
+        <p>Next.js gives me MDX support without losing static rendering. The cost is a build pipeline; the benefit is type-checked frontmatter and component composition in content. Worth it.</p>
+      </div>
+      <div class="decision-card">
+        <div class="decision-card-label">Decision · CSS Modules over Tailwind</div>
+        <h3>Styling scales with content density.</h3>
+        <p>Tailwind is fine for many things. For a content-first site where typography does the work, plain CSS with tokens reads cleaner. Files are bigger; the result is easier to debug.</p>
+      </div>
+      <div class="decision-card">
+        <div class="decision-card-label">Decision · Plausible self-hosted</div>
+        <h3>No third-party trackers.</h3>
+        <p>I don't want analytics on this site from a vendor that sells the data. Plausible is a single JS file, no cookies, runs on my own subdomain. Five-minute install.</p>
+      </div>
+      <div class="decision-card">
+        <div class="decision-card-label">Decision · RSS serverless endpoint</div>
+        <h3>The /now feed needs to be dynamic.</h3>
+        <p>Everything else is static. /now updates weekly. The endpoint re-builds the RSS feed on update. Closed set, single function, no edge-runtime complexity.</p>
+      </div>
+      <div class="decision-card">
+        <div class="decision-card-label">I'd reconsider · Sentry</div>
+        <h3>Defer loading Sentry until needed.</h3>
+        <p>For a portfolio site, Sentry may be overkill. I have it deferred via next/script and never load it on a normal page view. Could probably drop it entirely.</p>
+      </div>
+      <div class="decision-card">
+        <div class="decision-card-label">Dark mode in v1.5</div>
+        <h3>This whole site ships dark-first.</h3>
+        <p>For the v2 visual direction, dark is the canonical mode. Light mode ships in v1.5 as a paired alternative. The reverse of the canonical Quiet Authority.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh · UTC+6</div>
+    <div class="footer-links">
+      <a href="#">GitHub</a><a href="#">LinkedIn</a><a href="#">Email</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

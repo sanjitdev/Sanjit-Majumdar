@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wellbook — Case study · Sanjit Majumdar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #06070B; --bg-2: #0B0D14; --bg-3: #10131C;
+    --glass: rgba(255,255,255,0.03);
+    --fg: #FAFAFA; --fg-2: #D4D4D8; --fg-3: #8B8E97; --fg-4: #5C5F68;
+    --border: rgba(255,255,255,0.06); --border-strong: rgba(255,255,255,0.12);
+    --accent: #A78BFA;
+    --accent-glow: rgba(167,139,250,0.25);
+    --gradient-text: linear-gradient(135deg, #A78BFA 0%, #67E8F9 50%, #F472B6 100%);
+    --gradient-button: linear-gradient(135deg, #A78BFA 0%, #67E8F9 100%);
+    --gradient-card: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 50%);
+    --shadow-md: 0 4px 24px rgba(0,0,0,0.30);
+    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 20px;
+    --radius-full: 9999px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--fg); font-family: 'Inter', system-ui, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.03em; line-height: 1.1; font-weight: 500; }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible, button:focus-visible, .next-cell:focus-visible, .rail-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--radius-lg); }
+  .rail-card:focus-visible, .next-cell:focus-visible { outline-offset: 4px; }
+  .next-cell:focus-visible, .rail-card:focus-visible { border-color: var(--border-strong); transform: translateY(-2px); }
+  .footer-recruiter:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--radius-sm); }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  .skip { position: absolute; top: -100px; left: 1.5rem; background: var(--bg-3); color: var(--fg); padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); z-index: 100; transition: top 200ms ease; }
+  .skip:focus { top: 1rem; }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 0 3rem; }
+  .prose { max-width: 720px; }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(6,7,11,0.7); border-bottom: 1px solid var(--border); }
+  .nav-inner { height: 72px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-mark { display: flex; align-items: center; gap: 0.6rem; font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 500; font-size: 15px; letter-spacing: -0.01em; }
+  .nav-mark-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gradient-button); box-shadow: 0 0 12px var(--accent-glow); }
+  .nav-links { display: flex; gap: 2.25rem; font-size: 14px; color: var(--fg-3); }
+  .nav-links a { transition: color 150ms ease; position: relative; }
+  .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--fg); }
+  .nav-links a[aria-current="page"]::after { content: ''; position: absolute; left: 0; right: 0; bottom: -24px; height: 1px; background: var(--gradient-button); }
+
+  /* HERO */
+  .hero { position: relative; padding: 5rem 0 3rem; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 100%; background: radial-gradient(ellipse 70% 60% at 30% 0%, rgba(167,139,250,0.16) 0%, transparent 60%); pointer-events: none; z-index: 0; }
+  .hero-inner { position: relative; z-index: 1; max-width: 1080px; }
+  .breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2.5rem; }
+  .breadcrumb a { color: var(--fg-3); transition: color 150ms ease; }
+  .breadcrumb a:hover { color: var(--fg); }
+  .breadcrumb span.sep { color: var(--fg-4); }
+  .breadcrumb [aria-current="page"] { color: var(--accent); }
+
+  .meta-bar { display: flex; gap: 0; padding: 1.5rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: 2rem 0 2.5rem; }
+  .meta-cell { flex: 1; padding: 0 1.5rem; border-left: 1px solid var(--border); }
+  .meta-cell:first-child { padding-left: 0; border-left: none; }
+  .meta-key { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-3); margin-bottom: 0.4rem; }
+  .meta-val { font-size: 0.9375rem; color: var(--fg); }
+
+  .hero-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.6rem; }
+  .hero-label::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .hero-title { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 500; letter-spacing: -0.04em; line-height: 1; margin-bottom: 1.5rem; }
+  .hero-spine { font-size: 1.0625rem; color: var(--fg-2); line-height: 1.65; max-width: 720px; }
+  .hero-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
+  .hero-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 0.4rem 0.85rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-full); color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* LAYOUT */
+  .case-layout { display: grid; grid-template-columns: 240px 1fr; gap: 4rem; padding: 3rem 0 5rem; align-items: start; }
+  .toc { position: sticky; top: 96px; align-self: start; }
+  .toc-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-3); margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+  .toc-list { list-style: none; display: flex; flex-direction: column; gap: 0.1rem; }
+  .toc-list a { display: block; padding: 0.5rem 0; font-size: 0.875rem; color: var(--fg-3); transition: color 150ms ease; border-left: 2px solid transparent; padding-left: 0.75rem; margin-left: -0.75rem; }
+  .toc-list a:hover { color: var(--fg); }
+  .toc-list a.active { color: var(--fg); border-left-color: var(--accent); }
+
+  .case-body { min-width: 0; }
+  .case-section { padding: 2.5rem 0; border-top: 1px solid var(--border); }
+  .case-section:first-of-type { border-top: none; padding-top: 0; }
+  .case-section .sec-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.6rem; }
+  .case-section .sec-num::before { content: ''; width: 16px; height: 1px; background: var(--accent); }
+  .case-section h2 { font-size: clamp(1.5rem, 2.5vw, 2rem); font-weight: 500; letter-spacing: -0.025em; margin-bottom: 1.25rem; }
+  .case-section p { color: var(--fg-2); font-size: 1.0625rem; line-height: 1.7; margin-bottom: 1.25rem; max-width: 720px; }
+  .case-section p:last-child { margin-bottom: 0; }
+  .case-section strong { color: var(--fg); font-weight: 500; }
+  .case-section p a { color: var(--accent); transition: gap 200ms ease, opacity 150ms ease; }
+  .case-section p a:hover { opacity: 0.8; }
+
+  /* CALLOUT */
+  .callout { margin: 2rem 0; padding: 1.5rem 1.75rem; background: var(--glass); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius-md); position: relative; overflow: hidden; }
+  .callout::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .callout-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 0.5rem; }
+  .callout p { margin-bottom: 0 !important; font-size: 0.9375rem !important; }
+
+  /* TRADE-OFFS TABLE */
+  .tradeoff-table { margin: 2rem 0; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--glass); position: relative; }
+  .tradeoff-table::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .tradeoff-row { display: grid; grid-template-columns: 1.2fr 1fr 1fr; border-bottom: 1px solid var(--border); }
+  .tradeoff-row:last-child { border-bottom: none; }
+  .tradeoff-row.header { background: rgba(255,255,255,0.02); }
+  .tradeoff-cell { padding: 1.25rem 1.5rem; border-left: 1px solid var(--border); font-size: 0.9375rem; }
+  .tradeoff-cell:first-child { border-left: none; }
+  .tradeoff-row.header .tradeoff-cell { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-3); }
+  .tradeoff-chosen { color: var(--accent); }
+
+  /* RESULTS */
+  .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 2.5rem 0; padding: 2rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .result-cell { padding: 0 1.5rem; border-left: 1px solid var(--border); }
+  .result-cell:first-child { border-left: none; padding-left: 0; }
+  .result-num { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 2.5rem; font-weight: 500; letter-spacing: -0.04em; background: var(--gradient-text); background-size: 200% 200%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.4rem; line-height: 1; }
+  .result-label { font-size: 0.8125rem; color: var(--fg-3); line-height: 1.4; }
+
+  /* PATTERN RAIL */
+  .pattern-rail { padding: 4rem 0; background: var(--bg-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .rail-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); gap: 2rem; flex-wrap: wrap; }
+  .rail-head-left .section-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+  .rail-head h2 { font-size: clamp(1.375rem, 2vw, 1.625rem); font-weight: 500; letter-spacing: -0.025em; }
+  .rail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .rail-card { padding: 1.5rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-lg); transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease; cursor: pointer; position: relative; overflow: hidden; }
+  .rail-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .rail-card:hover { transform: translateY(-2px); border-color: var(--border-strong); box-shadow: var(--shadow-md); }
+  .rail-num { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent); margin-bottom: 1rem; }
+  .rail-card h3 { font-size: 1.0625rem; font-weight: 500; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+  .rail-card p { font-size: 0.875rem; color: var(--fg-3); line-height: 1.55; }
+
+  /* NEXT NAV */
+  .next-nav { padding: 4rem 0; border-top: 1px solid var(--border); }
+  .next-nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .next-cell { padding: 2rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--radius-lg); transition: border-color 200ms ease, transform 200ms ease; position: relative; overflow: hidden; }
+  .next-cell::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--gradient-card); pointer-events: none; }
+  .next-cell:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+  .next-cell.next-prev { text-align: left; }
+  .next-cell.next-next { text-align: right; }
+  .next-cell .nav-dir { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+  .next-cell h3 { font-size: 1.25rem; font-weight: 500; letter-spacing: -0.02em; }
+
+  /* FOOTER */
+  .footer { border-top: 1px solid var(--border); padding: 3rem 0; background: var(--bg); }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .footer-name { font-size: 0.875rem; color: var(--fg-2); }
+  .footer-links { display: flex; gap: 1.75rem; font-size: 0.875rem; color: var(--fg-3); align-items: center; }
+  .footer-links a { transition: color 150ms ease; }
+  .footer-links a:hover { color: var(--fg); }
+  .footer-recruiter { font-size: 12px; color: var(--fg-2); border: 1px solid var(--border-strong); padding: 0.4rem 0.85rem; border-radius: var(--radius-sm); background: transparent; transition: color 150ms ease, border-color 150ms ease; }
+  .footer-recruiter:hover { color: var(--fg); border-color: var(--fg-3); }
+
+  @media (max-width: 900px) {
+    .wrap { padding: 0 1.5rem; }
+    .hero { padding: 3rem 0 2rem; }
+    .case-layout { grid-template-columns: 1fr; gap: 2rem; padding: 2rem 0 3rem; }
+    .toc { position: static; }
+    .meta-bar { flex-wrap: wrap; gap: 1rem 0; }
+    .meta-cell { flex: 0 0 50%; border-left: none; padding: 0 1rem 0 0; }
+    .meta-cell:first-child, .meta-cell:nth-child(2) { padding-top: 0; }
+    .tradeoff-row { grid-template-columns: 1fr; }
+    .tradeoff-cell { border-left: none; border-top: 1px solid var(--border); padding: 1rem 1.25rem; }
+    .tradeoff-cell:first-child { border-top: none; }
+    .tradeoff-row.header { display: none; }
+    .results-grid { grid-template-columns: repeat(2, 1fr); row-gap: 1.5rem; }
+    .result-cell { padding: 0 1rem 0 0; border-left: none; }
+    .rail-grid { grid-template-columns: 1fr; }
+    .next-nav-grid { grid-template-columns: 1fr; }
+    .next-cell.next-next { text-align: left; }
+    .nav-links { display: none; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="01-homepage.html" class="nav-mark"><span class="nav-mark-dot"></span>Sanjit Majumdar</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="01-homepage.html">Home</a>
+      <a href="02-work.html" aria-current="page">Work</a>
+      <a href="06-about.html">About</a>
+      <a href="07-lab.html">Lab</a>
+      <a href="05-now.html">Now</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero">
+  <div class="wrap hero-inner">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="01-homepage.html">Home</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <a href="02-work.html">Work</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span aria-current="page">Wellbook</span>
+    </nav>
+
+    <div class="hero-label">Case study · Lead engineer · 2020 — 2021</div>
+    <h1 class="hero-title">Wellbook</h1>
+    <p class="hero-spine">Enterprise project &amp; governance platform for an international oil &amp; gas operator. Three legacy ERPs consolidated into a single source of truth, 10K+ daily users, 14-hour cutover windows with zero downtime. Tech lead on a 7-person team through design, build, and migration.</p>
+
+    <div class="hero-tags">
+      <span class="hero-tag">.NET 5</span>
+      <span class="hero-tag">Angular 11</span>
+      <span class="hero-tag">SQL Server</span>
+      <span class="hero-tag">Azure</span>
+      <span class="hero-tag">EF Core</span>
+      <span class="hero-tag">SignalR</span>
+    </div>
+
+    <div class="meta-bar">
+      <div class="meta-cell"><div class="meta-key">Client</div><div class="meta-val">International oil &amp; gas operator</div></div>
+      <div class="meta-cell"><div class="meta-key">Role</div><div class="meta-val">Tech lead, 7-person team</div></div>
+      <div class="meta-cell"><div class="meta-key">Duration</div><div class="meta-val">14 months · 2020 — 2021</div></div>
+      <div class="meta-cell"><div class="meta-key">Status</div><div class="meta-val">Shipped · in production</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+<div class="case-layout">
+  <aside class="toc" aria-label="Sections">
+    <div class="toc-label">On this page</div>
+    <ul class="toc-list">
+      <li><a href="#context" class="active">Context</a></li>
+      <li><a href="#problem">Problem</a></li>
+      <li><a href="#approach">Approach</a></li>
+      <li><a href="#architecture">Architecture</a></li>
+      <li><a href="#decisions">Decisions &amp; tradeoffs</a></li>
+      <li><a href="#results">Measurable results</a></li>
+    </ul>
+  </aside>
+
+  <article class="case-body">
+
+    <section class="case-section" id="context">
+      <div class="sec-num">01 / Context</div>
+      <h2>An operator running three ERPs and one spreadsheet.</h2>
+      <p>The client — a mid-cap international oil &amp; gas operator with upstream and downstream operations across three continents — was running on three legacy ERP systems acquired through a decade of M&amp;A. Each one carried its own project, contract, and governance model. Reconciling a single cross-region project required a spreadsheet, a phone call, and an act of faith.</p>
+      <p>The board mandated consolidation. Not a rip-and-replace — the existing systems held too much institutional knowledge — but a unifying layer that gave every region one canonical view of every project, contract, and approval.</p>
+      <p>My role: lead a 7-person engineering team through the design and build of that layer. I worked directly with the CIO, the regional IT directors, and the audit committee chair. The platform shipped in 14 months and is now the operational backbone for 10,000+ daily users.</p>
+    </section>
+
+    <section class="case-section" id="problem">
+      <div class="sec-num">02 / Problem</div>
+      <h2>Reconciliation was a full-time job nobody could hire for.</h2>
+      <p>The core technical problem wasn't "build a CRUD app" — it was a data-integrity problem dressed as a software problem. Three ERPs, each with their own schema, their own IDs, their own version of "what does an active project look like." Reconciliation was done by a team of analysts working in Excel. They were brilliant, but the process was unscalable and unauditable.</p>
+      <p>Adding to the pressure: the operator's audit committee had given an 18-month window to retire the manual reconciliation process entirely. If we missed it, the committee would mandate a single-ERP rip-and-replace that nobody on the engineering side wanted.</p>
+
+      <div class="callout">
+        <div class="callout-label">Constraint</div>
+        <p>The legacy ERPs could not be retired — only read from. They owned the source of truth for finance, HR, and supply chain. Our platform had to treat them as authoritative, never overwrite.</p>
+      </div>
+    </section>
+
+    <section class="case-section" id="approach">
+      <div class="sec-num">03 / Approach</div>
+      <h2>Build the canonical model; let the ERPs stay where they are.</h2>
+      <p>We started by treating the three ERPs as <strong>systems of record</strong> and building a <strong>canonical model layer</strong> on top. Every night, reconciliation workers pulled deltas from each ERP, normalized them into our canonical schema, and flagged any conflicts for analyst review. The user-facing app always read from the canonical model — never from an ERP directly.</p>
+      <p>This worked because we made one hard rule early: <strong>the canonical model is the only writable surface</strong>. The ERPs are read-only from our perspective. Analysts can correct canonical records; corrections propagate back to ERPs through explicit, audited sync jobs.</p>
+      <p>We shipped iteratively — first a read-only reconciliation view, then write-back for the most common contract types, then governance workflows (approvals, audit trail, signoffs). Each phase was a six-week cycle with regional pilots before global rollout.</p>
+    </section>
+
+    <section class="case-section" id="architecture">
+      <div class="sec-num">04 / Architecture</div>
+      <h2>Read-heavy. Write-gated. Audit-everything.</h2>
+      <p>The platform is built on .NET 5 with Angular 11 on the front end. SQL Server holds the canonical model; each ERP has a thin shim service that exposes its delta log. Reconciliation runs as scheduled Azure Functions, with conflict resolution surfacing in a dedicated Angular app for analysts.</p>
+      <p>Real-time updates (a contract amendment, an approval click) propagate to all viewers via SignalR. We tested this with 10K concurrent connections before the first migration window — load testing caught a fan-out bottleneck in the early SignalR hub config that would have collapsed production on day one.</p>
+      <p>Authentication is federated against the client's existing AAD; role definitions encode both regional and functional access. Every canonical-model mutation writes an immutable audit row that the audit committee can query directly.</p>
+    </section>
+
+    <section class="case-section" id="decisions">
+      <div class="sec-num">05 / Decisions &amp; tradeoffs</div>
+      <h2>Three calls that shaped the platform.</h2>
+
+      <div class="tradeoff-table">
+        <div class="tradeoff-row header">
+          <div class="tradeoff-cell">Decision</div>
+          <div class="tradeoff-cell">Alternative</div>
+          <div class="tradeoff-cell">Why we chose it</div>
+        </div>
+        <div class="tradeoff-row">
+          <div class="tradeoff-cell tradeoff-chosen"><strong>Canonical model layer</strong></div>
+          <div class="tradeoff-cell">Single-ERP consolidation</div>
+          <div class="tradeoff-cell">Avoided 24-month rip-and-replace. Kept institutional knowledge in source systems.</div>
+        </div>
+        <div class="tradeoff-row">
+          <div class="tradeoff-cell tradeoff-chosen"><strong>Nightly reconciliation</strong></div>
+          <div class="tradeoff-cell">Real-time CDC streams</div>
+          <div class="tradeoff-cell">Auditable, predictable, lower infra cost. Stakeholders wanted 24h SLAs, not milliseconds.</div>
+        </div>
+        <div class="tradeoff-row">
+          <div class="tradeoff-cell tradeoff-chosen"><strong>Angular + .NET monolith</strong></div>
+          <div class="tradeoff-cell">Microservices from day one</div>
+          <div class="tradeoff-cell">Team of 7 couldn't operate a microservices fleet. Single deployable matched team capacity.</div>
+        </div>
+      </div>
+
+      <p>The "monolith-first" call was the one that aged best. We had three engineers who could operate a single .NET deployment confidently. Asking the same team to operate eight microservices with separate CI, monitoring, and on-call rotations would have been a staffing problem disguised as an architecture decision.</p>
+    </section>
+
+    <section class="case-section" id="results">
+      <div class="sec-num">06 / Measurable results</div>
+      <h2>Receipts.</h2>
+      <p>The platform shipped against an 18-month audit-committee deadline with two months to spare. Manual reconciliation is fully retired. The three legacy ERPs continue to run, but they're now treated as data sources rather than the authoritative truth — and the analysts who used to do reconciliation have moved into platform-adjacent roles (config, governance, audit) which are higher-leverage for the business.</p>
+
+      <div class="results-grid">
+        <div class="result-cell"><div class="result-num">10K+</div><div class="result-label">Daily active users across regions</div></div>
+        <div class="result-cell"><div class="result-num">14h</div><div class="result-label">Per-region cutover window, zero downtime</div></div>
+        <div class="result-cell"><div class="result-num">3 → 1</div><div class="result-label">Legacy ERPs consolidated under one model</div></div>
+        <div class="result-cell"><div class="result-num">18mo</div><div class="result-label">Audit mandate, met with 2 months to spare</div></div>
+      </div>
+    </section>
+
+  </article>
+</div>
+</div>
+
+<section class="pattern-rail" aria-label="Patterns applied">
+  <div class="wrap">
+    <div class="rail-head">
+      <div class="rail-head-left">
+        <div class="section-num">Patterns applied</div>
+        <h2>Reusable patterns from this build.</h2>
+      </div>
+      <a href="04-pattern.html">Read the playbook →</a>
+    </div>
+    <div class="rail-grid">
+      <a href="04-pattern.html" class="rail-card">
+        <div class="rail-num">Pattern 01</div>
+        <h3>Canonical Model</h3>
+        <p>How to unify multiple systems of record under one authoritative schema without rip-and-replace.</p>
+      </a>
+      <a href="#" class="rail-card">
+        <div class="rail-num">Pattern 02</div>
+        <h3>Migration by feature flag</h3>
+        <p>Six-week regional pilots with feature-gated rollout, instead of big-bang cutovers.</p>
+      </a>
+      <a href="#" class="rail-card">
+        <div class="rail-num">Pattern 03</div>
+        <h3>Monolith-first team sizing</h3>
+        <p>Right-size the architecture to the team that has to operate it, not the other way around.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="next-nav">
+  <div class="wrap">
+    <div class="next-nav-grid">
+      <a href="02-work.html" class="next-cell next-prev">
+        <div class="nav-dir">← All work</div>
+        <h3>Back to the index</h3>
+      </a>
+      <a href="04-pattern.html" class="next-cell next-next">
+        <div class="nav-dir">Next →</div>
+        <h3>Canonical Model pattern</h3>
+      </a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-name">Sanjit Majumdar · Senior Software Engineer · Dhaka, Bangladesh · UTC+6</div>
+    <div class="footer-links">
+      <a href="#">GitHub</a><a href="#">LinkedIn</a><a href="06-about.html#contact">Email</a>
+      <button class="footer-recruiter" type="button">For recruiters?</button>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
