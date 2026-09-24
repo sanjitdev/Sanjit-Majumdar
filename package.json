@@ -18,6 +18,7 @@
     "audit:routes": "node scripts/audit-routes.mjs",
     "audit:content": "node scripts/audit-content.mjs",
     "audit:spec": "node scripts/audit-routes.spec.mjs",
+    "audit:tokens": "node scripts/audit-tokens.mjs",
     "test:a11y": "pa11y-ci"
   },
   "dependencies": {

@@ -245,6 +245,16 @@ dmypy.json
 # Node / JavaScript / TypeScript (if tooling is added later)
 # -----------------------------------------------------------------------------
 
+# Un-ignore the project's own `lib/` directory. The blanket Python rule
+# above (`lib/`) is meant for Python packages (e.g., `mylib/__init__.py`),
+# but this Next.js codebase uses `lib/` as the co-source directory for
+# `design-tokens.ts` (story 1-5) and `canvas-modes.ts` (story 1-6).
+# Story 1-5 fix: re-allow `lib/**/*` so the file is tracked.
+# Surfaced in deferred-work.md 2026-09-24 (python-ecosystem ignore rule
+# bleeding into a Next.js project; close with a `.gitignore` audit story).
+!lib/
+!lib/**/*
+
 node_modules/
 npm-debug.log*
 yarn-debug.log*

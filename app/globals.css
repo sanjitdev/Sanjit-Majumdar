@@ -1,1 +1,143 @@
 @import "tailwindcss";
+
+/* =============================================================================
+ * AD-18 closed design-token set — 57 tokens (21 colors + 13 typography + 9
+ * spacing + 5 shapes + 4 shadows + 4 gradients). All values verbatim from
+ * DESIGN.md (colors 309-329, gradients 343-346, typography 354-367, spacing
+ * 396-402, shadows 427-430, shapes 438-443). Single source of truth for
+ * `var(--token-name)` references; co-source `lib/design-tokens.ts` mirrors the
+ * 21 color names.
+ *
+ * NOT in this file (deferred):
+ *   - Breakpoint m-edia queries (AD-19) — typography roles already ship
+ *     `-mobile` variants via clamp(); the breakpoint layer is a separate story.
+ *   - Site-wide reduced-motion block + focus-v-isible rule (AD-20) — carved
+ *     off to a follow-up story (see deferred-work.md 2026-09-24-1).
+ *   - Anything else — this file is `@import "tailwindcss";` plus `@theme`.
+ *
+ * Lint enforcement: `pnpm audit:tokens` (scripts/audit-tokens.mjs) walks every
+ * `.tsx` / `.mdx` / `.ts` under app/, components/, lib/ and fails on any hex
+ * outside the closed allowlist (12 colors + 7 rgba, see
+ * scripts/audit-routes.shared.mjs).
+ * ============================================================================ */
+
+@theme {
+  /* ─── 21 colors (AD-18) ─────────────────────────────────────────── */
+  --bg:        #06070B;
+  --bg-2:      #0B0D14;
+  --bg-3:      #10131C;
+  --fg:        #FAFAFA;
+  --fg-2:      #D4D4D8;
+  --fg-3:      #8B8E97;
+  --fg-4:      #5C5F68;
+  --accent:    #A78BFA;
+  --accent-2:  #67E8F9;
+  --accent-3:  #F472B6;
+  --live:      #34D399;
+  --warn:      #FCA5A5;
+  --on-accent: #06070B;
+  --on-live:   #06070B;
+  --glass:         rgba(255, 255, 255, 0.03);
+  --glass-strong:  rgba(255, 255, 255, 0.06);
+  --border:        rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.12);
+  --border-accent: rgba(167, 139, 250, 0.30);
+  --accent-glow:   rgba(167, 139, 250, 0.25);
+  --live-glow:     rgba( 52, 211, 153, 0.20);
+
+  /* ─── 13 typography roles (4 keys each: font / text / weight / tracking) ─── */
+  --font-display:           "Space Grotesk", system-ui, sans-serif;
+  --text-display:           clamp(3rem, 8vw, 7rem);
+  --font-weight-display:    700;
+  --tracking-display:       -0.02em;
+
+  --font-display-mobile:    "Space Grotesk", system-ui, sans-serif;
+  --text-display-mobile:    clamp(2.25rem, 9vw, 4rem);
+  --font-weight-display-mobile: 700;
+  --tracking-display-mobile:    -0.02em;
+
+  --font-hero-spine:        "Space Grotesk", system-ui, sans-serif;
+  --text-hero-spine:        clamp(1.75rem, 4vw, 3rem);
+  --font-weight-hero-spine: 600;
+  --tracking-hero-spine:    -0.01em;
+
+  --font-headline-lg:       "Space Grotesk", system-ui, sans-serif;
+  --text-headline-lg:       clamp(1.5rem, 3vw, 2.25rem);
+  --font-weight-headline-lg: 600;
+  --tracking-headline-lg:   -0.01em;
+
+  --font-headline-md:       "Space Grotesk", system-ui, sans-serif;
+  --text-headline-md:       clamp(1.25rem, 2.5vw, 1.75rem);
+  --font-weight-headline-md: 600;
+  --tracking-headline-md:   0;
+
+  --font-headline-sm:       "Space Grotesk", system-ui, sans-serif;
+  --text-headline-sm:       1.125rem;
+  --font-weight-headline-sm: 600;
+  --tracking-headline-sm:   0;
+
+  --font-card-title:        "Inter", system-ui, sans-serif;
+  --text-card-title:        1rem;
+  --font-weight-card-title: 600;
+  --tracking-card-title:    0;
+
+  --font-body-lg:           "Inter", system-ui, sans-serif;
+  --text-body-lg:           1.0625rem;
+  --font-weight-body-lg:    400;
+  --tracking-body-lg:       0;
+
+  --font-body-md:           "Inter", system-ui, sans-serif;
+  --text-body-md:           0.9375rem;
+  --font-weight-body-md:    400;
+  --tracking-body-md:       0;
+
+  --font-body-sm:           "Inter", system-ui, sans-serif;
+  --text-body-sm:           0.8125rem;
+  --font-weight-body-sm:    400;
+  --tracking-body-sm:       0.01em;
+
+  --font-label:             "Inter", system-ui, sans-serif;
+  --text-label:             0.75rem;
+  --font-weight-label:      500;
+  --tracking-label:         0.06em;
+
+  --font-micro:             "Inter", system-ui, sans-serif;
+  --text-micro:             0.6875rem;
+  --font-weight-micro:      500;
+  --tracking-micro:         0.08em;
+
+  --font-code-block:        "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --text-code-block:        0.8125rem;
+  --font-weight-code-block: 400;
+  --tracking-code-block:    0;
+
+  /* ─── 9 spacing tokens (AD-18) ───────────────────────────────────── */
+  --spacing-xs:        0.25rem;
+  --spacing-sm:        0.5rem;
+  --spacing-md:        1rem;
+  --spacing-lg:        1.5rem;
+  --spacing-xl:        2rem;
+  --spacing-2xl:       3rem;
+  --spacing-3xl:       4.5rem;
+  --spacing-section-y: clamp(4.5rem, 10vw, 8rem);
+  --spacing-gutter:    clamp(1.5rem, 4vw, 3rem);
+
+  /* ─── 5 shape tokens (AD-18) ─────────────────────────────────────── */
+  --radius-sm:    0.25rem;
+  --radius-md:    0.5rem;
+  --radius-lg:    0.75rem;
+  --radius-xl:    1rem;
+  --radius-pill:  9999px;
+
+  /* ─── 4 shadow tokens (AD-18) ────────────────────────────────────── */
+  --shadow-md:             0 2px 8px rgba(0, 0, 0, 0.30);
+  --shadow-lg:             0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-glow:           0 0 24px rgba(167, 139, 250, 0.30);
+  --shadow-glow-strong:    0 0 32px rgba(167, 139, 250, 0.40);
+
+  /* ─── 4 gradient tokens (AD-18) ──────────────────────────────────── */
+  --gradient-card:   linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0));
+  --gradient-hero:   linear-gradient(135deg, rgba(167, 139, 250, 0.14), rgba(167, 139, 250, 0.06) 60%, transparent);
+  --gradient-text:   linear-gradient(90deg, var(--accent), var(--accent-2));
+  --gradient-button: linear-gradient(135deg, var(--accent), var(--accent-3));
+}

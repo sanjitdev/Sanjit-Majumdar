@@ -60,6 +60,9 @@ jobs:
       - name: Route-invariant audit
         run: pnpm audit:routes
 
+      - name: Inline-hex lint (AD-18 closed design tokens)
+        run: pnpm audit:tokens
+
       - name: Accessibility audit (pa11y-ci)
         run: pnpm test:a11y
 
