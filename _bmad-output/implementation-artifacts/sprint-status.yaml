@@ -1,5 +1,10 @@
 # generated: 2026-09-24
 # last_updated: 2026-09-24
+# 2026-09-24: story 1-7 re-entering step-03 after step-04 bad_spec loopback
+#             (review_loop_iteration 1) — 6 spec defects fixed (audit-tokens
+#             rationale, AD-20 44px tap-target, animate-pulse motion gate,
+#             cmdk trigger aria-disabled, ScrollProgress change listener +
+#             --progress cleanup, z-40→z-30).
 # 2026-09-24: story 1-6 advanced to review at step-05; spec status done after
 #             step-04 bad_spec loopback (review_loop_iteration 1) — A1/A2/A4
 #             spec defects fixed, 17 patches applied via re-derivation.
@@ -89,7 +94,7 @@ development_status:
   1-4-set-up-github-actions-ci-with-lighthouse-gzip-budget-route-invariant-and-pa11y-ci-gates: done
   1-5-set-up-appglobalscss-with-the-closed-57-token-theme-block-ad-18: review
   1-6-implement-the-10-closed-client-components-ad-13: review
-  1-7-implement-persistent-nav-with-brand-mark-links-command-palette-trigger-magnetic-cta-scroll-progress: backlog
+  1-7-implement-persistent-nav-with-brand-mark-links-command-palette-trigger-magnetic-cta-scroll-progress: review
   1-8-implement-hero-plus-proofvectorcluster-for-the-homepage: backlog
   1-9-implement-root-layout-applayouttsx-with-semantic-landmarks-skip-to-content-beacons: backlog
   1-10-implement-shadcn-primitives-dialog-toggle-tooltip-under-componentsui: backlog

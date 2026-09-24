@@ -64,5 +64,7 @@ export const ALLOWED_RGBA = [
   'rgba(167,139,250,0.25)',  // --accent-glow
   'rgba(52,211,153,0.20)',   // --live-glow
   'rgba(167,139,250,0.40)',  // --shadow-glow-strong
+  'rgba(6,7,11,0.72)',       // UX-DR13 nav scrim (spec-1-7); not in DESIGN.md
+                              // color table — exempt as a closed-set addition
 ];
 
