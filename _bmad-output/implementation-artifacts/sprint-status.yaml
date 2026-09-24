@@ -1,0 +1,199 @@
+# generated: 2026-09-24
+# last_updated: 2026-09-24
+# project: Sanjit-Majumdar
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: {project-root}/_bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story starts (via build's sprint sync)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# Action Item Status:
+#   - open: Committed during a retrospective, not yet addressed
+#   - in-progress: Actively being worked on
+#   - done: Completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story starts (via build's sprint sync)
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+# - Retrospective appends its action items to action_items; sprint-status surfaces open ones
+#
+# PROJECT NOTES:
+# ==============
+# - Source-of-truth contract: 20 ADs (architecture spine v5) + 43 UX-DRs (epics.md lines 81-123)
+# - All stories bind ADs and UX-DRs inline in acceptance criteria; see AGENTS.md and epics.md
+# - Closed lists enforced by CI: 10 client components, 3 shadcn primitives, 3 serverless endpoints,
+#   2 KV namespaces, 9 signature-canvas modes, 57 design tokens, 4 breakpoints
+# - Three deferred spine amendments live in AGENTS.md pitfalls #14-#16 (per AD-16 reviewer contract).
+#   Each amendment has a partial mitigation story in this sprint; do NOT silently adopt the full
+#   amendment — it requires going through the spine amendment process, not a build-time override:
+#     #14 (AD-4 move-id validation)  → partial mitigation in story 3.3 (citation walker build-fail
+#         extends to `pattern_moves` overrides against the published heading-ID set)
+#     #15 (AD-6 + AD-12 7-layer drift) → partial mitigation in story 5b.3 (consistency assertion
+#         across the four representations); workflow assembled by story 1.4 owns the step
+#     #16 (AD-7 + AD-14 mobile-touch fallback) → partial mitigation in story 4.4 (Copy URL
+#         always visible; window.print() desktop-only)
+# - E3 has an internal sequencing constraint: 2.7 stub → 3.1 (publish 5 patterns) → 3.2 (index) →
+#   3.3 (citation walker) → 3.4 (case studies). The walker requires published slugs to resolve,
+#   so 3.3 and 3.4 must NOT start without both the E2.7 pre-published canonical-model stub AND
+#   the 3.1 published pattern set in place.
+
+generated: 2026-09-24
+last_updated: 2026-09-24
+project: Sanjit-Majumdar
+project_key: NOKEY
+tracking_system: file-system
+story_location: {project-root}/_bmad-output/implementation-artifacts
+story_location_absolute: {project-root}/_bmad-output/implementation-artifacts
+
+development_status:
+  # ─────────────────────────────────────────────────────────────────
+  # Epic 1: Scaffold and Ship the Spine
+  # Binds: AD-11, AD-12, AD-13, AD-15, AD-16, AD-17, AD-18, AD-19, AD-20
+  # FRs: FR-1, FR-2, FR-19, FR-20, FR-21, FR-22
+  # UX-DRs: UX-DR1-15, UX-DR11/12/13, UX-DR14/15, UX-DR30/33/34, UX-DR39-43
+  # ─────────────────────────────────────────────────────────────────
+  epic-1: in-progress
+  1-1-bootstrap-nextjs-16-vercel-deploy-with-packagejson-tsconfig-eslint-pnpm-lockyaml: review
+  1-2-apply-strict-csp-via-nextconfigjs-and-experimentalsri: review
+  1-3-wire-proxyts-at-project-root-next-16-convention-not-middlewarets: backlog
+  1-4-set-up-github-actions-ci-with-lighthouse-gzip-budget-route-invariant-and-pa11y-ci-gates: backlog
+  1-5-set-up-appglobalscss-with-the-closed-57-token-theme-block-ad-18: backlog
+  1-6-implement-the-10-closed-client-components-ad-13: backlog
+  1-7-implement-persistent-nav-with-brand-mark-links-command-palette-trigger-magnetic-cta-scroll-progress: backlog
+  1-8-implement-hero-plus-proofvectorcluster-for-the-homepage: backlog
+  1-9-implement-root-layout-applayouttsx-with-semantic-landmarks-skip-to-content-beacons: backlog
+  1-10-implement-shadcn-primitives-dialog-toggle-tooltip-under-componentsui: backlog
+  1-11-implement-apppagetsx-homepage-with-signature-canvas-dual-ring-proof-vector-cluster-recruiter-route-footer-link: backlog
+  epic-1-retrospective: optional
+
+  # ─────────────────────────────────────────────────────────────────
+  # Epic 2: Content Schema, Two-Repo Read Path, and a Move-Tagged Pattern Stub
+  # Binds: AD-1, AD-2, AD-3, AD-4, AD-5, AD-9
+  # FRs: FR-11, FR-12, FR-13, FR-14
+  # UX-DRs: (foundational; no new UX-DRs in this epic)
+  # ─────────────────────────────────────────────────────────────────
+  epic-2: backlog
+  2-1-set-up-sanjit-content-repo-with-content-directory-layout-and-github-actions-workflow-listening-to-push-delete-force-push: backlog
+  2-2-implement-additive-zod-4-schemas-for-case-study-pattern-lab-project-currently-building-entry-cv: backlog
+  2-3-implement-content-reader-libcontent-walking-only-status-published: backlog
+  2-4-implement-nextjs-shallow-clone-of-sanjit-content-at-build-time: backlog
+  2-5-implement-post-apirevalidate-edge-handler-with-revalidatetag-tag-max-next-16-signature: backlog
+  2-6-apply-revalidate-300-5-minute-ttl-fallback-on-every-isr-route: backlog
+  2-7-pre-publish-a-move-tagged-pattern-stub-in-sanjit-content-patternscanonical-model: backlog
+  2-8-audit-vercel-plan-tier-for-post-apiforward-pdf-memory-budget-1769-mb: backlog
+  2-9-implement-weekly-content-audit-workflow: backlog
+  epic-2-retrospective: optional
+
+  # ─────────────────────────────────────────────────────────────────
+  # Epic 3: Patterns → Case Studies (sequenced internally)
+  # Binds: AD-4, AD-12, AD-17 (decision-graph mode)
+  # FRs: FR-7, FR-8, FR-9, FR-11
+  # UX-DRs: UX-DR16, UX-DR20, UX-DR21, UX-DR23, UX-DR35
+  # Sequencing: 2.7 stub → 3.1 (publish 5 patterns) → 3.2 (index) → 3.3 (citation walker) →
+  #   3.4 (case studies). 3.3 + 3.4 must NOT start without both E2.7 pre-published canonical-model
+  #   stub AND the 3.1 published set in place — walker resolves against published slugs only.
+  # Deferred-amendment partial mitigation: story 3.3 extends the walker to fail the build when
+  #   `pattern_moves` overrides reference non-existent heading-IDs (partial mitigation of deferred
+  #   spine amendment AGENTS.md #14: AD-4 move-id validation). Do NOT silently adopt the full
+  #   amendment — that requires the spine amendment process, not a build-time override.
+  # ─────────────────────────────────────────────────────────────────
+  epic-3: backlog
+  3-1-publish-all-5-patterns-at-patternsslug-with-native-heading-id-contract-plus-counter-line-block: backlog
+  3-2-publish-patterns-index-page-listing-the-5-patterns: backlog
+  3-3-implement-pattern-citation-walker-in-case-study-frontmatter-string-match-against-published-set-plus-pattern-moves-override: backlog
+  3-4-publish-3-or-more-case-studies-at-workslug-with-sticky-toc-plus-patterns-cited-section: backlog
+  3-5-publish-5-or-more-lab-tools-at-labslug-with-production-experiment-personal-categorization: backlog
+  3-6-verify-experiencemd-flow-3-sam-the-senior-engineer-end-to-end: backlog
+  epic-3-retrospective: optional
+
+  # ─────────────────────────────────────────────────────────────────
+  # Epic 4: The `/recruiter` Route, the PDF, and the OG Unfurl
+  # Binds: AD-3, AD-7, AD-8, AD-11, AD-14, AD-17 (condensed-4-node-status mode)
+  # FRs: FR-3, FR-4, FR-5, FR-6, FR-11
+  # UX-DRs: UX-DR19, UX-DR26, UX-DR27, UX-DR37, UX-DR38
+  # Deferred-amendment partial mitigation: story 4.4 implements mobile-touch-resilient fallback
+  #   (Copy URL always visible regardless of Puppeteer success; window.print() desktop-only).
+  #   This is a partial mitigation of deferred spine amendment AGENTS.md #16 (AD-7 + AD-14
+  #   mobile-touch fallback). Do NOT silently adopt the full amendment — that requires the
+  #   spine amendment process, not a build-time override.
+  # ─────────────────────────────────────────────────────────────────
+  epic-4: backlog
+  4-1-build-recruiter-ssg-route-with-generatestaticparams-per-slug: backlog
+  4-2-implement-url-first-closing-cta-copy-url-primary-default-focus: backlog
+  4-3-implement-post-apiforward-pdf-puppeteer-nodejs-route-1769-mb-60s-maxduration: backlog
+  4-4-implement-mobile-touch-resilient-fallback-copy-url-always-visible-windowprint-desktop-only: backlog
+  4-5-implement-generatemetadata-with-searchparams-driven-og-image-1200x630: backlog
+  4-6-implement-recruiter-summary-card-plus-role-fit-cards-plus-experience-timeline-per-experiencemd: backlog
+  4-7-wire-for-recruiters-footer-link-on-every-public-page: backlog
+  4-8-verify-experiencemd-flow-1-priya-plus-flow-2-marcus-end-to-end: backlog
+  epic-4-retrospective: optional
+
+  # ─────────────────────────────────────────────────────────────────
+  # Epic 5a: Currently Building Feed (Flow 4)
+  # Binds: AD-2, AD-3, AD-10, AD-17 (activity-feed mode), AD-20 (aria-live)
+  # FRs: FR-15, FR-16, FR-17, FR-18
+  # UX-DRs: UX-DR22, UX-DR31, UX-DR32
+  # FR-11 (route-specific OG metadata): scaffolding lives in E2; per-route metadata for /now and
+  #   the homepage summary is shipped in stories 5a.4 + 5a.6. The route-invariant gate (FR-10)
+  #   that asserts spine-line + proof number + return path lives in story 1.4, NOT in this epic.
+  # Snapshot ownership: now-snapshot.json is seeded by E2.7 (pre-published fallback) and is
+  #   committed-cadence-owned by story 5a.3 (every-15-min, KV-derived only per AD-10). 5a.3
+  #   establishes the cadence, not the file's existence — file is pre-existing by E2's done.
+  # ─────────────────────────────────────────────────────────────────
+  epic-5a: backlog
+  5a-1-set-up-upstash-redis-via-vercel-marketplace-with-now-namespace: backlog
+  5a-2-implement-canonical-payload-contract-entries-fallback-last-updated: backlog
+  5a-3-implement-now-snapshotjson-commit-cadence-every-15-minutes-kv-derived-only: backlog
+  5a-4-implement-now-page-with-vertical-ticker-plus-aria-live-plus-honest-empty-state: backlog
+  5a-5-implement-nowfeedxml-rssatom-feed: backlog
+  5a-6-implement-homepage-currently-building-summary-5-latest-entries: backlog
+  5a-7-implement-subscribe-form-v4-stub-no-real-backend-no-error-state-no-render-block: backlog
+  epic-5a-retrospective: optional
+
+  # ─────────────────────────────────────────────────────────────────
+  # Epic 5b: Architecture Diagram, the Built Page, and Lab + About + 404
+  # Binds: AD-6, AD-12 (layered-architecture mode assertion), AD-17, AD-19
+  # FRs: FR-10, FR-11
+  # UX-DRs: UX-DR17, UX-DR18, UX-DR23, UX-DR24, UX-DR25, UX-DR36
+  # Workflow ownership: story 5b.3 implements the architecture-enumeration-consistency check
+  #   (assertion logic + per-source diff message). It owns the step NAME and step BODY but is
+  #   added to the .github/workflows/ci.yml workflow file assembled by story 1.4 — do NOT
+  #   create a second workflow file in 5b.3.
+  # Deferred-amendment partial mitigation: story 5b.3 implements the consistency assertion across
+  #   the four 7-layer representations (companion file / big SVG / signature canvas / layer table).
+  #   This is a partial mitigation of deferred spine amendment AGENTS.md #15 (AD-6 + AD-12 7-layer
+  #   drift). Do NOT silently adopt the full amendment — that requires the spine amendment
+  #   process, not a build-time override.
+  # ─────────────────────────────────────────────────────────────────
+  epic-5b: backlog
+  5b-1-implement-architecturediagram-big-version-on-built-hero-right-column: backlog
+  5b-2-implement-layertable-with-7-rows-plus-layerrowhover-row-hover-sync: backlog
+  5b-3-implement-7-layer-enumeration-consistency-assertion-closes-elicitation-cascading-failure-surface-2: backlog
+  5b-4-implement-stack-cards-plus-decisions-section-plus-receipt-page-weight-table: backlog
+  5b-5-implement-lab-index-page-production-experiment-personal-categorization: backlog
+  5b-6-implement-about-page-with-timeline-canvas-mode-plus-personality-card-grid: backlog
+  5b-7-implement-404-not-foundtsx-canvas-less-still-meets-route-invariant: backlog
+  epic-5b-retrospective: optional
