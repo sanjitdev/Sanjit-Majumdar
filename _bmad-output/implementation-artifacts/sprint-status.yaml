@@ -81,6 +81,9 @@
 
 generated: 2026-09-24
 last_updated: 2026-09-24
+# 2026-09-24: story 1-10 advanced to review at step-05 after 2 review loopback iterations
+#             (iter 1: bad_spec on cn() location; iter 2: patch on TooltipContent animation classes).
+# 2026-09-24: story 1-10 moved backlog → in-progress at step-03 start.
 # 2026-09-24: story 1-8 moved backlog → in-progress at step-03 start.
 # 2026-09-24: story 1-6 moved backlog → in-progress at step-03 start.
 # 2026-09-24: story 1-5 advanced to review after step-04 loopback iteration 2 + step-05-present.
@@ -109,7 +112,7 @@ development_status:
   1-7-implement-persistent-nav-with-brand-mark-links-command-palette-trigger-magnetic-cta-scroll-progress: done
   1-8-implement-hero-plus-proofvectorcluster-for-the-homepage: review
   1-9-implement-root-layout-applayouttsx-with-semantic-landmarks-skip-to-content-beacons: review
-  1-10-implement-shadcn-primitives-dialog-toggle-tooltip-under-componentsui: backlog
+  1-10-implement-shadcn-primitives-dialog-toggle-tooltip-under-componentsui: review
   1-11-implement-apppagetsx-homepage-with-signature-canvas-dual-ring-proof-vector-cluster-recruiter-route-footer-link: backlog
   epic-1-retrospective: optional
 
