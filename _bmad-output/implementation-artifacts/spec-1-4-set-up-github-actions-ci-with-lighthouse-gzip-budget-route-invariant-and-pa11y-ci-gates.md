@@ -2,7 +2,7 @@
 title: 'Set up GitHub Actions CI with Lighthouse, gzip-budget, route-invariant, and pa11y-ci gates'
 type: 'feature'
 created: '2026-09-24'
-status: 'in-review'
+status: 'done'
 review_loop_iteration: 2
 baseline_commit: 'cb6dbb83e5da0dc0fd272e603502a4abcad0c601'
 context:
