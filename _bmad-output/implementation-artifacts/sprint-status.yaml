@@ -78,7 +78,7 @@ development_status:
   epic-1: in-progress
   1-1-bootstrap-nextjs-16-vercel-deploy-with-packagejson-tsconfig-eslint-pnpm-lockyaml: review
   1-2-apply-strict-csp-via-nextconfigjs-and-experimentalsri: review
-  1-3-wire-proxyts-at-project-root-next-16-convention-not-middlewarets: backlog
+  1-3-wire-proxyts-at-project-root-next-16-convention-not-middlewarets: done
   1-4-set-up-github-actions-ci-with-lighthouse-gzip-budget-route-invariant-and-pa11y-ci-gates: backlog
   1-5-set-up-appglobalscss-with-the-closed-57-token-theme-block-ad-18: backlog
   1-6-implement-the-10-closed-client-components-ad-13: backlog
