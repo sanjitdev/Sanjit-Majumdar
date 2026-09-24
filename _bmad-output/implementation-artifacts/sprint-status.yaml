@@ -1,5 +1,9 @@
 # generated: 2026-09-24
 # last_updated: 2026-09-24
+# 2026-09-24: story 1-9 advanced to review at step-05 after 1 review loopback iteration
+#             (proxy matcher widened, redirect response header leak patched, page.tsx
+#             reverted to 1-11-owned stub, layout trailing newline added).
+# 2026-09-24: story 1-9 moved backlog → in-progress at step-03 start.
 # 2026-09-24: story 1-8 advanced to review at step-05.
 # 2026-09-24: story 1-8 moved backlog → in-progress at step-03 start.
 # 2026-09-24: reconciliation — stories 1-5, 1-6, 1-7 marked done in
@@ -104,7 +108,7 @@ development_status:
   1-6-implement-the-10-closed-client-components-ad-13: done
   1-7-implement-persistent-nav-with-brand-mark-links-command-palette-trigger-magnetic-cta-scroll-progress: done
   1-8-implement-hero-plus-proofvectorcluster-for-the-homepage: review
-  1-9-implement-root-layout-applayouttsx-with-semantic-landmarks-skip-to-content-beacons: backlog
+  1-9-implement-root-layout-applayouttsx-with-semantic-landmarks-skip-to-content-beacons: review
   1-10-implement-shadcn-primitives-dialog-toggle-tooltip-under-componentsui: backlog
   1-11-implement-apppagetsx-homepage-with-signature-canvas-dual-ring-proof-vector-cluster-recruiter-route-footer-link: backlog
   epic-1-retrospective: optional
