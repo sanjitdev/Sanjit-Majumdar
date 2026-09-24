@@ -1,0 +1,23 @@
+{
+  "defaults": {
+    "timeout": 30000,
+    "runner": "axe",
+    "standard": "WCAG2AA",
+    "reporters": [
+      "cli",
+      "./scripts/pa11y-html-reporter.js"
+    ]
+  },
+  "urls": [
+    "http://localhost:3000/",
+    "http://localhost:3000/work",
+    "http://localhost:3000/projects",
+    "http://localhost:3000/lab",
+    "http://localhost:3000/patterns",
+    "http://localhost:3000/now",
+    "http://localhost:3000/about",
+    "http://localhost:3000/recruiter",
+    "http://localhost:3000/built",
+    "http://localhost:3000/404"
+  ]
+}

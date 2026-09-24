@@ -1,0 +1,80 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    name: PR gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.12.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.9.0
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Audit-script spec test (PROOF_NUMBERS verbatim closed set)
+        run: pnpm audit:spec
+
+      - name: Start Next.js server
+        run: |
+          (PORT=3000 pnpm start > /tmp/next.log 2>&1 &)
+          for i in $(seq 1 60); do
+            if curl -fsS http://localhost:3000/ > /dev/null; then
+              echo "Server ready after ${i} seconds"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Server did not become ready in 60 seconds"
+          echo "--- next.js server log (last 50 lines) ---"
+          tail -50 /tmp/next.log 2>/dev/null || echo "(no log captured)"
+          exit 1
+
+      - name: Lighthouse (LHCI)
+        run: pnpm lighthouse
+
+      - name: Gzip-budget audit
+        run: pnpm audit:budget
+
+      - name: Route-invariant audit
+        run: pnpm audit:routes
+
+      - name: Accessibility audit (pa11y-ci)
+        run: pnpm test:a11y
+
+      - name: Upload Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: lhci-reports
+          if-no-files-found: warn
+
+      - name: Upload pa11y-ci report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pa11y-report
+          path: pa11y-reports
+          if-no-files-found: warn

@@ -12,7 +12,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lighthouse": "lhci autorun",
+    "audit:budget": "node scripts/audit-budget.mjs",
+    "audit:routes": "node scripts/audit-routes.mjs",
+    "audit:content": "node scripts/audit-content.mjs",
+    "audit:spec": "node scripts/audit-routes.spec.mjs",
+    "test:a11y": "pa11y-ci"
   },
   "dependencies": {
     "next": "^16.3.6",
@@ -29,6 +35,8 @@
     "eslint-config-next": "^16.3.6",
     "@types/node": "^20.0.0",
     "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0"
+    "@types/react-dom": "^19.0.0",
+    "@lhci/cli": "^0.14.0",
+    "pa11y-ci": "^3.1.0"
   }
 }
