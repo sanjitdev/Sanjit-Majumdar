@@ -1,5 +1,7 @@
 # generated: 2026-09-24
 # last_updated: 2026-09-24
+# 2026-09-24: story 1-8 advanced to review at step-05.
+# 2026-09-24: story 1-8 moved backlog → in-progress at step-03 start.
 # 2026-09-24: reconciliation — stories 1-5, 1-6, 1-7 marked done in
 #             sprint-status (spec frontmatter said done; sprint-status had
 #             drifted to review after step-05 only syncs to `review`, not
@@ -75,6 +77,7 @@
 
 generated: 2026-09-24
 last_updated: 2026-09-24
+# 2026-09-24: story 1-8 moved backlog → in-progress at step-03 start.
 # 2026-09-24: story 1-6 moved backlog → in-progress at step-03 start.
 # 2026-09-24: story 1-5 advanced to review after step-04 loopback iteration 2 + step-05-present.
 # reconciliation 2026-09-24: stories 1-1 and 1-2 marked done (spec frontmatter said done; sprint
@@ -100,7 +103,7 @@ development_status:
   1-5-set-up-appglobalscss-with-the-closed-57-token-theme-block-ad-18: done
   1-6-implement-the-10-closed-client-components-ad-13: done
   1-7-implement-persistent-nav-with-brand-mark-links-command-palette-trigger-magnetic-cta-scroll-progress: done
-  1-8-implement-hero-plus-proofvectorcluster-for-the-homepage: backlog
+  1-8-implement-hero-plus-proofvectorcluster-for-the-homepage: review
   1-9-implement-root-layout-applayouttsx-with-semantic-landmarks-skip-to-content-beacons: backlog
   1-10-implement-shadcn-primitives-dialog-toggle-tooltip-under-componentsui: backlog
   1-11-implement-apppagetsx-homepage-with-signature-canvas-dual-ring-proof-vector-cluster-recruiter-route-footer-link: backlog
