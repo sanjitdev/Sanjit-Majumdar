@@ -13,19 +13,18 @@ export const metadata = {
  *
  * Server component (no `"use client"` at the top). Renders a 4-row
  * `<table>` with `<LayerRowHover>` per row so CI can hit
- * `/__preview/layer-row-hover` and verify:
+ * `/preview/layer-row-hover` and verify:
  *   - 4 rows render
  *   - hovering row N fires `onHoverChange(N, true)`
  *   - keyboard focus (Tab) fires `onHoverChange(N, true)`
  *
- * The `__preview/` (double underscore) folder avoids Next.js's
- * `_components` private-folder convention.
+ * 1-12-foundation-closeout fix 4: `app/__preview/` → `app/preview/`.
  */
 export default function LayerRowHoverPreviewPage() {
   const layers = ['Edge', 'API', 'Worker', 'Database'];
 
   return (
-    <main id="main" className="min-h-screen bg-bg p-8 text-fg">
+    <div className="min-h-screen bg-bg p-8 text-fg">
       <h1 className="font-display text-2xl">LayerRowHover preview</h1>
       <p className="mt-2 text-fg-3">
         CI harness for the AD-13 LayerRowHover contract. Hover or focus a row
@@ -62,6 +61,6 @@ export default function LayerRowHoverPreviewPage() {
           ))}
         </tbody>
       </table>
-    </main>
+    </div>
   );
 }

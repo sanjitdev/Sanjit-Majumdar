@@ -6,8 +6,25 @@
 // Adding a route or token is a one-line edit; do NOT duplicate these arrays
 // elsewhere.
 
-// ─── AUDIT_ROUTES (1-4) ──────────────────────────────────────────────────
-export const AUDIT_ROUTES = [
+// ─── PROD_ROUTES + PREVIEW_ROUTES (1-4, amended 1-12) ───────────────────
+// Closed split of public-route URLs into production routes (full AD-12
+// invariant: spine line + proof number + return path) and preview routes
+// (structural-only: HTTP 200 + non-empty body).
+//
+// The split was introduced 2026-09-25 (1-12-foundation-closeout fix 4)
+// because the `app/__preview/` folder was renamed to `app/preview/`. Now
+// that the routes are reachable from `pnpm build`, the original AD-12
+// audit would fail 4 of the 5 preview harnesses by design — component
+// previews render a single component, not the homepage composition. The
+// AD-12 invariant stays scoped to production routes; preview coverage
+// of those invariants lives in pa11y-ci (`.pa11yci.json`) and Lighthouse
+// (`pnpm lighthouse`), NOT in `pnpm audit:routes`.
+//
+// The harness pages are noindex via B5
+// (`metadata.robots = { index: false, follow: false }`) so they don't
+// surface in search results.
+
+export const PROD_ROUTES = [
   '/',
   '/work',
   '/projects',
@@ -19,6 +36,22 @@ export const AUDIT_ROUTES = [
   '/built',
   '/404',
 ];
+
+export const PREVIEW_ROUTES = [
+  '/preview/filter-chip-group',
+  '/preview/layer-row-hover',
+  '/preview/nav',
+  '/preview/hero',
+  '/preview/homepage',
+];
+
+// Backward-compat alias: callers that imported AUDIT_ROUTES get the
+// concatenation of both arrays, preserving the original one-array contract.
+// This keeps any external consumer (CI scripts, pa11y-ci URL generation,
+// Lighthouse configuration) working without code changes. The audit-routes
+// script itself uses PROD_ROUTES + PREVIEW_ROUTES directly so it can apply
+// the correct assertion per route class.
+export const AUDIT_ROUTES = [...PROD_ROUTES, ...PREVIEW_ROUTES];
 
 // ─── AUDIT_TOKEN_GLOBS + ALLOWED_HEX + ALLOWED_RGBA (1-5, AD-18) ──────────
 // Source-glob list walked by scripts/audit-tokens.mjs. The audit walks

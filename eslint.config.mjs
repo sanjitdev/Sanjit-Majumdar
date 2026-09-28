@@ -10,6 +10,9 @@ const config = [
       "node_modules/**",
       "*.tsbuildinfo",
       "coverage/**",
+      // CommonJS shim required by pa11y-ci 3.1.0 (no HTML reporter shipped).
+      // Uses `require()` + `module.exports`; not project source code.
+      "scripts/pa11y-html-reporter.js",
     ],
   },
 ];

@@ -12,7 +12,7 @@ export const metadata = {
  * Preview harness for `<Hero>` (story 1-8).
  *
  * Server component (no `"use client"` at the top). Renders `<Hero />` inside
- * `<main id="main">` so CI can hit `/__preview/hero` and verify the layout /
+ * `<main id="main">` so CI can hit `/preview/hero` and verify the layout /
  * typography contracts before 1-11 mounts them on `app/page.tsx`:
  *   - two-column layout at `xl+` (spine + cluster left, dual-ring canvas right)
  *   - single-column below `xl` (canvas hidden via `hidden xl:block`)
@@ -22,12 +22,15 @@ export const metadata = {
  *   - MagneticCTA climax copy `Read the case studies` (NOT `Hire me`, which is the
  *     persistent <Nav> right-region climax in 1-7)
  *
- * The `__preview/` (double underscore) folder avoids Next.js's `_components`
- * private-folder convention, matching the 1-6 / 1-7 preview routes.
+ * 1-12-foundation-closeout fix 4: `app/__preview/` → `app/preview/`. The
+ * double-underscore prefix was documentation-only; Next.js 16 App Router
+ * treats it as private (excluded from build output). Renamed to a public
+ * folder name so the route is reachable from `pnpm audit:routes` /
+ * pa11y-ci.
  */
 export default function HeroPreviewPage() {
   return (
-    <main id="main" className="min-h-screen bg-bg p-8 pt-[120px] text-fg">
+    <div className="min-h-screen bg-bg p-8 pt-[120px] text-fg">
       <Hero />
       <div className="mx-auto mt-24 max-w-3xl">
         <h2 className="text-2xl font-semibold">Hero preview</h2>
@@ -37,6 +40,6 @@ export default function HeroPreviewPage() {
           gradient-text climax renders in --gradient-text (violet → cyan).
         </p>
       </div>
-    </main>
+    </div>
   );
 }

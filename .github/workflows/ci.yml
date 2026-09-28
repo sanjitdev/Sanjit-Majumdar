@@ -33,8 +33,29 @@ jobs:
       - name: Build
         run: pnpm build
 
+      # 1-12-foundation-closeout fix 3: typecheck + lint wired as CI gates.
+      # Both run AFTER `pnpm build` because `next-env.d.ts` imports
+      # `./.next/dev/types/routes.d.ts`, which Next 16 only generates during
+      # `next dev` / `next build`. Order matches the 1-1 deferred-work entry's
+      # option (a) recommendation.
+      - name: Typecheck
+        if: success()
+        run: pnpm typecheck
+
+      - name: Lint
+        if: success()
+        # `--max-warnings=0` converts warnings to failures and honors AC5's
+        # "zero errors" contract from spec-1-1.
+        run: pnpm lint --max-warnings=0
+
       - name: Audit-script spec test (PROOF_NUMBERS verbatim closed set)
         run: pnpm audit:spec
+
+      # 1-12-foundation-closeout fix 1: lock the
+      # `extractComponentText(...)` mount-point selector array in
+      # scripts/audit-routes.mjs to the verbatim closed set.
+      - name: Audit-script spec test (extractComponentText mount points)
+        run: pnpm audit:mount-points
 
       - name: Start Next.js server
         run: |

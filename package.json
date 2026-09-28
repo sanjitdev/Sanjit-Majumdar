@@ -13,11 +13,13 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "pretypecheck": "node scripts/pretypecheck.mjs",
     "lighthouse": "lhci autorun",
     "audit:budget": "node scripts/audit-budget.mjs",
     "audit:routes": "node scripts/audit-routes.mjs",
     "audit:content": "node scripts/audit-content.mjs",
     "audit:spec": "node scripts/audit-routes.spec.mjs",
+    "audit:mount-points": "node scripts/audit-routes-mount-points.spec.mjs",
     "audit:tokens": "node scripts/audit-tokens.mjs",
     "test:a11y": "pa11y-ci"
   },

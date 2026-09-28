@@ -13,12 +13,15 @@ export const metadata = {
  *
  * Server component (no `"use client"` at the top). Mounts
  * `<FilterChipGroup>` with 3 sample chips inside `<main id="main">` so CI
- * can hit `/__preview/filter-chip-group` and verify:
+ * can hit `/preview/filter-chip-group` and verify:
  *   - 3 chips render with `aria-pressed` on the selected chip
  *   - 44px min-height touch target is enforced on small breakpoint
  *
- * The `__preview/` (double underscore) folder avoids Next.js's
- * `_components` private-folder convention.
+ * 1-12-foundation-closeout fix 4: `app/__preview/` → `app/preview/`. The
+ * double-underscore prefix was documentation-only; Next.js 16 App Router
+ * treats it as private (excluded from build output). Renamed to a public
+ * folder name so the route is reachable from `pnpm audit:routes` /
+ * pa11y-ci.
  */
 export default function FilterChipGroupPreviewPage() {
   const chips = [
@@ -28,7 +31,7 @@ export default function FilterChipGroupPreviewPage() {
   ];
 
   return (
-    <main id="main" className="min-h-screen bg-bg p-8 text-fg">
+    <div className="min-h-screen bg-bg p-8 text-fg">
       <h1 className="font-display text-2xl">FilterChipGroup preview</h1>
       <p className="mt-2 text-fg-3">
         CI harness for the AD-13 FilterChipGroup contract. Three sample chips,
@@ -45,6 +48,6 @@ export default function FilterChipGroupPreviewPage() {
           }}
         />
       </div>
-    </main>
+    </div>
   );
 }

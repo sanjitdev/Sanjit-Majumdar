@@ -12,10 +12,10 @@ export const metadata = {
  * Preview harness for `<Nav>` (story 1-7).
  *
  * Server component (no `"use client"` at the top). Renders
- * `<Nav currentPath="/__preview/nav" />` inside `<main id="main">` with a
+ * `<Nav currentPath="/preview/nav" />` inside `<main id="main">` with a
  * 200vh-tall `<div>` so:
  *
- *   - CI can hit `/__preview/nav` and verify the sticky-nav contract:
+ *   - CI can hit `/preview/nav` and verify the sticky-nav contract:
  *       header is `sticky top-0 z-50 h-[76px]`
  *       <main id="main"> wraps content
  *       7 nav links render in order (Home, Work, About, Lab, Now, Built, Recruiter)
@@ -25,13 +25,12 @@ export const metadata = {
  *   - The 200vh scroll body gives `<ScrollProgress>` measurable scroll
  *     distance so the bar's `scaleX` can be visually verified.
  *
- * The `__preview/` (double underscore) folder avoids Next.js's
- * `_components` private-folder convention, matching the 1-6 preview routes.
+ * 1-12-foundation-closeout fix 4: `app/__preview/` → `app/preview/`.
  */
 export default function NavPreviewPage() {
   return (
-    <main id="main" className="min-h-screen bg-bg p-8 pt-[120px] text-fg">
-      <Nav currentPath="/__preview/nav" />
+    <div className="min-h-screen bg-bg p-8 pt-[120px] text-fg">
+      <Nav currentPath="/preview/nav" />
       <h1 className="font-display text-2xl">Nav preview</h1>
       <p className="mt-2 text-fg-3">
         CI harness for the AD-13 Nav contract. Sticky nav at top, 7 nav links
@@ -46,6 +45,6 @@ export default function NavPreviewPage() {
         level and confirm the bar pins at 0.
       </p>
       <div aria-hidden="true" className="h-[200vh]" />
-    </main>
+    </div>
   );
 }
