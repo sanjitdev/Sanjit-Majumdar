@@ -21,7 +21,7 @@ import { notFound } from 'next/navigation';
  * simply absent.
  *
  * Defense-in-depth: this is `app/preview/layout.tsx`, which wraps every
- * `app/preview/*/page.tsx` automatically. We don't need to repeat the
+ * app/preview/<slug>/page.tsx automatically. We don't need to repeat the
  * check in each page file.
  */
 export default function PreviewLayout({ children }: { children: React.ReactNode }) {
