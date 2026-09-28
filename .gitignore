@@ -281,6 +281,15 @@ coverage/
 lib-cov/
 
 # -----------------------------------------------------------------------------
+# Local scaffold for the `sanjit-content` repo (story 2-1 — separate content
+# repo per AD-1). This folder mirrors the future content repo's working tree
+# so the code repo can develop against it locally; it MUST NOT be committed to
+# the code repo. When ready, this folder is pushed to the `sanjit-content`
+# GitHub repo via `gh repo create` + `git push`. See
+# `sanjit-content/docs/deployment-runbook.md` for the full handoff procedure.
+sanjit-content/
+
+# -----------------------------------------------------------------------------
 # Build-time shallow-clone of `sanjit-content` (story 2-4 — AD-1 read path).
 #
 # The deploy pipeline runs `scripts/clone-content.mts` before `next build` and
