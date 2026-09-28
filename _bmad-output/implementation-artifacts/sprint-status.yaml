@@ -165,6 +165,11 @@
 
 generated: 2026-09-28
 last_updated: 2026-09-28
+# refresh note 2026-09-28: 2-5-implement-post-apirevalidate-edge-handler-with-revalidatetag-tag-max-next-16-signature
+#             advanced to review at step-05 (auto-mode run). Two files shipped in app/ + lib/
+#             (route.ts + revalidate.ts) + smoke harness at scripts/smoke-2-5.mts. 27/27 smoke
+#             assertions pass; pnpm typecheck exit 0. Story remains "review" pending the human
+#             Sprint Sync / bmad-code-review pass.
 # refresh note 2026-09-28: 2-4-implement-nextjs-shallow-clone-of-sanjit-content-at-build-time
 #             flipped backlog → in-progress at bmad-build step-03 start. epic-2 already in-progress
 #             (carried over from 2-3 activation). Build pipeline: scripts/clone-content.mjs +
@@ -207,7 +212,7 @@ development_status:
   2-2-implement-additive-zod-4-schemas-for-case-study-pattern-lab-project-currently-building-entry-cv: review
   2-3-implement-content-reader-libcontent-walking-only-status-published: review
   2-4-implement-nextjs-shallow-clone-of-sanjit-content-at-build-time: review
-  2-5-implement-post-apirevalidate-edge-handler-with-revalidatetag-tag-max-next-16-signature: backlog
+  2-5-implement-post-apirevalidate-edge-handler-with-revalidatetag-tag-max-next-16-signature: review
   2-6-apply-revalidate-300-5-minute-ttl-fallback-on-every-isr-route: backlog
   2-7-pre-publish-a-move-tagged-pattern-stub-in-sanjit-content-patternscanonical-model: backlog
   2-8-audit-vercel-plan-tier-for-post-apiforward-pdf-memory-budget-1769-mb: backlog

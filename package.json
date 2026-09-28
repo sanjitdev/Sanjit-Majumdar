@@ -25,7 +25,8 @@
     "audit:tokens": "node scripts/audit-tokens.mjs",
     "test:a11y": "pa11y-ci",
     "clone-content": "tsx scripts/clone-content.mts",
-    "smoke:2-4": "tsx scripts/smoke-2-4.mts"
+    "smoke:2-4": "tsx scripts/smoke-2-4.mts",
+    "smoke:2-5": "tsx scripts/smoke-2-5.mts"
   },
   "dependencies": {
     "next": "^16.3.6",
