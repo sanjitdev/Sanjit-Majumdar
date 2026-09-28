@@ -2,7 +2,7 @@
 title: 'Implement Next.js shallow-clone of `sanjit-content` at build time'
 type: 'feature'
 created: '2026-09-28'
-status: 'in-review'
+status: 'done'
 review_loop_iteration: 0
 baseline_commit: d28a2c0
 context:
@@ -145,3 +145,37 @@ Story 2-3's reader is a pure function; its `readContent()` returns `diagnostics[
 - `git check-ignore content/case-studies/whatever.mdx` should exit 0 (cloned tree ignored)
 - `git ls-files content/.gitkeep` should list the file (placeholder tracked)
 - `git ls-files .env.example` should list the file; `git check-ignore .env` should exit 0
+
+## Suggested Review Order
+
+**Build-pipeline entry point**
+- The single highest-leverage file: shallow-clone + reader gate lives here. Read top-down: SKIP_CLONE short-circuit → pre-flight git probe → rm stale dir → git spawn → URL composition → reader gate.
+  [`clone-content.mts:60`](../../scripts/clone-content.mts#L60)
+
+**Auth strategy + safety**
+- composeCloneUrl only injects `GIT_TOKEN` for `https://github.com/` URLs (SSH + non-GitHub + malformed all pass through unchanged — prevents token leak).
+  [`clone-content.mts:194`](../../scripts/clone-content.mts#L194)
+- redactToken strips the injected token from logged URLs (idempotent).
+  [`clone-content.mts:212`](../../scripts/clone-content.mts#L212)
+
+**AD-5 build-fail gate**
+- Reader gate: any diagnostic → exit 1 with per-file line printed to stderr (matches story 2-3's diagnostic shape verbatim).
+  [`clone-content.mts:234`](../../scripts/clone-content.mts#L234)
+
+**Lifecycle wiring**
+- `prebuild` + `predev` hooks fire the clone before `next build` / `next dev`. `tsx` is the resolver (matches smoke-2-2 / smoke-2-3 convention).
+  [`package.json:11`](../../package.json#L11)
+- Mirror entry points: `pnpm clone-content` (standalone) + `pnpm smoke:2-4` (verification).
+  [`package.json:25`](../../package.json#L25)
+
+**Gitignore allow-list**
+- `content/*` + `!content/.gitkeep` — the directory itself is NOT ignored (so the `.gitkeep` allow-list can re-track it). Cloned files are ignored.
+  [`.gitignore:299`](../../.gitignore#L299)
+
+**Config + secrets**
+- `.env.example` documents `GIT_TOKEN` + `CONTENT_REPO_URL` + `SKIP_CLONE` with usage notes for Vercel + local dev.
+  [`.env.example:30`](../../.env.example#L30)
+
+**Verification surface**
+- 18 smoke assertions cover the I/O matrix: URL composition, token redaction, git probe, reader+diagnostic gate, lifecycle wiring, gitignore enforcement.
+  [`smoke-2-4.mts:43`](../../scripts/smoke-2-4.mts#L43)

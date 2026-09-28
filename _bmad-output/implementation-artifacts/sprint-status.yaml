@@ -206,7 +206,7 @@ development_status:
   2-1-set-up-sanjit-content-repo-with-content-directory-layout-and-github-actions-workflow-listening-to-push-delete-force-push: backlog
   2-2-implement-additive-zod-4-schemas-for-case-study-pattern-lab-project-currently-building-entry-cv: review
   2-3-implement-content-reader-libcontent-walking-only-status-published: review
-  2-4-implement-nextjs-shallow-clone-of-sanjit-content-at-build-time: in-progress
+  2-4-implement-nextjs-shallow-clone-of-sanjit-content-at-build-time: review
   2-5-implement-post-apirevalidate-edge-handler-with-revalidatetag-tag-max-next-16-signature: backlog
   2-6-apply-revalidate-300-5-minute-ttl-fallback-on-every-isr-route: backlog
   2-7-pre-publish-a-move-tagged-pattern-stub-in-sanjit-content-patternscanonical-model: backlog
