@@ -27,30 +27,32 @@
 
 /**
  * The 21 closed color token names from AD-18. Order matches DESIGN.md's
- * "Colors" table (lines 309-329).
+ * "Colors" table (lines 309-329). All names carry the `--color-` infix
+ * required by Tailwind v4 to auto-generate the matching utility classes
+ * (`bg-bg`, `text-fg`, `border-accent`, …); see `app/globals.css`.
  */
 export const DESIGN_TOKENS = [
-  '--bg',
-  '--bg-2',
-  '--bg-3',
-  '--fg',
-  '--fg-2',
-  '--fg-3',
-  '--fg-4',
-  '--accent',
-  '--accent-2',
-  '--accent-3',
-  '--live',
-  '--warn',
-  '--on-accent',
-  '--on-live',
-  '--glass',
-  '--glass-strong',
-  '--border',
-  '--border-strong',
-  '--border-accent',
-  '--accent-glow',
-  '--live-glow',
+  '--color-bg',
+  '--color-bg-2',
+  '--color-bg-3',
+  '--color-fg',
+  '--color-fg-2',
+  '--color-fg-3',
+  '--color-fg-4',
+  '--color-accent',
+  '--color-accent-2',
+  '--color-accent-3',
+  '--color-live',
+  '--color-warn',
+  '--color-on-accent',
+  '--color-on-live',
+  '--color-glass',
+  '--color-glass-strong',
+  '--color-border',
+  '--color-border-strong',
+  '--color-border-accent',
+  '--color-accent-glow',
+  '--color-live-glow',
 ] as const;
 
 export type DesignToken = (typeof DESIGN_TOKENS)[number];
@@ -59,7 +61,7 @@ export type DesignToken = (typeof DESIGN_TOKENS)[number];
  * The 4 high-traffic accent colors exported as `var(--...)` form. Consumers
  * should prefer these named exports over re-declaring the literal strings.
  */
-export const ACCENT = 'var(--accent)';
-export const ACCENT_2 = 'var(--accent-2)';
-export const ACCENT_3 = 'var(--accent-3)';
-export const LIVE = 'var(--live)';
+export const ACCENT = 'var(--color-accent)';
+export const ACCENT_2 = 'var(--color-accent-2)';
+export const ACCENT_3 = 'var(--color-accent-3)';
+export const LIVE = 'var(--color-live)';

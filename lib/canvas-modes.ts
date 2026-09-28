@@ -68,13 +68,13 @@ export const CANVAS_MODE_ROUTES: Readonly<Record<CanvasMode, readonly string[]>>
  * `condensed-4-node-status` → `/recruiter` + `LIVE`
  */
 export const CANVAS_MODE_ACCENT: Readonly<Record<CanvasMode, string>> = {
-  'dual-ring': 'var(--accent)',
-  'filter-graph': 'var(--accent)',
-  'section-progress': 'var(--accent)',
-  timeline: 'var(--accent)',
-  'decision-graph': 'var(--accent)',
-  'experiment-graph': 'var(--accent-3)',
-  'activity-feed': 'var(--accent)',
-  'layered-architecture': 'var(--accent-2)',
-  'condensed-4-node-status': 'var(--live)',
+  'dual-ring': 'var(--color-accent)',
+  'filter-graph': 'var(--color-accent)',
+  'section-progress': 'var(--color-accent)',
+  timeline: 'var(--color-accent)',
+  'decision-graph': 'var(--color-accent)',
+  'experiment-graph': 'var(--color-accent-3)',
+  'activity-feed': 'var(--color-accent)',
+  'layered-architecture': 'var(--color-accent-2)',
+  'condensed-4-node-status': 'var(--color-live)',
 };

@@ -75,7 +75,7 @@ export function ScrollProgress() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed bottom-0 left-0 right-0 z-30 h-px w-full origin-left bg-[var(--accent)] transition-transform duration-100"
+      className="pointer-events-none fixed bottom-0 left-0 right-0 z-30 h-px w-full origin-left bg-[var(--color-accent)] transition-transform duration-100"
       style={{ transform: 'scaleX(var(--progress, 0))' }}
     />
   );

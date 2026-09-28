@@ -22,28 +22,37 @@
  * ============================================================================ */
 
 @theme {
-  /* ─── 21 colors (AD-18) ─────────────────────────────────────────── */
-  --bg:        #06070B;
-  --bg-2:      #0B0D14;
-  --bg-3:      #10131C;
-  --fg:        #FAFAFA;
-  --fg-2:      #D4D4D8;
-  --fg-3:      #8B8E97;
-  --fg-4:      #5C5F68;
-  --accent:    #A78BFA;
-  --accent-2:  #67E8F9;
-  --accent-3:  #F472B6;
-  --live:      #34D399;
-  --warn:      #FCA5A5;
-  --on-accent: #06070B;
-  --on-live:   #06070B;
-  --glass:         rgba(255, 255, 255, 0.03);
-  --glass-strong:  rgba(255, 255, 255, 0.06);
-  --border:        rgba(255, 255, 255, 0.06);
-  --border-strong: rgba(255, 255, 255, 0.12);
-  --border-accent: rgba(167, 139, 250, 0.30);
-  --accent-glow:   rgba(167, 139, 250, 0.25);
-  --live-glow:     rgba( 52, 211, 153, 0.20);
+  /* ─── 21 colors (AD-18) ───────────────────────────────────────────
+   *
+   * Naming convention: every color token is prefixed `--color-` so
+   * Tailwind v4 auto-generates the matching utility classes (`bg-bg`
+   * → `background-color: var(--color-bg)`, `text-fg` → `color:
+   * var(--color-fg)`, `border-accent` → `border-color: var(--color-accent)`,
+   * etc.). Without the `--color-` prefix the tokens would only be
+   * exposed as raw CSS custom properties — useful for direct `var(--x)`
+   * reads but invisible to the utility-class generator.
+   */
+  --color-bg:        #06070B;
+  --color-bg-2:      #0B0D14;
+  --color-bg-3:      #10131C;
+  --color-fg:        #FAFAFA;
+  --color-fg-2:      #D4D4D8;
+  --color-fg-3:      #8B8E97;
+  --color-fg-4:      #5C5F68;
+  --color-accent:    #A78BFA;
+  --color-accent-2:  #67E8F9;
+  --color-accent-3:  #F472B6;
+  --color-live:      #34D399;
+  --color-warn:      #FCA5A5;
+  --color-on-accent: #06070B;
+  --color-on-live:   #06070B;
+  --color-glass:         rgba(255, 255, 255, 0.03);
+  --color-glass-strong:  rgba(255, 255, 255, 0.06);
+  --color-border:        rgba(255, 255, 255, 0.06);
+  --color-border-strong: rgba(255, 255, 255, 0.12);
+  --color-border-accent: rgba(167, 139, 250, 0.30);
+  --color-accent-glow:   rgba(167, 139, 250, 0.25);
+  --color-live-glow:     rgba( 52, 211, 153, 0.20);
 
   /* ─── 13 typography roles (4 keys each: font / text / weight / tracking) ─── */
   --font-display:           "Space Grotesk", system-ui, sans-serif;
@@ -138,6 +147,6 @@
   /* ─── 4 gradient tokens (AD-18) ──────────────────────────────────── */
   --gradient-card:   linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0));
   --gradient-hero:   linear-gradient(135deg, rgba(167, 139, 250, 0.14), rgba(167, 139, 250, 0.06) 60%, transparent);
-  --gradient-text:   linear-gradient(90deg, var(--accent), var(--accent-2));
-  --gradient-button: linear-gradient(135deg, var(--accent), var(--accent-3));
+  --gradient-text:   linear-gradient(90deg, var(--color-accent), var(--color-accent-2));
+  --gradient-button: linear-gradient(135deg, var(--color-accent), var(--color-accent-3));
 }
