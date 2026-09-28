@@ -1,5 +1,6 @@
 # generated: 2026-09-28
 # last_updated: 2026-09-28
+# refresh note 2026-09-28: 2-2-implement-additive-zod-4-schemas-for-case-study-pattern-lab-project-currently-building-entry-cv advanced to review at step-05 (auto-mode run). Eight files shipped in `lib/content/` (one shared base + six per-type schemas + a parse helper) plus a barrel index; one smoke test at `scripts/smoke-2-2.mts` covers every I/O & Edge-Case Matrix row. `pnpm typecheck` exit 0; 37/37 smoke assertions pass. Story remains "review" pending the human-permission Sprint Sync / bmad-code-review pass.
 # refresh note 2026-09-28 (post-commit): 1-12-foundation-closeout-fix-1-3-4
 #             advanced to `done` (commit 2bf9f23, 10 patch findings applied
 #             from code review triage). epic-1 advanced to `done` (all 12
@@ -199,7 +200,7 @@ development_status:
   # ─────────────────────────────────────────────────────────────────
   epic-2: backlog
   2-1-set-up-sanjit-content-repo-with-content-directory-layout-and-github-actions-workflow-listening-to-push-delete-force-push: backlog
-  2-2-implement-additive-zod-4-schemas-for-case-study-pattern-lab-project-currently-building-entry-cv: backlog
+  2-2-implement-additive-zod-4-schemas-for-case-study-pattern-lab-project-currently-building-entry-cv: review
   2-3-implement-content-reader-libcontent-walking-only-status-published: backlog
   2-4-implement-nextjs-shallow-clone-of-sanjit-content-at-build-time: backlog
   2-5-implement-post-apirevalidate-edge-handler-with-revalidatetag-tag-max-next-16-signature: backlog
