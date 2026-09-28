@@ -1,0 +1,288 @@
+diff --git a/_bmad-output/implementation-artifacts/deferred-work.md b/_bmad-output/implementation-artifacts/deferred-work.md
+index 6ddd002..cbae2ab 100644
+--- a/_bmad-output/implementation-artifacts/deferred-work.md
++++ b/_bmad-output/implementation-artifacts/deferred-work.md
+@@ -58,8 +58,8 @@ the current story). Each entry's `source_spec` is the story that surfaced it.
+   summary: The `TOKEN_NAME_DRIFT` gap between `lib/design-tokens.ts` (21-entry `DESIGN_TOKENS` `as const` array) and `app/globals.css` (21 `@theme` color declarations) has no automated guard today — `audit-tokens` does not check token-name presence, only inline-hex absence. The first runtime signal arrives when story 1-6's `lib/canvas-modes.ts` imports a name that doesn't exist in `@theme` (a TypeScript compile error).
+   evidence: Verification Gap Reviewer flagged that no AC verification command asserts `DESIGN_TOKENS.length === 21` against the @theme block's name axis. The verification is a one-liner (`npx tsx -e "import {DESIGN_TOKENS} ..."  console.log(...)`) but it is manual, not enforced in CI. A small Node ESM spec (parallel to `scripts/audit-routes.spec.mjs`) that parses both files and asserts the name sets are equal would close the gap; belongs to a future CI-hardening story.
+ - source_spec: `_bmad-output/implementation-artifacts/spec-1-6-implement-the-10-closed-client-components-ad-13.md`
+-  summary: The 3 simple-stub client components (`ScrollProgress`, `SkipToContent`, `NavCurrent`) from the AD-13 closed set are deferred to a follow-up story; the 7 detailed components ship in 1-6.
+-  evidence: Step-02 token-count check showed the full 1-6 spec weighs ~5,600 tokens — ~3.5× the 1,600-token budget — primarily because each of the 10 components is enumerated with full implementation contracts. The 3 stubs have minimal contracts (ScrollProgress: passive scroll listener + scaleX; SkipToContent: sr-only + focus:not-sr-only anchor; NavCurrent: aria-current switch) and add line-count without adding decisions. Splitting them out preserves the single goal of "establish the closed-set invariant" without inflating the spec past the context-rot threshold for the implementer. The AD-13 closed-set invariant is preserved by a comment in `components/client/.gitkeep` or by listing the deferred 3 in the new spec's "Ask First" section.
++  summary: The 3 simple-stub client components (`ScrollProgress`, `SkipToContent`, `NavCurrent`) from the AD-13 closed set are deferred to later stories; 2 ship in 1-7 (`NavCurrent`, `ScrollProgress`) and 1 (`SkipToContent`) is deferred again to 1-9.
++  evidence: Step-02 token-count check on the 1-6 spec weighed ~5,600 tokens — ~3.5× the 1,600-token budget — primarily because each of the 10 components is enumerated with full implementation contracts. The 3 stubs have minimal contracts and add line-count without adding decisions. `NavCurrent` + `ScrollProgress` are consumed by story 1-7 (`<Nav>` uses NavCurrent for the active-link `aria-current` switch and mounts ScrollProgress at the bottom edge); `SkipToContent` is consumed by story 1-9 (root layout mounts it as the first focusable element). Both 1-7 and 1-9 are the natural homes; the AD-13 closed-set invariant is preserved at 10 components total once both ship.
+ - source_spec: `_bmad-output/implementation-artifacts/spec-1-6-implement-the-10-closed-client-components-ad-13.md`
+   summary: The closed-set invariant `ls components/client/` → exactly 7 files has no automated CI gate; a future PR adding an 8th component or renaming one slips through build/typecheck/audit-tokens untouched.
+   evidence: Verification Gap Reviewer (step-04 iteration 1) confirmed no script in `scripts/` enumerates the closed-set name list. `scripts/audit-routes.spec.mjs` enforces a different closed set (`PROOF_NUMBERS`) but nothing enforces the AD-13 client-component set. Belongs to a future CI-hardening story; the implementation is a small node script that reads `components/client/`, sorts the names, and asserts the set equals the verbatim closed list (mirrors the existing `PROOF_NUMBERS` test).
+diff --git a/_bmad-output/implementation-artifacts/sprint-status.yaml b/_bmad-output/implementation-artifacts/sprint-status.yaml
+index 6fa085c..b12ca93 100644
+--- a/_bmad-output/implementation-artifacts/sprint-status.yaml
++++ b/_bmad-output/implementation-artifacts/sprint-status.yaml
+@@ -1,5 +1,6 @@
+ # generated: 2026-09-24
+ # last_updated: 2026-09-24
++# 2026-09-24: story 1-7 moved backlog → in-progress at step-03 start.
+ # 2026-09-24: story 1-6 advanced to review at step-05; spec status done after
+ #             step-04 bad_spec loopback (review_loop_iteration 1) — A1/A2/A4
+ #             spec defects fixed, 17 patches applied via re-derivation.
+@@ -89,7 +90,7 @@ development_status:
+   1-4-set-up-github-actions-ci-with-lighthouse-gzip-budget-route-invariant-and-pa11y-ci-gates: done
+   1-5-set-up-appglobalscss-with-the-closed-57-token-theme-block-ad-18: review
+   1-6-implement-the-10-closed-client-components-ad-13: review
+-  1-7-implement-persistent-nav-with-brand-mark-links-command-palette-trigger-magnetic-cta-scroll-progress: backlog
++  1-7-implement-persistent-nav-with-brand-mark-links-command-palette-trigger-magnetic-cta-scroll-progress: in-progress
+   1-8-implement-hero-plus-proofvectorcluster-for-the-homepage: backlog
+   1-9-implement-root-layout-applayouttsx-with-semantic-landmarks-skip-to-content-beacons: backlog
+   1-10-implement-shadcn-primitives-dialog-toggle-tooltip-under-componentsui: backlog
+diff --git a/scripts/audit-routes.shared.mjs b/scripts/audit-routes.shared.mjs
+index 0f7e089..b9840e4 100644
+--- a/scripts/audit-routes.shared.mjs
++++ b/scripts/audit-routes.shared.mjs
+@@ -56,6 +56,12 @@ export const ALLOWED_HEX = [
+ // `app/globals.css` is not walked by the audit; consumer `.tsx` files
+ // should reference shadows / gradients via the `--*` token names, not via
+ // inline rgba.
++//
++// `rgba(6,7,11,0.72)` is the persistent-nav scrim (UX-DR13) — the closed
++// `--bg` value (#06070B = rgb(6,7,11)) at 0.72 alpha. Added 2026-09-24 in
++// spec-1-7 ("Implement persistent <Nav>...") per the spec's documented
++// fallback when the audit trips on `bg-[rgba(6,7,11,0.72)]` inside
++// `<Nav>`'s arbitrary-value class string.
+ export const ALLOWED_RGBA = [
+   'rgba(255,255,255,0.03)',  // --glass
+   'rgba(255,255,255,0.06)',  // --glass-strong, --border
+@@ -64,5 +70,6 @@ export const ALLOWED_RGBA = [
+   'rgba(167,139,250,0.25)',  // --accent-glow
+   'rgba(52,211,153,0.20)',   // --live-glow
+   'rgba(167,139,250,0.40)',  // --shadow-glow-strong
++  'rgba(6,7,11,0.72)',       // nav scrim (--bg @ 0.72 alpha; spec-1-7)
+ ];
+ 
+
+=== NEW FILE: components/Nav.tsx ===
+import { MagneticCTA } from './client/MagneticCTA';
+import { NavCurrent } from './client/NavCurrent';
+import { ScrollProgress } from './client/ScrollProgress';
+
+/**
+ * <Nav> — persistent positioning header (FR-1 + UX-DR13).
+ *
+ * Server component (no `"use client"`) composing the closed AD-13 client
+ * boundaries. The 7 nav links use `<NavCurrent>` with `aria-current`
+ * derived from the `currentPath` prop; the right region mounts a single
+ * `<MagneticCTA>` focal CTA plus a non-functional cmdk trigger (the click
+ * handler is wired in 1-9). Below the header row, `<ScrollProgress>` is
+ * pinned at the viewport bottom edge (fixed positioning).
+ *
+ * Brand mark: 28×28 gradient square (`bg-gradient-to-br from-accent via-
+ * accent-2 to-accent-3`) with a cursor-style node-pulse halo, plus the
+ * "Sanjit Majumdar" wordmark. Scrim: `bg-[rgba(6,7,11,0.72)]` with
+ * `backdrop-blur-[20px]` over the closed `--bg` (#06070B).
+ */
+
+const NAV_LINKS: ReadonlyArray<{ href: string; label: string }> = [
+  { href: '/', label: 'Home' },
+  { href: '/work', label: 'Work' },
+  { href: '/about', label: 'About' },
+  { href: '/lab', label: 'Lab' },
+  { href: '/now', label: 'Now' },
+  { href: '/built', label: 'Built' },
+  { href: '/recruiter', label: 'Recruiter' },
+];
+
+export function Nav({ currentPath }: { currentPath: string }) {
+  return (
+    <>
+      <header
+        role="banner"
+        className="sticky top-0 z-50 h-[76px] w-full border-b border-border-strong bg-[rgba(6,7,11,0.72)] backdrop-blur-[20px]"
+      >
+        <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6">
+          {/* Left: brand mark + wordmark */}
+          <a
+            href="/"
+            className="flex items-center gap-3"
+            aria-label="Sanjit Majumdar — home"
+          >
+            <span
+              aria-hidden="true"
+              className="h-7 w-7 rounded-sm bg-gradient-to-br from-accent via-accent-2 to-accent-3 ring-1 ring-border-accent animate-pulse"
+            />
+            <span className="font-medium text-fg">Sanjit Majumdar</span>
+          </a>
+
+          {/* Center: 7 nav links (hidden below lg) */}
+          <nav
+            aria-label="Primary"
+            className="hidden items-center gap-6 lg:flex"
+          >
+            {NAV_LINKS.map((link) => (
+              <NavCurrent
+                key={link.href}
+                href={link.href}
+                isCurrent={
+                  link.href === '/'
+                    ? currentPath === '/'
+                    : currentPath === link.href ||
+                      currentPath.startsWith(`${link.href}/`)
+                }
+              >
+                {link.label}
+              </NavCurrent>
+            ))}
+          </nav>
+
+          {/* Right: magnetic CTA + cmdk trigger */}
+          <div className="flex items-center gap-3">
+            <MagneticCTA className="min-h-[36px] px-3 text-sm">
+              Hire me
+            </MagneticCTA>
+            <button
+              type="button"
+              data-cmdk-trigger
+              aria-label="Open command palette"
+              className="hidden items-center gap-2 rounded-md border border-border-strong bg-glass px-3 py-1.5 text-sm text-fg-2 transition-colors hover:text-fg lg:flex md:hidden"
+            >
+              <kbd className="rounded-sm border border-border-strong bg-bg-2 px-1.5 py-0.5 font-mono text-xs text-fg-2">
+                ⌘K
+              </kbd>
+            </button>
+          </div>
+        </div>
+      </header>
+      <ScrollProgress />
+    </>
+  );
+}
+
+=== NEW FILE: components/client/NavCurrent.tsx ===
+"use client";
+import type { ReactNode } from 'react';
+
+/**
+ * <NavCurrent> — AD-13 closed-set client component (8 of 10).
+ *
+ * Wraps a nav-link `<a>` and sets `aria-current="page"` when the active
+ * route matches `href`. Both server-rendered (initial paint) and
+ * client-rendered navigation paths carry the attribute, so screen-reader
+ * users get the right announcement on every nav transition.
+ *
+ * Hover styling intentionally reuses `text-fg-2` (muted) → `text-fg`
+ * (foreground) so the active link reads against the same color discipline
+ * as the inactive ones — visual hierarchy is carried by `aria-current`,
+ * not by color alone (AD-20 a11y floor).
+ */
+export function NavCurrent({
+  href,
+  isCurrent,
+  children,
+  className,
+}: {
+  href: string;
+  isCurrent: boolean;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <a
+      href={href}
+      aria-current={isCurrent ? 'page' : undefined}
+      className={[
+        'text-fg-2 transition-colors hover:text-fg',
+        className ?? '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
+      {children}
+    </a>
+  );
+}
+
+=== NEW FILE: components/client/ScrollProgress.tsx ===
+"use client";
+import { useEffect } from 'react';
+
+/**
+ * <ScrollProgress> — AD-13 closed-set client component (2 of 10).
+ *
+ * Renders a 1px-tall `--accent` bar pinned to the viewport bottom edge.
+ * `transform: scaleX(var(--progress))` is driven by a passive scroll listener
+ * that writes `--progress` (0–1) to `:root`.
+ *
+ * Motion gate: under `prefers-reduced-motion: reduce` the listener is a no-op
+ * and `--progress` stays at 0; the bar remains visible but pinned at 0%
+ * scaleX (final-state guarantee per AD-16 + AD-20).
+ *
+ * The bar is `position: fixed` at viewport bottom (NOT inside the header) so
+ * it tracks scroll position across the WHOLE page, not just within the nav
+ * (UX-DR4 contract).
+ */
+export function ScrollProgress() {
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const root = document.documentElement;
+    const reducedMql = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    const update = () => {
+      if (reducedMql.matches) return;
+      const scrollY = window.scrollY || window.pageYOffset || 0;
+      const docHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? scrollY / docHeight : 0;
+      const clamped = Math.max(0, Math.min(1, progress));
+      root.style.setProperty('--progress', String(clamped));
+    };
+
+    if (reducedMql.matches) {
+      root.style.setProperty('--progress', '0');
+    } else {
+      update();
+    }
+
+    window.addEventListener('scroll', update, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', update);
+    };
+  }, []);
+
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none fixed bottom-0 left-0 right-0 z-40 h-px w-full origin-left bg-[var(--accent)] transition-transform duration-100"
+      style={{ transform: 'scaleX(var(--progress, 0))' }}
+    />
+  );
+}
+
+=== NEW FILE: app/__preview/nav/page.tsx ===
+import { Nav } from '../../../components/Nav';
+
+export const metadata = {
+  title: 'Nav preview',
+  robots: { index: false, follow: false },
+};
+
+/**
+ * Preview harness for `<Nav>` — exercises the layout/styling contracts
+ * before 1-9 mounts the nav on every public route. The long scroll body
+ * (200vh) gives the scroll-progress bar measurable scroll distance so the
+ * preview can verify `--progress` writes under both `prefers-reduced-motion`
+ * and normal conditions.
+ */
+export default function NavPreviewPage() {
+  return (
+    <main id="main" className="min-h-screen bg-bg p-8 pt-[120px] text-fg">
+      <Nav currentPath="/__preview/nav" />
+      <div className="mx-auto max-w-3xl pt-8">
+        <h1 className="text-2xl font-semibold">Nav preview</h1>
+        <p className="mt-4 text-fg-2">
+          The sticky nav above is composed server-side from the closed
+          AD-13 client-component set. Scroll this page to watch the 1px
+          accent bar at the viewport bottom track reading position.
+        </p>
+        <div className="mt-8 h-[200vh] rounded-md border border-border-strong bg-glass" />
+      </div>
+    </main>
+  );
+}

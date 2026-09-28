@@ -1,0 +1,326 @@
+diff --git a/components.json b/components.json
+new file mode 100644
+index 0000000..f50ea4f
+--- /dev/null
++++ b/components.json
+@@ -0,0 +1,21 @@
++{
++  "$schema": "https://ui.shadcn.com/schema.json",
++  "style": "new-york",
++  "rsc": true,
++  "tsx": true,
++  "tailwind": {
++    "config": "",
++    "css": "app/globals.css",
++    "baseColor": "neutral",
++    "cssVariables": true,
++    "version": "v4"
++  },
++  "aliases": {
++    "components": "@/components",
++    "utils": "@/lib/utils",
++    "ui": "@/components/ui",
++    "lib": "@/lib",
++    "hooks": "@/hooks"
++  },
++  "iconLibrary": "lucide"
++}
+diff --git a/components/ui/dialog.tsx b/components/ui/dialog.tsx
+new file mode 100644
+index 0000000..e0925f7
+--- /dev/null
++++ b/components/ui/dialog.tsx
+@@ -0,0 +1,148 @@
++"use client";
++
++import * as React from "react";
++import * as DialogPrimitive from "@radix-ui/react-dialog";
++
++import { cn } from "@/lib/utils";
++
++/**
++ * <Dialog> — AD-15 closed shadcn surface (1 of 3).
++ *
++ * Token-mapped onto the closed AD-18 set defined in `app/globals.css`:
++ *   `bg-bg-2 text-fg border border-border-strong` (DialogContent)
++ *   `bg-bg/72 backdrop-blur-sm` (DialogOverlay scrim)
++ *
++ * Per amended AD-15 line 309, the v4 "forward" affordance is NOT a modal —
++ * the primitive ships unopinionated on modal vs. non-modal mode (consumer
++ * chooses via the `modal` prop on `<Dialog>`). Reserved for E4 forward-modal
++ * flow; no E1 consumer mounts it.
++ *
++ * No icon library: the close affordance is a plain text "Close" button rather
++ * than an `lucide-react` `<X />` (project policy per AD-13 closed component
++ * set).
++ */
++
++const Dialog = DialogPrimitive.Root;
++const DialogTrigger = DialogPrimitive.Trigger;
++const DialogPortal = DialogPrimitive.Portal;
++const DialogClose = DialogPrimitive.Close;
++
++const DialogOverlay = React.forwardRef<
++  React.ElementRef<typeof DialogPrimitive.Overlay>,
++  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
++>(({ className, ...props }, ref) => (
++  <DialogPrimitive.Overlay
++    ref={ref}
++    className={cn(
++      "fixed inset-0 z-50 bg-bg/72 backdrop-blur-sm",
++      className,
++    )}
++    {...props}
++  />
++));
++DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
++
++const DialogContent = React.forwardRef<
++  React.ElementRef<typeof DialogPrimitive.Content>,
++  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
++>(({ className, children, ...props }, ref) => (
++  <DialogPortal>
++    <DialogOverlay />
++    <DialogPrimitive.Content
++      ref={ref}
++      className={cn(
++        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-border-strong bg-bg-2 p-6 text-fg shadow-lg rounded-lg focus:outline-none",
++        className,
++      )}
++      {...props}
++    >
++      {children}
++      <DialogPrimitive.Close
++        aria-label="Close"
++        className="absolute right-4 top-4 rounded-md text-fg-2 transition-colors hover:text-fg focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
++      >
++        Close
++      </DialogPrimitive.Close>
++    </DialogPrimitive.Content>
++  </DialogPortal>
++));
++DialogContent.displayName = DialogPrimitive.Content.displayName;
++
++/**
++ * <DialogHeader> — convenience layout primitive for stacking a title +
++ * description. Not a Radix component; project-level convenience.
++ */
++function DialogHeader({
++  className,
++  ...props
++}: React.HTMLAttributes<HTMLDivElement>) {
++  return (
++    <div
++      className={cn(
++        "flex flex-col gap-1.5 text-left",
++        className,
++      )}
++      {...props}
++    />
++  );
++}
++DialogHeader.displayName = "DialogHeader";
++
++/**
++ * <DialogFooter> — convenience layout primitive for action buttons.
++ */
++function DialogFooter({
++  className,
++  ...props
++}: React.HTMLAttributes<HTMLDivElement>) {
++  return (
++    <div
++      className={cn(
++        "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end",
++        className,
++      )}
++      {...props}
++    />
++  );
++}
++DialogFooter.displayName = "DialogFooter";
++
++const DialogTitle = React.forwardRef<
++  React.ElementRef<typeof DialogPrimitive.Title>,
++  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
++>(({ className, ...props }, ref) => (
++  <DialogPrimitive.Title
++    ref={ref}
++    className={cn(
++      "text-lg font-semibold leading-none tracking-tight text-fg",
++      className,
++    )}
++    {...props}
++  />
++));
++DialogTitle.displayName = DialogPrimitive.Title.displayName;
++
++const DialogDescription = React.forwardRef<
++  React.ElementRef<typeof DialogPrimitive.Description>,
++  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
++>(({ className, ...props }, ref) => (
++  <DialogPrimitive.Description
++    ref={ref}
++    className={cn("text-sm text-fg-2", className)}
++    {...props}
++  />
++));
++DialogDescription.displayName = DialogPrimitive.Description.displayName;
++
++export {
++  Dialog,
++  DialogPortal,
++  DialogOverlay,
++  DialogTrigger,
++  DialogClose,
++  DialogContent,
++  DialogHeader,
++  DialogFooter,
++  DialogTitle,
++  DialogDescription,
++};
+diff --git a/components/ui/toggle.tsx b/components/ui/toggle.tsx
+new file mode 100644
+index 0000000..ba574e9
+--- /dev/null
++++ b/components/ui/toggle.tsx
+@@ -0,0 +1,49 @@
++"use client";
++
++import * as React from "react";
++import * as TogglePrimitive from "@radix-ui/react-toggle";
++import { cva, type VariantProps } from "class-variance-authority";
++
++import { cn } from "@/lib/utils";
++
++/**
++ * <Toggle> — AD-15 closed shadcn surface (2 of 3).
++ *
++ * Token-mapped onto the closed AD-18 set defined in `app/globals.css`:
++ *   default  → `bg-bg-2 text-fg-2 hover:bg-bg-3`
++ *   outline  → `border border-border-strong bg-transparent hover:bg-bg-3`
++ *
++ * Active state (data-[state=on]) flips to the accent token (`bg-accent
++ * text-on-accent`). Reserved for E3 filter-chip non-radiogroup contexts;
++ * no E1 consumer mounts it.
++ */
++
++const toggleVariants = cva(
++  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-bg-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-on-accent",
++  {
++    variants: {
++      variant: {
++        default: "bg-bg-2 text-fg-2",
++        outline: "border border-border-strong bg-transparent hover:bg-bg-3",
++      },
++    },
++    defaultVariants: {
++      variant: "default",
++    },
++  },
++);
++
++const Toggle = React.forwardRef<
++  React.ElementRef<typeof TogglePrimitive.Root>,
++  React.ComponentPropsWithoutRef<typeof TogglePrimitive.Root> &
++    VariantProps<typeof toggleVariants>
++>(({ className, variant, ...props }, ref) => (
++  <TogglePrimitive.Root
++    ref={ref}
++    className={cn(toggleVariants({ variant }), className)}
++    {...props}
++  />
++));
++Toggle.displayName = TogglePrimitive.Root.displayName;
++
++export { Toggle, toggleVariants };
+diff --git a/components/ui/tooltip.tsx b/components/ui/tooltip.tsx
+new file mode 100644
+index 0000000..54d543d
+--- /dev/null
++++ b/components/ui/tooltip.tsx
+@@ -0,0 +1,60 @@
++"use client";
++
++import * as React from "react";
++import * as TooltipPrimitive from "@radix-ui/react-tooltip";
++
++import { cn } from "@/lib/utils";
++
++/**
++ * <Tooltip> — AD-15 closed shadcn surface (3 of 3).
++ *
++ * Token-mapped onto the closed AD-18 set defined in `app/globals.css`:
++ *   TooltipContent → `bg-bg-3 text-fg border border-border-strong shadow-md`
++ *   TooltipArrow   → `fill-bg-3`
++ *
++ * Ships the `<TooltipProvider>` re-export in the same file so consumers
++ * have a single import path. The provider must wrap any route that mounts
++ * one or more `<Tooltip>` instances so hover-delay state is shared.
++ * Per epics.md line 70, `<Tooltip>` mounts on Patterns-cited deep-link
++ * hover in E3.
++ */
++
++const TooltipProvider = TooltipPrimitive.Provider;
++const Tooltip = TooltipPrimitive.Root;
++const TooltipTrigger = TooltipPrimitive.Trigger;
++
++const TooltipContent = React.forwardRef<
++  React.ElementRef<typeof TooltipPrimitive.Content>,
++  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
++>(({ className, sideOffset = 4, ...props }, ref) => (
++  <TooltipPrimitive.Content
++    ref={ref}
++    sideOffset={sideOffset}
++    className={cn(
++      "z-50 overflow-hidden rounded-md bg-bg-3 px-3 py-1.5 text-xs text-fg border border-border-strong shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
++      className,
++    )}
++    {...props}
++  />
++));
++TooltipContent.displayName = TooltipPrimitive.Content.displayName;
++
++const TooltipArrow = React.forwardRef<
++  React.ElementRef<typeof TooltipPrimitive.Arrow>,
++  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Arrow>
++>(({ className, ...props }, ref) => (
++  <TooltipPrimitive.Arrow
++    ref={ref}
++    className={cn("fill-bg-3", className)}
++    {...props}
++  />
++));
++TooltipArrow.displayName = TooltipPrimitive.Arrow.displayName;
++
++export {
++  Tooltip,
++  TooltipTrigger,
++  TooltipContent,
++  TooltipProvider,
++  TooltipArrow,
++};
+diff --git a/lib/utils.ts b/lib/utils.ts
+new file mode 100644
+index 0000000..0628e31
+--- /dev/null
++++ b/lib/utils.ts
+@@ -0,0 +1,18 @@
++import { clsx, type ClassValue } from "clsx";
++import { twMerge } from "tailwind-merge";
++
++/**
++ * cn() — shadcn-canonical class joiner (AD-15 contract).
++ *
++ * Combines `clsx` (conditional class joining) with `tailwind-merge`
++ * (Tailwind conflict resolution so the last-wins utility wins). The
++ * shadcn-canonical implementation; no project-specific extension.
++ *
++ * Lives at `lib/utils.ts` (the canonical shadcn location matching
++ * the `aliases.utils: "@/lib/utils"` field in `components.json`).
++ *
++ * Pure utility: callable from server components. Do NOT add `"use client"`.
++ */
++export function cn(...inputs: ClassValue[]): string {
++  return twMerge(clsx(inputs));
++}
