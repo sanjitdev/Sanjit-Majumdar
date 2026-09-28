@@ -29,6 +29,20 @@ export type {
 export { parseEntry, renderDiagnostics, liftToMeta } from './parse-entry';
 export type { ParseEntryResult, ZodError } from './parse-entry';
 
+// Content reader (story 2-3) — walks the shallow-clone of `sanjit-content/`,
+// validates entries via the per-type schemas above, filters to status ===
+// 'published', and returns a typed result with a frozen O(1) lookup surface.
+export { readContent, parseFrontmatter } from './reader';
+export type {
+  PublishedEntry,
+  DraftedEntry,
+  CVResult,
+  NowSnapshot,
+  PublishedSet,
+  ReadContentOptions,
+  ReadContentResult,
+} from './reader';
+
 // Case-study
 export {
   CaseStudySchema,
