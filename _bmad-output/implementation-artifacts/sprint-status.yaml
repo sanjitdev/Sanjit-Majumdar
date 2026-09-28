@@ -165,9 +165,10 @@
 
 generated: 2026-09-28
 last_updated: 2026-09-28
-# refresh note 2026-09-28: bmad-build activated; 2-3 spec flipped ready-for-dev → in-progress
-#             at step-03 start. epic-2 lifted backlog → in-progress (first story
-#             of the epic starts).
+# refresh note 2026-09-28: 2-4-implement-nextjs-shallow-clone-of-sanjit-content-at-build-time
+#             flipped backlog → in-progress at bmad-build step-03 start. epic-2 already in-progress
+#             (carried over from 2-3 activation). Build pipeline: scripts/clone-content.mjs +
+#             prebuild/predev lifecycle hooks in package.json.
 project: Sanjit-Majumdar
 project_key: NOKEY
 tracking_system: file-system
@@ -205,7 +206,7 @@ development_status:
   2-1-set-up-sanjit-content-repo-with-content-directory-layout-and-github-actions-workflow-listening-to-push-delete-force-push: backlog
   2-2-implement-additive-zod-4-schemas-for-case-study-pattern-lab-project-currently-building-entry-cv: review
   2-3-implement-content-reader-libcontent-walking-only-status-published: review
-  2-4-implement-nextjs-shallow-clone-of-sanjit-content-at-build-time: backlog
+  2-4-implement-nextjs-shallow-clone-of-sanjit-content-at-build-time: in-progress
   2-5-implement-post-apirevalidate-edge-handler-with-revalidatetag-tag-max-next-16-signature: backlog
   2-6-apply-revalidate-300-5-minute-ttl-fallback-on-every-isr-route: backlog
   2-7-pre-publish-a-move-tagged-pattern-stub-in-sanjit-content-patternscanonical-model: backlog

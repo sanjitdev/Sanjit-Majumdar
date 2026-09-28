@@ -281,6 +281,25 @@ coverage/
 lib-cov/
 
 # -----------------------------------------------------------------------------
+# Build-time shallow-clone of `sanjit-content` (story 2-4 — AD-1 read path).
+#
+# The deploy pipeline runs `scripts/clone-content.mts` before `next build` and
+# populates this directory from the content repo. The cloned tree MUST NOT be
+# committed to the code repo (it is a build artifact, not source). The
+# `.gitkeep` placeholder is the only tracked file under `content/` so the
+# directory survives a fresh checkout (so the lifecycle hook has a target to
+# populate).
+#
+# Implementation note: we use `content/*` (not `content/`) so the directory
+# itself is NOT ignored. Git's `.gitignore` precedence means a `!`-rule on a
+# child file does not un-ignore a child of an ignored directory — only a
+# `!`-rule on the directory itself works. Using `content/*` + `!.gitkeep`
+# allows the `.gitkeep` placeholder to be tracked while every cloned file
+# under `content/` is correctly ignored.
+content/*
+!content/.gitkeep
+
+# -----------------------------------------------------------------------------
 # Build / Dist / Output
 # -----------------------------------------------------------------------------
 
