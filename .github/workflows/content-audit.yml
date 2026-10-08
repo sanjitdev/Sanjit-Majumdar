@@ -1,10 +1,31 @@
 name: content-audit
 
+# Story 2-9: weekly AD-9 audit. Asserts no past-7-days Vercel
+# deployment was triggered by a commit to the `sanjit-content` repo
+# (which would indicate a Vercel hook was incorrectly installed on
+# that repo, breaking AD-9's "no build on content edits" rule).
+#
+# On failure: exits 1; the offending deployment + commit + matched
+# path are written to the workflow log via `scripts/audit-content.mjs`.
+#
+# Schedule: Mondays at 09:00 UTC (`0 9 * * 1`). The off-the-hour
+# minute (`:00`) keeps the schedule deterministic; the 09:00 UTC hour
+# aligns with the user's morning review window.
+#
+# Binds: AD-9 (no Vercel build on content edits), FR-12 (separate
+# content repo, on-demand ISR).
+
 on:
   schedule:
-    # Mondays at 17:00 UTC (off-the-hour to spread runner load)
-    - cron: '17 * * * 1'
+    - cron: '0 9 * * 1'
   workflow_dispatch:
+
+# Cancel in-progress runs on the same ref. A slow weekly run that
+# is mid-flight when the next week's schedule fires should be
+# superseded (the older result is stale by the time it lands).
+concurrency:
+  group: content-audit-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   audit:
@@ -25,8 +46,38 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # The audit script (`scripts/audit-content.mjs`) calls the
+      # Vercel deployments API for the past 7 days and asserts no
+      # deployment's commit message matches a `sanjit-content`
+      # path token (case-studies/, patterns/, lab/, now-snapshot.json,
+      # cv.md). On success: prints "PASS" and exits 0. On failure:
+      # prints the offender list and exits 1. The step surfaces the
+      # offender list in the GitHub Actions run log automatically.
       - name: Vercel deployments audit (past 7 days)
+        id: audit
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
         run: pnpm audit:content
+
+      # A second job-summary step makes the verdict easy to spot in
+      # the Actions UI without scrolling through the raw log.
+      - name: Audit summary
+        if: always()
+        run: |
+          echo "## AD-9 weekly content-audit" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Run ID: $GITHUB_RUN_ID  •  Result: ${{ steps.audit.outcome }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.audit.outcome }}" = "success" ]; then
+            echo "✅ No content-repo-triggered deployments in the past 7 days. AD-9 holds." >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ steps.audit.outcome }}" = "failure" ]; then
+            echo "❌ Content-repo-triggered deployment(s) detected. See the `Vercel deployments audit` step for the offender list." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Remediation: confirm the Vercel GitHub App is NOT installed on the `sanjit-content` repo (Settings → Integrations). The revalidate flow should go through `sanjit-content/.github/workflows/revalidate.yml` → `POST /api/revalidate` → `revalidateTag(tag, 'max')` (story 2-5), not through a Vercel build." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Audit did not complete cleanly (outcome: ${{ steps.audit.outcome }}). Re-run via workflow_dispatch." >> $GITHUB_STEP_SUMMARY
+          fi
+

@@ -20,13 +20,21 @@
     "audit:budget": "node scripts/audit-budget.mjs",
     "audit:routes": "node scripts/audit-routes.mjs",
     "audit:content": "node scripts/audit-content.mjs",
+    "audit:isr-ttl": "node scripts/audit-isr-ttl.mjs",
     "audit:spec": "node scripts/audit-routes.spec.mjs",
     "audit:mount-points": "node scripts/audit-routes-mount-points.spec.mjs",
     "audit:tokens": "node scripts/audit-tokens.mjs",
     "test:a11y": "pa11y-ci",
     "clone-content": "tsx scripts/clone-content.mts",
+    "smoke:2-1": "tsx scripts/smoke-2-1.mts",
+    "smoke:2-2": "tsx scripts/smoke-2-2.mts",
+    "smoke:2-3": "tsx scripts/smoke-2-3.mts",
     "smoke:2-4": "tsx scripts/smoke-2-4.mts",
-    "smoke:2-5": "tsx scripts/smoke-2-5.mts"
+    "smoke:2-5": "tsx scripts/smoke-2-5.mts",
+    "smoke:2-6": "tsx scripts/smoke-2-6.mts",
+    "smoke:2-7": "tsx scripts/smoke-2-7.mts",
+    "smoke:2-8": "tsx scripts/smoke-2-8.mts",
+    "smoke:2-9": "tsx scripts/smoke-2-9.mts"
   },
   "dependencies": {
     "next": "^16.3.6",

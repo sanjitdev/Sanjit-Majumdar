@@ -181,7 +181,23 @@ async function checkPreviewRoute(route) {
       reason: `network error after 3 retries: ${err.message}`,
     };
   }
+  // Preview routes are gated by `app/preview/layout.tsx` (1-12-foundation-
+  // closeout fix #7) — the layout returns `notFound()` unless `PREVIEW=1`
+  // is set in the running process. When the audit is run against a server
+  // started without `PREVIEW=1` (the default for production-like checks),
+  // a 404 on `/preview/*` is the CORRECT behavior — the gate is doing its
+  // job. Treat it as a `skip` rather than a `fail` so the audit reports
+  // production-reachability without false-failing on the intentional
+  // reachability gate. To audit the preview harnesses themselves, start
+  // the server with `PREVIEW=1` (the audit harness sets this in CI).
   if (!res.ok) {
+    if (res.status === 404 && process.env.PREVIEW !== '1') {
+      return {
+        route,
+        outcome: 'skip',
+        reason: `HTTP 404 — preview gate active (PREVIEW !== '1')`,
+      };
+    }
     return {
       route,
       outcome: 'fail',
@@ -222,6 +238,8 @@ for (const r of prodResults) {
 for (const r of previewResults) {
   if (r.outcome === 'pass') {
     console.log(`[audit:routes] OK ${r.route} (preview, structural-only)`);
+  } else if (r.outcome === 'skip') {
+    console.warn(`[audit:routes] SKIP ${r.route} -- ${r.reason}`);
   } else {
     console.error(`[audit:routes] FAIL ${r.route} -- ${r.reason}`);
   }
@@ -231,10 +249,11 @@ const prodPass = prodResults.filter((r) => r.outcome === 'pass').length;
 const prodSkip = prodResults.filter((r) => r.outcome === 'skip').length;
 const prodFail = prodResults.filter((r) => r.outcome === 'fail').length;
 const previewPass = previewResults.filter((r) => r.outcome === 'pass').length;
+const previewSkip = previewResults.filter((r) => r.outcome === 'skip').length;
 const previewFail = previewResults.filter((r) => r.outcome === 'fail').length;
 
 console.log(
-  `[audit:routes] SUMMARY -- production: ${prodPass} pass / ${prodSkip} skip (not yet built) / ${prodFail} fail; preview: ${previewPass} pass / ${previewFail} fail`,
+  `[audit:routes] SUMMARY -- production: ${prodPass} pass / ${prodSkip} skip (not yet built) / ${prodFail} fail; preview: ${previewPass} pass / ${previewSkip} skip (gate active) / ${previewFail} fail`,
 );
 
 if (prodFail > 0 || previewFail > 0) {

@@ -48,6 +48,21 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+/**
+ * Story 2-6: 5-minute TTL fallback for the revalidate webhook.
+ *
+ * The fast path is `POST /api/revalidate` (story 2-5) which calls
+ * `revalidateTag('case-study:<slug>', 'max')` within ~5 seconds of a
+ * push to `sanjit-content`. If that webhook is delayed, fails, or is
+ * delivered out of order, this TTL ensures the route regenerates
+ * from the build-time shallow-clone within 5 minutes. FR-14 + AD-9.
+ *
+ * The audit at `scripts/audit-isr-ttl.mjs` enforces this constant on
+ * every page.tsx under the `app/` tree that renders a public ISR
+ * route (closed list per `scripts/audit-routes.shared.mjs`).
+ */
+export const revalidate = 300;
+
 export default function Home() {
   return (
     <>

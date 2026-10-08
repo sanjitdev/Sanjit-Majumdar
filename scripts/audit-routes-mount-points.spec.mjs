@@ -51,27 +51,51 @@ const callSiteStart = callSiteMatch.index + callSiteMatch[0].length;
 function extractArrayLiteral(text, fromIndex) {
   let depth = 1; // We're already inside the outer `[` at `fromIndex`.
   let i = fromIndex;
+  // Track whether we're positioned at a string boundary. We only enter
+  // string-skip when the immediately-preceding non-whitespace char was a
+  // token that *opens* a new string literal (i.e., `[` after array open,
+  // `,` after previous entry, or `(` in expressions). Without this guard,
+  // a stray inner `"` (e.g., the CSS attribute value delimiter inside
+  // `[aria-label="Hero"]`) would be mistaken for a string-open quote and
+  // would terminate the outer `'`-quoted JS string at the wrong position.
+  let atStringBoundary = true;
   while (i < text.length && depth > 0) {
     const ch = text[i];
-    if (ch === '[') depth++;
-    else if (ch === ']') {
+    if (ch === '[') {
+      depth++;
+      i++;
+      atStringBoundary = false; // A nested `[` cannot be at a string boundary.
+    } else if (ch === ']') {
       depth--;
       if (depth === 0) {
         return text.slice(fromIndex, i + 1);
       }
-    }
-    // Skip over string literals so an embedded `[` or `]` inside a quoted
-    // CSS attribute selector (e.g., `[aria-label="foo[bar]"]`) doesn't
-    // throw off the bracket counting.
-    else if (ch === "'" || ch === '"') {
+      i++;
+      atStringBoundary = false;
+    } else if (atStringBoundary && (ch === "'" || ch === '"')) {
+      // We're at a string-opening position. Skip over the entire literal
+      // so an embedded `[` or `]` inside the string (e.g., a CSS
+      // attribute selector value) doesn't throw off the bracket counting.
       const quote = ch;
       i++;
       while (i < text.length && text[i] !== quote) {
         if (text[i] === '\\' && i + 1 < text.length) i += 2;
         else i++;
       }
+      if (i < text.length) i++; // Skip the closing quote.
+      atStringBoundary = false; // After a string, the next significant char
+                                // is the terminator (`]` or `,`), not a
+                                // string-open quote.
+    } else if (ch === ',') {
+      i++;
+      atStringBoundary = true; // After a comma, the next entry begins.
+    } else if (/\s/.test(ch)) {
+      i++;
+      // Whitespace does not change boundary state.
+    } else {
+      i++;
+      atStringBoundary = false;
     }
-    i++;
   }
   return null;
 }
@@ -129,7 +153,17 @@ function normalizeToJsonLiteral(raw) {
   return out;
 }
 
-const literal = normalizeToJsonLiteral(arrayLiteral);
+// Strip the trailing comma (if any) after the last array element. Source
+// may write `'a',\n  'b',\n]` with a trailing comma, which is valid JS array
+// literal but invalid JSON.
+// The `arrayLiteral` extracted by the bracket walker omits the leading
+// `[` (the regex `/extractComponentText\(\s*html\s*,\s*\[/` consumes it
+// and `fromIndex` is positioned *after* the opening bracket) and INCLUDES
+// the trailing `]`. So the captured form is `    'a',\n  'b',\n  ]` — strip
+// the trailing comma+bracket pair, then re-wrap as a valid JSON array
+// literal.
+const stripped = arrayLiteral.replace(/,(\s*)\]\s*$/, '$1');
+const literal = '[' + normalizeToJsonLiteral(stripped) + ']';
 let actual;
 try {
   actual = JSON.parse(literal);

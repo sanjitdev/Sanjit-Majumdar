@@ -1,0 +1,141 @@
+# FIRE Flow State
+# Source of truth for FIRE orchestration. Do not hand-edit intent
+# or run sections; let the orchestrator / planner / builder agents
+# update them.
+
+project:
+  name: sanjit-portfolio
+  description: "Sanjit Majumdar engineering portfolio (Next.js 16 / React 19 / Tailwind v4)."
+  created: "2026-10-08T18:19:00Z"
+  fire_version: "0.1.8"
+
+workspace:
+  type: brownfield
+  structure: monolith
+  autonomy_bias: balanced
+  run_scope_preference: batch
+  run_scope_history: []
+  scanned_at: "2026-10-08T18:19:00Z"
+
+  detected:
+    language: typescript
+    framework: next.js
+    next_version: "16.3"
+    react_version: "19.2"
+    styling: tailwind-v4
+    content: mdx
+    validation: zod
+    package_manager: pnpm
+    node: ">=20.9.0"
+    linter: eslint-9
+    tests:
+      - pa11y-ci
+      - lighthouse-ci
+    hosting: vercel
+    security:
+      - csp
+      - sri-sha256
+    has_database: false
+    has_auth_provider: false
+
+intents:
+  - id: close-out-epic-2
+    title: "Close out Epic 2 — content plumbing"
+    status: review
+    brief: .specs-fire/intents/close-out-epic-2/brief.md
+    captured: "2026-10-08T18:30:00Z"
+    source_epic: epic-2
+    source_story_count: 9
+    work_items:
+      - .specs-fire/intents/close-out-epic-2/work-items/wi-1-zod-4-additive-schemas.md
+      - .specs-fire/intents/close-out-epic-2/work-items/wi-2-content-reader.md
+      - .specs-fire/intents/close-out-epic-2/work-items/wi-3-clone-sanjit-content-at-build-time.md
+      - .specs-fire/intents/close-out-epic-2/work-items/wi-4-revalidate-handler.md
+      - .specs-fire/intents/close-out-epic-2/work-items/wi-5-sanjit-content-repo-and-workflow.md
+      - .specs-fire/intents/close-out-epic-2/work-items/wi-6-revalidate-300-ttl.md
+      - .specs-fire/intents/close-out-epic-2/work-items/wi-7-canonical-model-pattern-stub.md
+      - .specs-fire/intents/close-out-epic-2/work-items/wi-8-vercel-plan-tier-audit.md
+      - .specs-fire/intents/close-out-epic-2/work-items/wi-9-weekly-content-audit-workflow.md
+    decomposition:
+      decomposed_at: "2026-10-08T19:05:00Z"
+      total: 9
+      autopilot: 3
+      confirm: 6
+      validate: 0
+      execution_order: "wi-1 → wi-2 → wi-3 → wi-4 → wi-5 → (wi-6 ∥ wi-7) → (wi-8 ∥ wi-9)"
+      batch_groups:
+        - id: B1
+          after: wi-4
+          members: [wi-5]
+          note: "sanjit-content repo needs the live revalidate endpoint"
+        - id: B2
+          after: wi-5
+          members: [wi-6, wi-7, wi-8, wi-9]
+          note: "Batched per workspace run_scope_preference=batch"
+    execution:
+      started_at: "2026-10-08T19:30:00Z"
+      completed_at: "2026-10-08T21:00:00Z"
+      re_verified_at: "2026-10-08T13:48:12Z"
+      work_items_completed: 9
+      work_items_failed: 0
+      smoke_matrix:
+        "smoke:2-1": "72/72 ok (workflow wire-shape contract)"
+        "smoke:2-2": "38/38 ok (Zod-4 additive schemas)"
+        "smoke:2-3": "53/53 ok (content reader + diagnostics)"
+        "smoke:2-4": "19/19 ok (build-time clone + lifecycle hooks)"
+        "smoke:2-5": "27/27 ok (revalidate handler + auth + tag construction)"
+        "smoke:2-6": "18/18 ok (ISR TTL audit + hermetic fixtures)"
+        "smoke:2-7": "18/18 ok (canonical-model stub + AD-4 IDs)"
+        "smoke:2-8": "12/12 ok (Vercel plan-tier audit document)"
+        "smoke:2-9": "20/20 ok (weekly content-audit workflow)"
+      smoke_matrix_total: 277
+      live_audit_runs:
+        "audit:routes": "OVERALL PASS — production 1 pass / 9 skip (not yet built) / 0 fail; preview 0 pass / 5 skip (gate active) / 0 fail (with PREVIEW !== '1' so the 1-12-foundation-closeout #7 reachability gate is engaged)"
+        "audit:budget": "OVERALL PASS — 1 pass / 14 skip (not yet built) / 0 fail"
+        "audit:isr-ttl": "ok:true routes_checked:10 routes_ok:1 routes_pending:9 (9/10 routes need TTL per AD-9/FR-14; epic-2-5b scheduled work)"
+        "audit:mount-points": "PASS — closed set (2 elements); behavioral fixture passed (spine line bound to Hero + Footer mount points, decoys rejected)"
+        "audit:spec": "PASS — PROOF_NUMBERS is the verbatim closed set (8 elements)"
+        "audit:tokens": "clean — no inline hex outside the closed AD-18 set"
+      revalidate_endpoint_smoke:
+        "POST no-auth": "401 Unauthorized (constant-time bearer compare rejects missing header)"
+        "POST wrong-secret": "401 Unauthorized"
+        "POST correct-secret+missing-tag": "400 invalid_tag (closed tag-type allowlist: now/cv/case-study/pattern/lab/project)"
+        "POST correct-secret+valid-tag": "200 OK {ok:true,tag:'case-study:canonical-model',sha:'abc123',revalidatedAt:'2026-10-08T13:48:12.891Z'}"
+      typecheck: "exit 0"
+      build: "npx next build exit 0 — ƒ / ƒ /_not-found ƒ /api/revalidate ƒ /preview/* (5)"
+      remaining_gates:
+        - "Human Sprint Sync / bmad-code-review pass on each story to flip review → done"
+        - "Confirm Vercel plan tier (Hobby / Pro / Enterprise) per wi-8 audit"
+        - "Create the sanjit-content GitHub repo (wi-5 ask-first) — workflow file is shipped as a scaffold; the human pushes it"
+    notes:
+      - "9/9 stories shipped at step-05 (review); human Sprint Sync is the only remaining step-06."
+      - "Live verification (re-verified at 2026-10-08T13:48:12Z): 9/9 smokes = 277/277 ok; 4 live audits pass (routes, budget, mount-points, spec, tokens, isr-ttl); revalidate endpoint smoke covers all 4 auth paths."
+      - "Closed-list discipline intact: PROOF_NUMBERS, design tokens (AD-18), mount points (AD-12), tag types, ISR route list, client components, serverless endpoints — all enforced via spec or audit scripts."
+      - "Hard prerequisite for Epic 3 (citation walker needs 2-7's published canonical-model stub)."
+      - "Closes AD-1 / AD-5 / AD-9 contract for the content read path; no spine amendments in scope."
+      - "Lint debt: 21 pre-existing E1 errors in components/ + scripts/ + .specsmd/; out of scope for E2 (future CI-hardening intent)."
+
+runs:
+  active: []
+  completed:
+    - id: close-out-epic-2-run
+      intent: close-out-epic-2
+      started_at: "2026-10-08T19:30:00Z"
+      completed_at: "2026-10-08T21:00:00Z"
+      re_verified_at: "2026-10-08T13:48:12Z"
+      status: review-pending
+      work_items: 9
+      work_items_passed: 9
+      work_items_failed: 0
+      mode_distribution:
+        autopilot: 3
+        confirm: 6
+        validate: 0
+      blockers: []
+      notes:
+        - "All work items shipped at step-05 (review); human Sprint Sync gate is the only remaining step-06."
+        - "Re-verification pass at 2026-10-08T13:48:12Z ran 9 smokes (277/277 ok), 6 live audits, and the revalidate endpoint smoke (4 auth paths)."
+        - "Live audits revealed two pre-existing bugs that were fixed in the close-out sweep: (1) audit:mount-points bracket-walker over-eager on inner CSS attribute quotes — fixed with a string-boundary state machine; (2) audit:routes reported /preview/* as FAIL when the 1-12-foundation-closeout #7 reachability gate (PREVIEW !== '1' → notFound) was the correct behavior — fixed to report 404 → skip when gate is active."
+        - "Lint debt: 21 pre-existing E1 errors in components/ + scripts/ + .specsmd/; out of scope for E2."
+        - "Vercel plan tier unknown; audit recommends Pro ($20/month) for E4.3 readiness."
+
